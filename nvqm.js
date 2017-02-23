@@ -84,58 +84,8 @@ function num_tan(n){
 // vec2
 //
 
-function vec2_neg(a){
-	return [-a[0], -a[1]];
-}
-
 function vec2_add(a, b){
 	return [a[0] + b[0], a[1] + b[1]];
-}
-
-function vec2_sub(a, b){
-	return [a[0] - b[0], a[1] - b[1]];
-}
-
-function vec2_mul(a, b){
-	return [a[0] * b[0], a[1] * b[1]];
-}
-
-function vec2_div(a, b){
-	return [a[0] / b[0], a[1] / b[1]];
-}
-
-function vec2_min(a, b){
-	return [num_min(a[0], b[0]), num_min(a[1], b[1])];
-}
-
-function vec2_max(a, b){
-	return [num_max(a[0], b[0]), num_max(a[1], b[1])];
-}
-
-function vec2_clamp(a, min, max){
-	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
-}
-
-function vec2_lerp(a, b, t){
-	return [num_lerp(a[0], b[0], t), num_lerp(a[1], b[1], t)];
-}
-
-function vec2_inverse(a){
-	return [1 / a[0], 1 / a[1]];
-}
-
-function vec2_normal(a){
-	var ax = a[0], ay = a[1],
-		len = ax * ax + ay * ay;
-	if (len > 0){
-		len = 1 / num_sqrt(len);
-		return [ax * len, ay * len];
-	}
-	return a;
-}
-
-function vec2_scale(a, s){
-	return [a[0] * s, a[1] * s];
 }
 
 function vec2_applymat2(a, b){
@@ -153,8 +103,32 @@ function vec2_applymat4(a, b){
 	return [b[0] * ax + b[4] * ay + b[12], b[1] * ax + b[5] * ay + b[13]];
 }
 
+function vec2_clamp(a, min, max){
+	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
+}
+
 function vec2_dot(a, b){
 	return a[0] * b[0] + a[1] * b[1];
+}
+
+function vec2_dist(a, b){
+	return num_sqrt(vec2_len2(vec2_sub(a, b)));
+}
+
+function vec2_dist2(a, b){
+	return vec2_len2(vec2_sub(b, a));
+}
+
+function vec2_div(a, b){
+	return [a[0] / b[0], a[1] / b[1]];
+}
+
+function vec2_inverse(a){
+	return [1 / a[0], 1 / a[1]];
+}
+
+function vec2_len(a){
+	return num_sqrt(vec2_len2(a));
 }
 
 function vec2_len2(a){
@@ -162,16 +136,42 @@ function vec2_len2(a){
 	return ax * ax + ay * ay;
 }
 
-function vec2_len(a){
-	return num_sqrt(vec2_len2(a));
+function vec2_lerp(a, b, t){
+	return [num_lerp(a[0], b[0], t), num_lerp(a[1], b[1], t)];
 }
 
-function vec2_dist2(a, b){
-	return vec2_len2(vec2_sub(b, a));
+function vec2_max(a, b){
+	return [num_max(a[0], b[0]), num_max(a[1], b[1])];
 }
 
-function vec2_dist(a, b){
-	return num_sqrt(vec2_len2(vec2_sub(a, b)));
+function vec2_min(a, b){
+	return [num_min(a[0], b[0]), num_min(a[1], b[1])];
+}
+
+function vec2_mul(a, b){
+	return [a[0] * b[0], a[1] * b[1]];
+}
+
+function vec2_neg(a){
+	return [-a[0], -a[1]];
+}
+
+function vec2_normal(a){
+	var ax = a[0], ay = a[1],
+		len = ax * ax + ay * ay;
+	if (len > 0){
+		len = 1 / num_sqrt(len);
+		return [ax * len, ay * len];
+	}
+	return a;
+}
+
+function vec2_scale(a, s){
+	return [a[0] * s, a[1] * s];
+}
+
+function vec2_sub(a, b){
+	return [a[0] - b[0], a[1] - b[1]];
 }
 
 //
@@ -785,6 +785,8 @@ function mat3_quat(out, a){
 }
 
 function mat3_identity(out){
+	if (typeof out === 'undefined')
+		out = [];
 	out[0] = 1; out[1] = 0; out[2] = 0;
 	out[3] = 0; out[4] = 1; out[5] = 0;
 	out[6] = 0; out[7] = 0; out[8] = 1;
@@ -1067,6 +1069,8 @@ function mat4_quat(out, a){
 }
 
 function mat4_identity(out){
+	if (typeof out === 'undefined')
+		out = [];
 	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
 	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
 	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
@@ -1699,26 +1703,26 @@ if (typeof module !== 'undefined' && module.exports){
 		num_tan  : num_tan  ,
 
 		// vec2
-		vec2_neg      : vec2_neg      ,
 		vec2_add      : vec2_add      ,
-		vec2_sub      : vec2_sub      ,
-		vec2_mul      : vec2_mul      ,
-		vec2_div      : vec2_div      ,
-		vec2_min      : vec2_min      ,
-		vec2_max      : vec2_max      ,
-		vec2_clamp    : vec2_clamp    ,
-		vec2_lerp     : vec2_lerp     ,
-		vec2_inverse  : vec2_inverse  ,
-		vec2_normal   : vec2_normal   ,
-		vec2_scale    : vec2_scale    ,
 		vec2_applymat2: vec2_applymat2,
 		vec2_applymat3: vec2_applymat3,
 		vec2_applymat4: vec2_applymat4,
+		vec2_clamp    : vec2_clamp    ,
 		vec2_dot      : vec2_dot      ,
-		vec2_len2     : vec2_len2     ,
-		vec2_len      : vec2_len      ,
-		vec2_dist2    : vec2_dist2    ,
 		vec2_dist     : vec2_dist     ,
+		vec2_dist2    : vec2_dist2    ,
+		vec2_div      : vec2_div      ,
+		vec2_inverse  : vec2_inverse  ,
+		vec2_len      : vec2_len      ,
+		vec2_len2     : vec2_len2     ,
+		vec2_lerp     : vec2_lerp     ,
+		vec2_max      : vec2_max      ,
+		vec2_min      : vec2_min      ,
+		vec2_mul      : vec2_mul      ,
+		vec2_neg      : vec2_neg      ,
+		vec2_normal   : vec2_normal   ,
+		vec2_scale    : vec2_scale    ,
+		vec2_sub      : vec2_sub      ,
 
 		// vec3
 		vec3_neg      : vec3_neg      ,

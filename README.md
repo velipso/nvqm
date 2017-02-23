@@ -37,26 +37,26 @@ float num_sqrt (float a);
 float num_tan  (float a);
 
 // vec2
-vec2  vec2_neg      (vec2 a);
 vec2  vec2_add      (vec2 a, vec2 b);
-vec2  vec2_sub      (vec2 a, vec2 b);
-vec2  vec2_mul      (vec2 a, vec2 b);
-vec2  vec2_div      (vec2 a, vec2 b);
-vec2  vec2_min      (vec2 a, vec2 b);
-vec2  vec2_max      (vec2 a, vec2 b);
-vec2  vec2_clamp    (vec2 a, vec2 min, vec2 max);
-vec2  vec2_lerp     (vec2 a, vec2 b, float t);
-vec2  vec2_inverse  (vec2 a);
-vec2  vec2_normal   (vec2 a);
-vec2  vec2_scale    (vec2 a, float s);
 vec2  vec2_applymat2(vec2 a, mat2 b);
 vec2  vec2_applymat3(vec2 a, mat3 *b);
 vec2  vec2_applymat4(vec2 a, mat4 *b);
+vec2  vec2_clamp    (vec2 a, vec2 min, vec2 max);
 float vec2_dot      (vec2 a, vec2 b);
-float vec2_len2     (vec2 a); // length squared
-float vec2_len      (vec2 a);
-float vec2_dist2    (vec2 a, vec2 b); // distance squared
 float vec2_dist     (vec2 a, vec2 b);
+float vec2_dist2    (vec2 a, vec2 b); // distance squared
+vec2  vec2_div      (vec2 a, vec2 b);
+vec2  vec2_inverse  (vec2 a);
+float vec2_len      (vec2 a);
+float vec2_len2     (vec2 a); // length squared
+vec2  vec2_lerp     (vec2 a, vec2 b, float t);
+vec2  vec2_max      (vec2 a, vec2 b);
+vec2  vec2_min      (vec2 a, vec2 b);
+vec2  vec2_mul      (vec2 a, vec2 b);
+vec2  vec2_neg      (vec2 a);
+vec2  vec2_normal   (vec2 a);
+vec2  vec2_scale    (vec2 a, float s);
+vec2  vec2_sub      (vec2 a, vec2 b);
 
 // vec3
 vec3  vec3_neg      (vec3 a);
