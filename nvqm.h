@@ -139,8 +139,8 @@ static inline vec2 vec2_inverse(vec2 a){
 }
 
 static inline vec2 vec2_normal(vec2 a){
-	float ax = a.v[0], ay = a.v[1];
-	float len = ax * ax + ay * ay;
+	float ax = a.v[0], ay = a.v[1],
+		len = ax * ax + ay * ay;
 	if (len > 0.0f){
 		len = 1.0f / num_sqrt(len);
 		return (vec2){ ax * len, ay * len };
@@ -171,21 +171,21 @@ static inline float vec2_dot(vec2 a, vec2 b){
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1];
 }
 
-static inline float vec2_length2(vec2 a){
+static inline float vec2_len2(vec2 a){
 	float ax = a.v[0], ay = a.v[1];
 	return ax * ax + ay * ay;
 }
 
-static inline float vec2_length(vec2 a){
-	return num_sqrt(vec2_length2(a));
+static inline float vec2_len(vec2 a){
+	return num_sqrt(vec2_len2(a));
 }
 
-static inline float vec2_distance2(vec2 a, vec2 b){
-	return vec2_length2(vec2_sub(b, a));
+static inline float vec2_dist2(vec2 a, vec2 b){
+	return vec2_len2(vec2_sub(b, a));
 }
 
-static inline float vec2_distance(vec2 a, vec2 b){
-	return num_sqrt(vec2_distance2(a, b));
+static inline float vec2_dist(vec2 a, vec2 b){
+	return num_sqrt(vec2_len2(vec2_sub(a, b)));
 }
 
 //
@@ -313,21 +313,21 @@ static inline float vec3_angle(vec3 a, vec3 b){
 	return vec3_nangle(vec3_normal(a), vec3_normal(b));
 }
 
-static inline float vec3_length2(vec3 a){
+static inline float vec3_len2(vec3 a){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2];
 	return ax * ax + ay * ay + az * az;
 }
 
-static inline float vec3_length(vec3 a){
-	return num_sqrt(vec3_length2(a));
+static inline float vec3_len(vec3 a){
+	return num_sqrt(vec3_len2(a));
 }
 
-static inline float vec3_distance2(vec3 a, vec3 b){
-	return vec3_length2(vec3_sub(b, a));
+static inline float vec3_dist2(vec3 a, vec3 b){
+	return vec3_len2(vec3_sub(b, a));
 }
 
 static inline float vec3_distance(vec3 a, vec3 b){
-	return num_sqrt(vec3_distance2(a, b));
+	return num_sqrt(vec3_len2(vec3_sub(a, b)));
 }
 
 //
@@ -439,21 +439,21 @@ static inline float vec4_dot(vec4 a, vec4 b){
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2] + a.v[3] * b.v[3];
 }
 
-static inline float vec4_length2(vec4 a){
+static inline float vec4_len2(vec4 a){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
 	return ax * ax + ay * ay + az * az + aw * aw;
 }
 
-static inline float vec4_length(vec4 a){
-	return num_sqrt(vec4_length2(a));
+static inline float vec4_len(vec4 a){
+	return num_sqrt(vec4_len2(a));
 }
 
-static inline float vec4_distance2(vec4 a, vec4 b){
-	return vec4_length2(vec4_sub(b, a));
+static inline float vec4_dist2(vec4 a, vec4 b){
+	return vec4_len2(vec4_sub(b, a));
 }
 
-static inline float vec4_distance(vec4 a, vec4 b){
-	return num_sqrt(vec4_distance2(a, b));
+static inline float vec4_dist(vec4 a, vec4 b){
+	return num_sqrt(vec4_len2(vec4_sub(a, b)));
 }
 
 //
@@ -467,12 +467,7 @@ static inline quat quat_identity(){
 static inline quat quat_naxisang(vec3 axis, float ang){ // axis is normalized
 	ang *= 0.5f;
 	float s = num_sin(ang);
-	return (quat){
-		axis.v[0] * s,
-		axis.v[1] * s,
-		axis.v[2] * s,
-		num_cos(ang)
-	};
+	return (quat){ axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang) };
 }
 
 static inline quat quat_axisang(vec3 axis, float ang){
@@ -575,7 +570,8 @@ static inline quat quat_euler_xyz(vec3 rot){
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz - sx * sy * sz };
+		cx * cy * cz - sx * sy * sz
+	};
 }
 
 static inline quat quat_euler_yxz(vec3 rot){
@@ -584,7 +580,8 @@ static inline quat quat_euler_yxz(vec3 rot){
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz + sx * sy * sz };
+		cx * cy * cz + sx * sy * sz
+	};
 }
 
 static inline quat quat_euler_zxy(vec3 rot){
@@ -593,7 +590,8 @@ static inline quat quat_euler_zxy(vec3 rot){
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz - sx * sy * sz };
+		cx * cy * cz - sx * sy * sz
+	};
 }
 
 static inline quat quat_euler_zyx(vec3 rot){
@@ -602,7 +600,8 @@ static inline quat quat_euler_zyx(vec3 rot){
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz + sx * sy * sz };
+		cx * cy * cz + sx * sy * sz
+	};
 }
 
 static inline quat quat_euler_yzx(vec3 rot){
@@ -611,7 +610,8 @@ static inline quat quat_euler_yzx(vec3 rot){
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz - sx * sy * sz };
+		cx * cy * cz - sx * sy * sz
+	};
 }
 
 static inline quat quat_euler_xzy(vec3 rot){
@@ -620,7 +620,8 @@ static inline quat quat_euler_xzy(vec3 rot){
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz + sx * sy * sz };
+		cx * cy * cz + sx * sy * sz
+	};
 }
 
 //

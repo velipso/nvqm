@@ -22,22 +22,22 @@ mat3 *mat3_quat(mat3 *out, quat a){
 		awx = aw * ax2,
 		awy = aw * ay2,
 		awz = aw * az2;
-	out->v[0] = 1 - ayy - azz;
-	out->v[1] =     ayx + awz;
-	out->v[2] =     azx - awy;
-	out->v[3] =     ayx - awz;
-	out->v[4] = 1 - axx - azz;
-	out->v[5] =     azy + awx;
-	out->v[6] =     azx + awy;
-	out->v[7] =     azy - awx;
-	out->v[8] = 1 - axx - ayy;
+	out->v[0] = 1.0f - ayy - azz;
+	out->v[1] =        ayx + awz;
+	out->v[2] =        azx - awy;
+	out->v[3] =        ayx - awz;
+	out->v[4] = 1.0f - axx - azz;
+	out->v[5] =        azy + awx;
+	out->v[6] =        azx + awy;
+	out->v[7] =        azy - awx;
+	out->v[8] = 1.0f - axx - ayy;
 	return out;
 }
 
 mat3 *mat3_identity(mat3 *out){
-	out->v[0] = 1; out->v[1] = 0; out->v[2] = 0;
-	out->v[3] = 0; out->v[4] = 1; out->v[5] = 0;
-	out->v[6] = 0; out->v[7] = 0; out->v[8] = 1;
+	out->v[0] = 1.0f; out->v[1] = 0.0f; out->v[2] = 0.0f;
+	out->v[3] = 0.0f; out->v[4] = 1.0f; out->v[5] = 0.0f;
+	out->v[6] = 0.0f; out->v[7] = 0.0f; out->v[8] = 1.0f;
 	return out;
 }
 
@@ -45,39 +45,39 @@ mat3 *mat3_rotation(mat3 *out, float ang){
     float s = num_sin(ang), c = num_cos(ang);
     out->v[0] =  c;
     out->v[1] =  s;
-    out->v[2] =  0;
+    out->v[2] =  0.0f;
     out->v[3] = -s;
     out->v[4] =  c;
-    out->v[5] =  0;
-    out->v[6] =  0;
-    out->v[7] =  0;
-    out->v[8] =  1;
+    out->v[5] =  0.0f;
+    out->v[6] =  0.0f;
+    out->v[7] =  0.0f;
+    out->v[8] =  1.0f;
     return out;
 }
 
 mat3 *mat3_scaling(mat3 *out, vec2 a){
     out->v[0] = a.v[0];
-    out->v[1] = 0;
-    out->v[2] = 0;
-    out->v[3] = 0;
+    out->v[1] = 0.0f;
+    out->v[2] = 0.0f;
+    out->v[3] = 0.0f;
     out->v[4] = a.v[1];
-    out->v[5] = 0;
-    out->v[6] = 0;
-    out->v[7] = 0;
-    out->v[8] = 1;
+    out->v[5] = 0.0f;
+    out->v[6] = 0.0f;
+    out->v[7] = 0.0f;
+    out->v[8] = 1.0f;
     return out;
 }
 
 mat3 *mat3_translation(mat3 *out, vec2 a){
-	out->v[0] = 1;
-	out->v[1] = 0;
-	out->v[2] = 0;
-	out->v[3] = 0;
-	out->v[4] = 1;
-	out->v[5] = 0;
+	out->v[0] = 1.0f;
+	out->v[1] = 0.0f;
+	out->v[2] = 0.0f;
+	out->v[3] = 0.0f;
+	out->v[4] = 1.0f;
+	out->v[5] = 0.0f;
 	out->v[6] = a.v[0];
 	out->v[7] = a.v[1];
-	out->v[8] = 1;
+	out->v[8] = 1.0f;
 	return out;
 }
 
@@ -128,7 +128,7 @@ mat3 *mat3_invert(mat3 *out, mat3 *a){
 		b21 =  a21 * a10 - a11 * a20;
 	float det = a00 * b01 + a01 * b11 + a02 * b21;
 	if (det == 0.0f)
-		return out;
+		return (mat3 *)0;
 	det = 1.0f / det;
 	out->v[0] =   b01                    * det;
 	out->v[1] = (-a22 * a01 + a02 * a21) * det;
@@ -282,6 +282,7 @@ mat3 *mat3_translate(mat3 *out, mat3 *a, vec2 b){
 //
 // mat4
 //
+
 mat4 *mat4_quat(mat4 *out, quat a){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
 		ax2 = ax + ax,
@@ -296,30 +297,30 @@ mat4 *mat4_quat(mat4 *out, quat a){
 		awx = aw * ax2,
 		awy = aw * ay2,
 		awz = aw * az2;
-	out->v[ 0] = 1 - ayy - azz;
-	out->v[ 1] =     ayx + awz;
-	out->v[ 2] =     azx - awy;
-	out->v[ 3] = 0;
-	out->v[ 4] =     ayx - awz;
-	out->v[ 5] = 1 - axx - azz;
-	out->v[ 6] =     azy + awx;
-	out->v[ 7] = 0;
-	out->v[ 8] =     azx + awy;
-	out->v[ 9] =     azy - awx;
-	out->v[10] = 1 - axx - ayy;
-	out->v[11] = 0;
-	out->v[12] = 0;
-	out->v[13] = 0;
-	out->v[14] = 0;
-	out->v[15] = 1;
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        ayx + awz;
+	out->v[ 2] =        azx - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        ayx - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        azy + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        azx + awy;
+	out->v[ 9] =        azy - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f;
+	out->v[13] = 0.0f;
+	out->v[14] = 0.0f;
+	out->v[15] = 1.0f;
 	return out;
 }
 
 mat4 *mat4_identity(mat4 *out){
-	out->v[ 0] = 1; out->v[ 1] = 0; out->v[ 2] = 0; out->v[ 3] = 0;
-	out->v[ 4] = 0; out->v[ 5] = 1; out->v[ 6] = 0; out->v[ 7] = 0;
-	out->v[ 8] = 0; out->v[ 9] = 0; out->v[10] = 1; out->v[11] = 0;
-	out->v[12] = 0; out->v[13] = 0; out->v[14] = 0; out->v[15] = 1;
+	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
+	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
 	return out;
 }
 
@@ -330,31 +331,31 @@ mat4 *mat4_rotation(mat4 *out, vec3 axis, float ang){
 	out->v[ 0] = x * x * t + c;
 	out->v[ 1] = y * x * t + z * s;
 	out->v[ 2] = z * x * t - y * s;
-	out->v[ 3] = 0;
+	out->v[ 3] = 0.0f;
 	out->v[ 4] = x * y * t - z * s;
 	out->v[ 5] = y * y * t + c;
 	out->v[ 6] = z * y * t + x * s;
-	out->v[ 7] = 0;
+	out->v[ 7] = 0.0f;
 	out->v[ 8] = x * z * t + y * s;
 	out->v[ 9] = y * z * t - x * s;
 	out->v[10] = z * z * t + c;
-	out->v[11] = 0;
-	out->v[12] = 0; out->v[13] = 0; out->v[14] = 0; out->v[15] = 1;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
 	return out;
 }
 
 mat4 *mat4_scaling(mat4 *out, vec3 a){
-	out->v[ 0] = a.v[0]; out->v[ 1] =      0; out->v[ 2] =      0; out->v[ 3] = 0;
-	out->v[ 4] =      0; out->v[ 5] = a.v[1]; out->v[ 6] =      0; out->v[ 7] = 0;
-	out->v[ 8] =      0; out->v[ 9] =      0; out->v[10] = a.v[2]; out->v[11] = 0;
-	out->v[12] =      0; out->v[13] =      0; out->v[14] =      0; out->v[15] = 1;
+	out->v[ 0] = a.v[0]; out->v[ 1] =   0.0f; out->v[ 2] =   0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] =   0.0f; out->v[ 5] = a.v[1]; out->v[ 6] =   0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] =   0.0f; out->v[ 9] =   0.0f; out->v[10] = a.v[2]; out->v[11] = 0.0f;
+	out->v[12] =   0.0f; out->v[13] =   0.0f; out->v[14] =   0.0f; out->v[15] = 1.0f;
 	return out;
 }
 
 mat4 *mat4_translation(mat4 *out, vec3 a){
-	out->v[ 0] = 1; out->v[ 1] = 0; out->v[ 2] = 0; out->v[ 3] = 0;
-	out->v[ 4] = 0; out->v[ 5] = 1; out->v[ 6] = 0; out->v[ 7] = 0;
-	out->v[ 8] = 0; out->v[ 9] = 0; out->v[10] = 1; out->v[11] = 0;
+	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
 	out->v[12] = a.v[0]; out->v[13] = a.v[1]; out->v[14] = a.v[2]; out->v[15] = 1;
 	return out;
 }
@@ -364,22 +365,22 @@ mat4 *mat4_frustum(mat4 *out, float L, float R, float B, float T, float N, float
 		rl = 1.0f / (R - L),
 		tb = 1.0f / (T - B),
 		nf = 1.0f / (N - F);
-	out->v[ 0] = (2 * N) * rl;
-	out->v[ 1] =  0;
-	out->v[ 2] =  0;
-	out->v[ 3] =  0;
-	out->v[ 4] =  0;
-	out->v[ 5] = (2 * N) * tb;
-	out->v[ 6] =  0;
-	out->v[ 7] =  0;
+	out->v[ 0] = (2.0f * N) * rl;
+	out->v[ 1] =  0.0f;
+	out->v[ 2] =  0.0f;
+	out->v[ 3] =  0.0f;
+	out->v[ 4] =  0.0f;
+	out->v[ 5] = (2.0f * N) * tb;
+	out->v[ 6] =  0.0f;
+	out->v[ 7] =  0.0f;
 	out->v[ 8] = (R + L) * rl;
 	out->v[ 9] = (T + B) * tb;
 	out->v[10] = (F + N) * nf;
-	out->v[11] = -1;
-	out->v[12] =  0;
-	out->v[13] =  0;
-	out->v[14] = (2 * N * F) * nf;
-	out->v[15] =  0;
+	out->v[11] = -1.0f;
+	out->v[12] =  0.0f;
+	out->v[13] =  0.0f;
+	out->v[14] = (2.0f * N * F) * nf;
+	out->v[15] =  0.0f;
 	return out;
 }
 
@@ -388,42 +389,42 @@ mat4 *mat4_perspective(mat4 *out, float fov, float width, float height, float N,
 		f  = 1.0f / num_tan(fov * 0.5f),
 		nf = 1.0f / (N - F);
 	out->v[ 0] = f;
-	out->v[ 1] = 0;
-	out->v[ 2] = 0;
-	out->v[ 3] = 0;
-	out->v[ 4] = 0;
+	out->v[ 1] =  0.0f;
+	out->v[ 2] =  0.0f;
+	out->v[ 3] =  0.0f;
+	out->v[ 4] =  0.0f;
 	out->v[ 5] = f * width / height;
-	out->v[ 6] = 0;
-	out->v[ 7] = 0;
-	out->v[ 8] = 0;
-	out->v[ 9] = 0;
+	out->v[ 6] =  0.0f;
+	out->v[ 7] =  0.0f;
+	out->v[ 8] =  0.0f;
+	out->v[ 9] =  0.0f;
 	out->v[10] = (F + N) * nf;
-	out->v[11] = -1;
-	out->v[12] = 0;
-	out->v[13] = 0;
-	out->v[14] = (2 * F * N) * nf;
-	out->v[15] = 0;
+	out->v[11] = -1.0f;
+	out->v[12] =  0.0f;
+	out->v[13] =  0.0f;
+	out->v[14] = (2.0f * F * N) * nf;
+	out->v[15] =  0.0f;
 	return out;
 }
 
 mat4 *mat4_orthogonal(mat4 *out, float W, float H, float N, float F){
 	float nf = 1.0f / (N - F);
 	out->v[ 0] = 2.0f / W;
-	out->v[ 1] = 0;
-	out->v[ 2] = 0;
-	out->v[ 3] = 0;
-	out->v[ 4] = 0;
+	out->v[ 1] = 0.0f;
+	out->v[ 2] = 0.0f;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f;
 	out->v[ 5] = 2.0f / H;
-	out->v[ 6] = 0;
-	out->v[ 7] = 0;
-	out->v[ 8] = 0;
-	out->v[ 9] = 0;
+	out->v[ 6] = 0.0f;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f;
+	out->v[ 9] = 0.0f;
 	out->v[10] = 2.0f * nf;
-	out->v[11] = 0;
-	out->v[12] = 0;
-	out->v[13] = 0;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f;
+	out->v[13] = 0.0f;
 	out->v[14] = (N + F) * nf;
-	out->v[15] = 1;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -448,9 +449,9 @@ mat4 *mat4_lookat(mat4 *out, vec3 eye, vec3 position, vec3 up){
 		x2 * x2
 	);
 	if (len == 0.0f){
-		x0 = 0;
-		x1 = 0;
-		x2 = 0;
+		x0 = 0.0f;
+		x1 = 0.0f;
+		x2 = 0.0f;
 	}
 	else{
 		len = 1.0f / len;
@@ -467,9 +468,9 @@ mat4 *mat4_lookat(mat4 *out, vec3 eye, vec3 position, vec3 up){
 		y2 * y2
 	);
 	if (len == 0.0f){
-		y0 = 0;
-		y1 = 0;
-		y2 = 0;
+		y0 = 0.0f;
+		y1 = 0.0f;
+		y2 = 0.0f;
 	}
 	else{
 		len = 1.0f / len;
@@ -480,19 +481,19 @@ mat4 *mat4_lookat(mat4 *out, vec3 eye, vec3 position, vec3 up){
 	out->v[ 0] = x0;
 	out->v[ 1] = y0;
 	out->v[ 2] = z0;
-	out->v[ 3] = 0;
+	out->v[ 3] = 0.0f;
 	out->v[ 4] = x1;
 	out->v[ 5] = y1;
 	out->v[ 6] = z1;
-	out->v[ 7] = 0;
+	out->v[ 7] = 0.0f;
 	out->v[ 8] = x2;
 	out->v[ 9] = y2;
 	out->v[10] = z2;
-	out->v[11] = 0;
+	out->v[11] = 0.0f;
 	out->v[12] = -(x0 * ex + x1 * ey + x2 * ez);
 	out->v[13] = -(y0 * ex + y1 * ey + y2 * ez);
 	out->v[14] = -(z0 * ex + z1 * ey + z2 * ez);
-	out->v[15] = 1;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -510,22 +511,22 @@ mat4 *mat4_rottrans(mat4 *out, quat a, vec3 b){
 		awx = aw * ax2,
 		awy = aw * ay2,
 		awz = aw * az2;
-	out->v[ 0] = 1 - ayy - azz;
-	out->v[ 1] =     axy + awz;
-	out->v[ 2] =     axz - awy;
-	out->v[ 3] = 0;
-	out->v[ 4] =     axy - awz;
-	out->v[ 5] = 1 - axx - azz;
-	out->v[ 6] =     ayz + awx;
-	out->v[ 7] = 0;
-	out->v[ 8] =     axz + awy;
-	out->v[ 9] =     ayz - awx;
-	out->v[10] = 1 - axx - ayy;
-	out->v[11] = 0;
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        axy + awz;
+	out->v[ 2] =        axz - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        axy - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        ayz + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        axz + awy;
+	out->v[ 9] =        ayz - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
 	out->v[12] = b.v[0];
 	out->v[13] = b.v[1];
 	out->v[14] = b.v[2];
-	out->v[15] = 1;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -544,22 +545,22 @@ mat4 *mat4_rottransorigin(mat4 *out, quat a, vec3 b, vec3 origin){
 		awy = aw * ay2,
 		awz = aw * az2,
 		ox = origin.v[0], oy = origin.v[1], oz = origin.v[2];
-	out->v[ 0] = 1 - ayy - azz;
-	out->v[ 1] =     axy + awz;
-	out->v[ 2] =     axz - awy;
-	out->v[ 3] = 0;
-	out->v[ 4] =     axy - awz;
-	out->v[ 5] = 1 - axx - azz;
-	out->v[ 6] =     ayz + awx;
-	out->v[ 7] = 0;
-	out->v[ 8] =     axz + awy;
-	out->v[ 9] =     ayz - awx;
-	out->v[10] = 1 - axx - ayy;
-	out->v[11] = 0;
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        axy + awz;
+	out->v[ 2] =        axz - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        axy - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        ayz + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        axz + awy;
+	out->v[ 9] =        ayz - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
 	out->v[12] = b.v[0] + ox - (out->v[0] * ox + out->v[4] * oy + out->v[ 8] * oz);
 	out->v[13] = b.v[1] + oy - (out->v[1] * ox + out->v[5] * oy + out->v[ 9] * oz);
 	out->v[14] = b.v[2] + oz - (out->v[2] * ox + out->v[6] * oy + out->v[10] * oz);
-	out->v[15] = 1;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -619,7 +620,7 @@ mat4 *mat4_invert(mat4 *out, mat4 *a){
 		b11 = a22 * a33 - a23 * a32;
 	float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 	if (det == 0.0f)
-		return out;
+		return (mat4 *)0;
 	det = 1.0f / det;
 	out->v[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
 	out->v[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
