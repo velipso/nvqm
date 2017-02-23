@@ -22,44 +22,16 @@ static const float TAU = 6.28318530717958647692528676655900576839433879875021164
 // num (scalars)
 //
 
-static inline float num_min(float a, float b){
-	return a > b ? b : a;
+static inline float num_abs(float a){
+	return a < 0 ? -a : a;
 }
 
-static inline float num_abs(float n){
-	return n < 0 ? -n : n;
+static inline float num_acos(float a){
+	return acosf(a);
 }
 
-static inline float num_max(float a, float b){
-	return a > b ? a : b;
-}
-
-static inline float num_sqrt(float n){
-	return sqrtf(n);
-}
-
-static inline float num_pow(float a, float b){
-	return powf(a, b);
-}
-
-static inline float num_cos(float n){
-	return cosf(n);
-}
-
-static inline float num_sin(float n){
-	return sinf(n);
-}
-
-static inline float num_tan(float n){
-	return tanf(n);
-}
-
-static inline float num_acos(float n){
-	return acosf(n);
-}
-
-static inline float num_asin(float n){
-	return asinf(n);
+static inline float num_asin(float a){
+	return asinf(a);
 }
 
 static inline float num_atan2(float a, float b){
@@ -70,28 +42,56 @@ static inline float num_ceil(float a){
 	return ceilf(a);
 }
 
+static inline float num_clamp(float a, float min, float max){
+	return a < min ? min : (a > max ? max : a);
+}
+
+static inline float num_cos(float a){
+	return cosf(a);
+}
+
 static inline float num_floor(float a){
 	return floorf(a);
 }
 
-static inline float num_round(float a){
-	return roundf(a);
+static inline float num_lerp(float a, float b, float t){
+	return a + (b - a) * t;
 }
 
-static inline float num_log(float n){
-	return logf(n);
+static inline float num_log(float a){
+	return logf(a);
+}
+
+static inline float num_max(float a, float b){
+	return a > b ? a : b;
+}
+
+static inline float num_min(float a, float b){
+	return a > b ? b : a;
 }
 
 static inline float num_mod(float a, float b){
 	return fmodf(a, b);
 }
 
-static inline float num_clamp(float n, float min, float max){
-	return n < min ? min : (n > max ? max : n);
+static inline float num_pow(float a, float b){
+	return powf(a, b);
 }
 
-static inline float num_lerp(float a, float b, float t){
-	return a + (b - a) * t;
+static inline float num_round(float a){
+	return roundf(a);
+}
+
+static inline float num_sin(float a){
+	return sinf(a);
+}
+
+static inline float num_sqrt(float a){
+	return sqrtf(a);
+}
+
+static inline float num_tan(float a){
+	return tanf(a);
 }
 
 //

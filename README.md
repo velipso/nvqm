@@ -17,24 +17,24 @@ pass-by-value semantics, while `mat3` and `mat4` use pass-by-reference semantics
 const float TAU; // 2 * PI
 
 // num (scalars)
-float num_min  (float a, float b);
-float num_abs  (float n);
-float num_max  (float a, float b);
-float num_sqrt (float n);
-float num_pow  (float a, float b);
-float num_cos  (float n);
-float num_sin  (float n);
-float num_tan  (float n);
-float num_acos (float n);
-float num_asin (float n);
+float num_abs  (float a);
+float num_acos (float a);
+float num_asin (float a);
 float num_atan2(float a, float b);
 float num_ceil (float a);
+float num_clamp(float a, float min, float max);
+float num_cos  (float a);
 float num_floor(float a);
-float num_round(float a);
-float num_log  (float n);
-float num_mod  (float a, float b);
-float num_clamp(float n, float min, float max);
 float num_lerp (float a, float b, float t);
+float num_log  (float a);
+float num_max  (float a, float b);
+float num_min  (float a, float b);
+float num_mod  (float a, float b);
+float num_pow  (float a, float b);
+float num_round(float a);
+float num_sin  (float a);
+float num_sqrt (float a);
+float num_tan  (float a);
 
 // vec2
 vec2  vec2_neg      (vec2 a);

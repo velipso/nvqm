@@ -8,36 +8,8 @@ var TAU = 6.28318530717958647692528676655900576839433879875021164195;
 // num (scalars)
 //
 
-function num_min(a, b){
-	return a > b ? b : a;
-}
-
 function num_abs(n){
 	return n < 0 ? -n : n;
-}
-
-function num_max(a, b){
-	return a > b ? a : b;
-}
-
-function num_sqrt(n){
-	return Math.sqrt(n);
-}
-
-function num_pow(a, b){
-	return Math.pow(a, b);
-}
-
-function num_cos(n){
-	return Math.cos(n);
-}
-
-function num_sin(n){
-	return Math.sin(n);
-}
-
-function num_tan(n){
-	return Math.tan(n);
 }
 
 function num_acos(n){
@@ -56,28 +28,56 @@ function num_ceil(a){
 	return Math.ceil(a);
 }
 
+function num_clamp(n, min, max){
+	return n < min ? min : (n > max ? max : n);
+}
+
+function num_cos(n){
+	return Math.cos(n);
+}
+
 function num_floor(a){
 	return Math.floor(a);
 }
 
-function num_round(a){
-	return Math.round(a);
+function num_lerp(a, b, t){
+	return a + (b - a) * t;
 }
 
 function num_log(n){
 	return Math.log(n);
 }
 
+function num_max(a, b){
+	return a > b ? a : b;
+}
+
+function num_min(a, b){
+	return a > b ? b : a;
+}
+
 function num_mod(a, b){
 	return a % b;
 }
 
-function num_clamp(n, min, max){
-	return n < min ? min : (n > max ? max : n);
+function num_pow(a, b){
+	return Math.pow(a, b);
 }
 
-function num_lerp(a, b, t){
-	return a + (b - a) * t;
+function num_round(a){
+	return Math.round(a);
+}
+
+function num_sin(n){
+	return Math.sin(n);
+}
+
+function num_sqrt(n){
+	return Math.sqrt(n);
+}
+
+function num_tan(n){
+	return Math.tan(n);
 }
 
 //
@@ -1679,24 +1679,24 @@ if (typeof module !== 'undefined' && module.exports){
 		TAU: TAU,
 
 		// num (scalars)
-		num_min  : num_min  ,
 		num_abs  : num_abs  ,
-		num_max  : num_max  ,
-		num_sqrt : num_sqrt ,
-		num_pow  : num_pow  ,
-		num_cos  : num_cos  ,
-		num_sin  : num_sin  ,
-		num_tan  : num_tan  ,
 		num_acos : num_acos ,
 		num_asin : num_asin ,
 		num_atan2: num_atan2,
 		num_ceil : num_ceil ,
-		num_floor: num_floor,
-		num_round: num_round,
-		num_log  : num_log  ,
-		num_mod  : num_mod  ,
 		num_clamp: num_clamp,
+		num_cos  : num_cos  ,
+		num_floor: num_floor,
 		num_lerp : num_lerp ,
+		num_log  : num_log  ,
+		num_max  : num_max  ,
+		num_min  : num_min  ,
+		num_mod  : num_mod  ,
+		num_pow  : num_pow  ,
+		num_round: num_round,
+		num_sin  : num_sin  ,
+		num_sqrt : num_sqrt ,
+		num_tan  : num_tan  ,
 
 		// vec2
 		vec2_neg      : vec2_neg      ,
