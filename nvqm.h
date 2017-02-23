@@ -460,18 +460,116 @@ static inline float vec4_dist(vec4 a, vec4 b){
 // quat
 //
 
+static inline quat quat_naxisang(vec3 axis, float ang);
+static inline quat quat_axisang(vec3 axis, float ang){
+	return quat_naxisang(vec3_normal(axis), ang);
+}
+
+static inline quat quat_nbetween(vec3 from, vec3 to);
+static inline quat quat_between(vec3 from, vec3 to){
+	return quat_nbetween(vec3_normal(from), vec3_normal(to));
+}
+
+static inline float quat_dot(quat a, quat b){
+	return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2] + a.v[3] * b.v[3];
+}
+
+#define NVQM_QUAT_EULER_ROT      \
+	float a0 = rot.v[0] * 0.5f;  \
+	float a1 = rot.v[1] * 0.5f;  \
+	float a2 = rot.v[2] * 0.5f;  \
+	float cx = num_cos(a0);      \
+	float cy = num_cos(a1);      \
+	float cz = num_cos(a2);      \
+	float sx = num_sin(a0);      \
+	float sy = num_sin(a1);      \
+	float sz = num_sin(a2);
+
+static inline quat quat_euler_xyz(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz + cx * sy * sz,
+		cx * sy * cz - sx * cy * sz,
+		cx * cy * sz + sx * sy * cz,
+		cx * cy * cz - sx * sy * sz
+	};
+}
+
+static inline quat quat_euler_xzy(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz - cx * sy * sz,
+		cx * sy * cz - sx * cy * sz,
+		cx * cy * sz + sx * sy * cz,
+		cx * cy * cz + sx * sy * sz
+	};
+}
+
+static inline quat quat_euler_yxz(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz + cx * sy * sz,
+		cx * sy * cz - sx * cy * sz,
+		cx * cy * sz - sx * sy * cz,
+		cx * cy * cz + sx * sy * sz
+	};
+}
+
+static inline quat quat_euler_yzx(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz + cx * sy * sz,
+		cx * sy * cz + sx * cy * sz,
+		cx * cy * sz - sx * sy * cz,
+		cx * cy * cz - sx * sy * sz
+	};
+}
+
+static inline quat quat_euler_zxy(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz - cx * sy * sz,
+		cx * sy * cz + sx * cy * sz,
+		cx * cy * sz + sx * sy * cz,
+		cx * cy * cz - sx * sy * sz
+	};
+}
+
+static inline quat quat_euler_zyx(vec3 rot){
+	NVQM_QUAT_EULER_ROT
+	return (quat){
+		sx * cy * cz - cx * sy * sz,
+		cx * sy * cz + sx * cy * sz,
+		cx * cy * sz - sx * sy * cz,
+		cx * cy * cz + sx * sy * sz
+	};
+}
+
 static inline quat quat_identity(){
 	return (quat){ 0, 0, 0, 1 };
 }
 
-static inline quat quat_naxisang(vec3 axis, float ang){ // axis is normalized
-	ang *= 0.5f;
-	float s = num_sin(ang);
-	return (quat){ axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang) };
+static inline quat quat_invert(quat a){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
+	float dot = ax * ax + ay * ay + az * az + aw * aw;
+	float invDot = 0;
+	if (dot != 0.0f)
+		invDot = 1.0f / dot;
+	return (quat){
+		-ax * invDot,
+		-ay * invDot,
+		-az * invDot,
+		 aw * invDot
+	};
 }
 
-static inline quat quat_axisang(vec3 axis, float ang){
-	return quat_naxisang(vec3_normal(axis), ang);
+static inline quat quat_lerp(quat a, quat b, float t){
+	return (quat){
+		num_lerp(a.v[0], b.v[0], t),
+		num_lerp(a.v[1], b.v[1], t),
+		num_lerp(a.v[2], b.v[2], t),
+		num_lerp(a.v[3], b.v[3], t)
+	};
 }
 
 static inline quat quat_mul(quat a, quat b){
@@ -486,6 +584,35 @@ static inline quat quat_mul(quat a, quat b){
 	};
 }
 
+static inline quat quat_naxisang(vec3 axis, float ang){ // axis is normalized
+	ang *= 0.5f;
+	float s = num_sin(ang);
+	return (quat){ axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang) };
+}
+
+static inline quat quat_normal(quat a);
+static inline quat quat_nbetween(vec3 from, vec3 to){ // from/to are normalized
+	float r = vec3_dot(from, to) + 1.0f;
+	vec3 cross;
+	if (r < 0.000001f){
+		if (num_abs(from.v[0]) > num_abs(from.v[2]))
+			cross = (vec3){ -from.v[1], from.v[0], 0.0f };
+		else
+			cross = (vec3){ 0.0f, -from.v[2], from.v[1] };
+	}
+	else
+		cross = vec3_cross(from, to);
+	return quat_normal((quat){ cross.v[0], cross.v[1], cross.v[2], r });
+}
+
+static inline quat quat_neg(quat a){
+	return (quat){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+}
+
+static inline quat quat_nlerp(quat a, quat b, float t){
+	return quat_normal(quat_lerp(a, b, t));
+}
+
 static inline quat quat_normal(quat a){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
 	float len = ax * ax + ay * ay + az * az + aw * aw;
@@ -494,19 +621,6 @@ static inline quat quat_normal(quat a){
 		return (quat){ ax * len, ay * len, az * len, aw * len };
 	}
 	return a;
-}
-
-static inline quat quat_lerp(quat a, quat b, float t){
-	return (quat){
-		num_lerp(a.v[0], b.v[0], t),
-		num_lerp(a.v[1], b.v[1], t),
-		num_lerp(a.v[2], b.v[2], t),
-		num_lerp(a.v[3], b.v[3], t)
-	};
-}
-
-static inline quat quat_nlerp(quat a, quat b, float t){
-	return quat_normal(quat_lerp(a, b, t));
 }
 
 static inline quat quat_slerp(quat a, quat b, float t){
@@ -536,91 +650,6 @@ static inline quat quat_slerp(quat a, quat b, float t){
 		scale0 * ay + scale1 * by,
 		scale0 * az + scale1 * bz,
 		scale0 * aw + scale1 * bw
-	};
-}
-
-static inline quat quat_invert(quat a){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
-	float dot = ax * ax + ay * ay + az * az + aw * aw;
-	float invDot = 0;
-	if (dot != 0.0f)
-		invDot = 1.0f / dot;
-	return (quat){
-		-ax * invDot,
-		-ay * invDot,
-		-az * invDot,
-		 aw * invDot
-	};
-}
-
-#define NVQM_QUAT_EULER_ROT      \
-	float a0 = rot.v[0] * 0.5f;  \
-	float a1 = rot.v[1] * 0.5f;  \
-	float a2 = rot.v[2] * 0.5f;  \
-	float cx = num_cos(a0);      \
-	float cy = num_cos(a1);      \
-	float cz = num_cos(a2);      \
-	float sx = num_sin(a0);      \
-	float sy = num_sin(a1);      \
-	float sz = num_sin(a2);
-
-static inline quat quat_euler_xyz(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz + cx * sy * sz,
-		cx * sy * cz - sx * cy * sz,
-		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz - sx * sy * sz
-	};
-}
-
-static inline quat quat_euler_yxz(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz + cx * sy * sz,
-		cx * sy * cz - sx * cy * sz,
-		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz + sx * sy * sz
-	};
-}
-
-static inline quat quat_euler_zxy(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz - cx * sy * sz,
-		cx * sy * cz + sx * cy * sz,
-		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz - sx * sy * sz
-	};
-}
-
-static inline quat quat_euler_zyx(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz - cx * sy * sz,
-		cx * sy * cz + sx * cy * sz,
-		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz + sx * sy * sz
-	};
-}
-
-static inline quat quat_euler_yzx(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz + cx * sy * sz,
-		cx * sy * cz + sx * cy * sz,
-		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz - sx * sy * sz
-	};
-}
-
-static inline quat quat_euler_xzy(vec3 rot){
-	NVQM_QUAT_EULER_ROT
-	return (quat){
-		sx * cy * cz - cx * sy * sz,
-		cx * sy * cz - sx * cy * sz,
-		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz + sx * sy * sz
 	};
 }
 

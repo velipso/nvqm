@@ -105,21 +105,25 @@ float vec4_dist2    (vec4 a, vec4 b);
 float vec4_dist     (vec4 a, vec4 b);
 
 // quat
-quat quat_identity ();
-quat quat_naxisang (vec3 axis, float ang); // axis is normalized
-quat quat_axisang  (vec3 axis, float ang);
-quat quat_mul      (quat a, quat b);
-quat quat_normal   (quat a);
-quat quat_lerp     (quat a, quat b, float t);
-quat quat_nlerp    (quat a, quat b, float t);
-quat quat_slerp    (quat a, quat b, float t);
-quat quat_invert   (quat a);
-quat quat_euler_xyz(vec3 rot);
-quat quat_euler_yxz(vec3 rot);
-quat quat_euler_zxy(vec3 rot);
-quat quat_euler_zyx(vec3 rot);
-quat quat_euler_yzx(vec3 rot);
-quat quat_euler_xzy(vec3 rot);
+quat  quat_axisang  (vec3 axis, float ang);
+quat  quat_between  (vec3 from, vec3 to);
+float quat_dot      (quat a, quat b);
+quat  quat_euler_xyz(vec3 rot);
+quat  quat_euler_xzy(vec3 rot);
+quat  quat_euler_yxz(vec3 rot);
+quat  quat_euler_yzx(vec3 rot);
+quat  quat_euler_zxy(vec3 rot);
+quat  quat_euler_zyx(vec3 rot);
+quat  quat_identity ();
+quat  quat_invert   (quat a);
+quat  quat_lerp     (quat a, quat b, float t);
+quat  quat_mul      (quat a, quat b);
+quat  quat_naxisang (vec3 axis, float ang); // axis is normalized
+quat  quat_nbetween (vec3 from, vec3 to); // from/to are normalized
+quat  quat_neg      (quat a);
+quat  quat_nlerp    (quat a, quat b, float t);
+quat  quat_normal   (quat a);
+quat  quat_slerp    (quat a, quat b, float t);
 
 // mat2
 mat2  mat2_identity ();

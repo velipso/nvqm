@@ -299,7 +299,7 @@ function vec3_angle(a, b){
 	return vec3_nangle(vec3_normal(a), vec3_normal(b));
 }
 
-function vec3_length2(a){
+function vec3_len2(a){
 	var ax = a[0], ay = a[1], az = a[2];
 	return ax * ax + ay * ay + az * az;
 }
@@ -446,97 +446,16 @@ function vec4_dist(a, b){
 // quat
 //
 
-function quat_identity(){
-	return [0, 0, 0, 1];
-}
-
-function quat_naxisang(axis, ang){ // axis is normalized
-	ang *= 0.5;
-	var s = num_sin(ang);
-	return [axis[0] * s, axis[1] * s, axis[2] * s, num_cos(ang)];
-}
-
 function quat_axisang(axis, ang){
 	return quat_naxisang(vec3_normal(axis), ang);
 }
 
-function quat_mul(a, b){
-	var
-		ax = a[0], ay = a[1], az = a[2], aw = a[3],
-		bx = b[0], by = b[1], bz = b[2], bw = b[3];
-	return [
-		ax * bw + aw * bx + ay * bz - az * by,
-		ay * bw + aw * by + az * bx - ax * bz,
-		az * bw + aw * bz + ax * by - ay * bx,
-		aw * bw - ax * bx - ay * by - az * bz
-	];
+function quat_between(from, to){
+	return quat_nbetween(vec3_normal(from), vec3_normal(to));
 }
 
-function quat_normal(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var len = ax * ax + ay * ay + az * az + aw * aw;
-	if (len > 0){
-		len = 1 / num_sqrt(len);
-		return [ax * len, ay * len, az * len, aw * len];
-	}
-	return a;
-}
-
-function quat_lerp(a, b, t){
-	return [
-		num_lerp(a[0], b[0], t),
-		num_lerp(a[1], b[1], t),
-		num_lerp(a[2], b[2], t),
-		num_lerp(a[3], b[3], t)
-	];
-}
-
-function quat_nlerp(a, b, t){
-	return quat_normal(quat_lerp(a, b, t));
-}
-
-function quat_slerp(a, b, t){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var bx = b[0], by = b[1], bz = b[2], bw = b[3];
-	var omega, cosom, sinom, scale0, scale1;
-	cosom = ax * bx + ay * by + az * bz + aw * bw;
-	if (cosom < 0){
-		cosom = -cosom;
-		bx    = -bx   ;
-		by    = -by   ;
-		bz    = -bz   ;
-		bw    = -bw   ;
-	}
-	if ((1 - cosom) > 0.000001){
-		omega  = num_acos(cosom);
-		sinom  = num_sin(omega);
-		scale0 = num_sin((1 - t) * omega) / sinom;
-		scale1 = num_sin(t * omega) / sinom;
-	}
-	else {
-		scale0 = 1 - t;
-		scale1 = t;
-	}
-	return [
-		scale0 * ax + scale1 * bx,
-		scale0 * ay + scale1 * by,
-		scale0 * az + scale1 * bz,
-		scale0 * aw + scale1 * bw
-	];
-}
-
-function quat_invert(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var dot = ax * ax + ay * ay + az * az + aw * aw;
-	var invDot = 0;
-	if (dot != 0)
-		invDot = 1 / dot;
-	return [
-		-ax * invDot,
-		-ay * invDot,
-		-az * invDot,
-		 aw * invDot
-	];
+function quat_dot(a, b){
+	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
 }
 
 function quat_euler_xyz(rot){
@@ -557,6 +476,24 @@ function quat_euler_xyz(rot){
 	];
 }
 
+function quat_euler_xzy(rot){
+	var a0 = rot[0] * 0.5;
+	var a1 = rot[1] * 0.5;
+	var a2 = rot[2] * 0.5;
+	var cx = num_cos(a0);
+	var cy = num_cos(a1);
+	var cz = num_cos(a2);
+	var sx = num_sin(a0);
+	var sy = num_sin(a1);
+	var sz = num_sin(a2);
+	return [
+		sx * cy * cz - cx * sy * sz,
+		cx * sy * cz - sx * cy * sz,
+		cx * cy * sz + sx * sy * cz,
+		cx * cy * cz + sx * sy * sz
+	];
+}
+
 function quat_euler_yxz(rot){
 	var a0 = rot[0] * 0.5;
 	var a1 = rot[1] * 0.5;
@@ -572,6 +509,24 @@ function quat_euler_yxz(rot){
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
 		cx * cy * cz + sx * sy * sz
+	];
+}
+
+function quat_euler_yzx(rot){
+	var a0 = rot[0] * 0.5;
+	var a1 = rot[1] * 0.5;
+	var a2 = rot[2] * 0.5;
+	var cx = num_cos(a0);
+	var cy = num_cos(a1);
+	var cz = num_cos(a2);
+	var sx = num_sin(a0);
+	var sy = num_sin(a1);
+	var sz = num_sin(a2);
+	return [
+		sx * cy * cz + cx * sy * sz,
+		cx * sy * cz + sx * cy * sz,
+		cx * cy * sz - sx * sy * cz,
+		cx * cy * cz - sx * sy * sz
 	];
 }
 
@@ -611,39 +566,110 @@ function quat_euler_zyx(rot){
 	];
 }
 
-function quat_euler_yzx(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+function quat_identity(){
+	return [0, 0, 0, 1];
+}
+
+function quat_invert(a){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	var dot = ax * ax + ay * ay + az * az + aw * aw;
+	var invDot = 0;
+	if (dot != 0)
+		invDot = 1 / dot;
 	return [
-		sx * cy * cz + cx * sy * sz,
-		cx * sy * cz + sx * cy * sz,
-		cx * cy * sz - sx * sy * cz,
-		cx * cy * cz - sx * sy * sz
+		-ax * invDot,
+		-ay * invDot,
+		-az * invDot,
+		 aw * invDot
 	];
 }
 
-function quat_euler_xzy(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+function quat_lerp(a, b, t){
 	return [
-		sx * cy * cz - cx * sy * sz,
-		cx * sy * cz - sx * cy * sz,
-		cx * cy * sz + sx * sy * cz,
-		cx * cy * cz + sx * sy * sz
+		num_lerp(a[0], b[0], t),
+		num_lerp(a[1], b[1], t),
+		num_lerp(a[2], b[2], t),
+		num_lerp(a[3], b[3], t)
+	];
+}
+
+function quat_mul(a, b){
+	var
+		ax = a[0], ay = a[1], az = a[2], aw = a[3],
+		bx = b[0], by = b[1], bz = b[2], bw = b[3];
+	return [
+		ax * bw + aw * bx + ay * bz - az * by,
+		ay * bw + aw * by + az * bx - ax * bz,
+		az * bw + aw * bz + ax * by - ay * bx,
+		aw * bw - ax * bx - ay * by - az * bz
+	];
+}
+
+function quat_naxisang(axis, ang){ // axis is normalized
+	ang *= 0.5;
+	var s = num_sin(ang);
+	return [axis[0] * s, axis[1] * s, axis[2] * s, num_cos(ang)];
+}
+
+function quat_nbetween(from, to){ // from/to are normalized
+	var r = vec3_dot(from, to) + 1;
+	var cross;
+	if (r < 0.000001){
+		if (num_abs(from[0]) > num_abs(from[2]))
+			cross = [-from[1], from[0], 0];
+		else
+			cross = [0, -from[2], from[1]];
+	}
+	else
+		cross = vec3_cross(from, to);
+	return quat_normal([cross[0], cross[1], cross[2], r]);
+}
+
+function quat_neg(a){
+	return [-a[0], -a[1], -a[2], -a[3]];
+}
+
+function quat_nlerp(a, b, t){
+	return quat_normal(quat_lerp(a, b, t));
+}
+
+function quat_normal(a){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	var len = ax * ax + ay * ay + az * az + aw * aw;
+	if (len > 0){
+		len = 1 / num_sqrt(len);
+		return [ax * len, ay * len, az * len, aw * len];
+	}
+	return a;
+}
+
+function quat_slerp(a, b, t){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	var bx = b[0], by = b[1], bz = b[2], bw = b[3];
+	var omega, cosom, sinom, scale0, scale1;
+	cosom = ax * bx + ay * by + az * bz + aw * bw;
+	if (cosom < 0){
+		cosom = -cosom;
+		bx    = -bx   ;
+		by    = -by   ;
+		bz    = -bz   ;
+		bw    = -bw   ;
+	}
+	if ((1 - cosom) > 0.000001){
+		omega  = num_acos(cosom);
+		sinom  = num_sin(omega);
+		scale0 = num_sin((1 - t) * omega) / sinom;
+		scale1 = num_sin(t * omega) / sinom;
+	}
+	else {
+		scale0 = 1 - t;
+		scale1 = t;
+	}
+	return [
+		scale0 * ax + scale1 * bx,
+		scale0 * ay + scale1 * by,
+		scale0 * az + scale1 * bz,
+		scale0 * aw + scale1 * bw
 	];
 }
 
@@ -1645,4 +1671,182 @@ function mat4_translate(out, a, b){
 		out[15] = a03 * bx + a13 * by + a23 * bz + a[15];
 	}
 	return out;
+}
+
+if (typeof module !== 'undefined' && module.exports){
+	// inside node.js, so export functions
+	module.exports = {
+		TAU: TAU,
+
+		// num (scalars)
+		num_min  : num_min  ,
+		num_abs  : num_abs  ,
+		num_max  : num_max  ,
+		num_sqrt : num_sqrt ,
+		num_pow  : num_pow  ,
+		num_cos  : num_cos  ,
+		num_sin  : num_sin  ,
+		num_tan  : num_tan  ,
+		num_acos : num_acos ,
+		num_asin : num_asin ,
+		num_atan2: num_atan2,
+		num_ceil : num_ceil ,
+		num_floor: num_floor,
+		num_round: num_round,
+		num_log  : num_log  ,
+		num_mod  : num_mod  ,
+		num_clamp: num_clamp,
+		num_lerp : num_lerp ,
+
+		// vec2
+		vec2_neg      : vec2_neg      ,
+		vec2_add      : vec2_add      ,
+		vec2_sub      : vec2_sub      ,
+		vec2_mul      : vec2_mul      ,
+		vec2_div      : vec2_div      ,
+		vec2_min      : vec2_min      ,
+		vec2_max      : vec2_max      ,
+		vec2_clamp    : vec2_clamp    ,
+		vec2_lerp     : vec2_lerp     ,
+		vec2_inverse  : vec2_inverse  ,
+		vec2_normal   : vec2_normal   ,
+		vec2_scale    : vec2_scale    ,
+		vec2_applymat2: vec2_applymat2,
+		vec2_applymat3: vec2_applymat3,
+		vec2_applymat4: vec2_applymat4,
+		vec2_dot      : vec2_dot      ,
+		vec2_len2     : vec2_len2     ,
+		vec2_len      : vec2_len      ,
+		vec2_dist2    : vec2_dist2    ,
+		vec2_dist     : vec2_dist     ,
+
+		// vec3
+		vec3_neg      : vec3_neg      ,
+		vec3_add      : vec3_add      ,
+		vec3_sub      : vec3_sub      ,
+		vec3_mul      : vec3_mul      ,
+		vec3_div      : vec3_div      ,
+		vec3_min      : vec3_min      ,
+		vec3_max      : vec3_max      ,
+		vec3_clamp    : vec3_clamp    ,
+		vec3_lerp     : vec3_lerp     ,
+		vec3_inverse  : vec3_inverse  ,
+		vec3_normal   : vec3_normal   ,
+		vec3_cross    : vec3_cross    ,
+		vec3_scale    : vec3_scale    ,
+		vec3_applymat3: vec3_applymat3,
+		vec3_applymat4: vec3_applymat4,
+		vec3_applyquat: vec3_applyquat,
+		vec3_dot      : vec3_dot      ,
+		vec3_nangle   : vec3_nangle   ,
+		vec3_angle    : vec3_angle    ,
+		vec3_len2     : vec3_len2     ,
+		vec3_len      : vec3_len      ,
+		vec3_dist2    : vec3_dist2    ,
+		vec3_dist     : vec3_dist     ,
+
+		// vec4
+		vec4_neg      : vec4_neg      ,
+		vec4_add      : vec4_add      ,
+		vec4_sub      : vec4_sub      ,
+		vec4_mul      : vec4_mul      ,
+		vec4_div      : vec4_div      ,
+		vec4_min      : vec4_min      ,
+		vec4_max      : vec4_max      ,
+		vec4_clamp    : vec4_clamp    ,
+		vec4_lerp     : vec4_lerp     ,
+		vec4_inverse  : vec4_inverse  ,
+		vec4_normal   : vec4_normal   ,
+		vec4_scale    : vec4_scale    ,
+		vec4_applymat4: vec4_applymat4,
+		vec4_applyquat: vec4_applyquat,
+		vec4_dot      : vec4_dot      ,
+		vec4_len2     : vec4_len2     ,
+		vec4_len      : vec4_len      ,
+		vec4_dist2    : vec4_dist2    ,
+		vec4_dist     : vec4_dist     ,
+
+		// quat
+		quat_axisang  : quat_axisang  ,
+		quat_between  : quat_between  ,
+		quat_dot      : quat_dot      ,
+		quat_euler_xyz: quat_euler_xyz,
+		quat_euler_xzy: quat_euler_xzy,
+		quat_euler_yxz: quat_euler_yxz,
+		quat_euler_yzx: quat_euler_yzx,
+		quat_euler_zxy: quat_euler_zxy,
+		quat_euler_zyx: quat_euler_zyx,
+		quat_identity : quat_identity ,
+		quat_invert   : quat_invert   ,
+		quat_lerp     : quat_lerp     ,
+		quat_mul      : quat_mul      ,
+		quat_naxisang : quat_naxisang ,
+		quat_nbetween : quat_nbetween ,
+		quat_neg      : quat_neg      ,
+		quat_nlerp    : quat_nlerp    ,
+		quat_normal   : quat_normal   ,
+		quat_slerp    : quat_slerp    ,
+
+		// mat2
+		mat2_identity : mat2_identity ,
+		mat2_rotation : mat2_rotation ,
+		mat2_scaling  : mat2_scaling  ,
+		mat2_transpose: mat2_transpose,
+		mat2_invert   : mat2_invert   ,
+		mat2_adjoint  : mat2_adjoint  ,
+		mat2_det      : mat2_det      ,
+		mat2_add      : mat2_add      ,
+		mat2_sub      : mat2_sub      ,
+		mat2_mul      : mat2_mul      ,
+		mat2_compmul  : mat2_compmul  ,
+		mat2_rotate   : mat2_rotate   ,
+		mat2_scale    : mat2_scale    ,
+
+		// mat3x2
+		// TODO: this
+
+		// mat3
+		mat3_quat       : mat3_quat       ,
+		mat3_identity   : mat3_identity   ,
+		mat3_rotation   : mat3_rotation   ,
+		mat3_scaling    : mat3_scaling    ,
+		mat3_translation: mat3_translation,
+		mat3_copy       : mat3_copy       ,
+		mat3_transpose  : mat3_transpose  ,
+		mat3_invert     : mat3_invert     ,
+		mat3_adjoint    : mat3_adjoint    ,
+		mat3_det        : mat3_det        ,
+		mat3_add        : mat3_add        ,
+		mat3_sub        : mat3_sub        ,
+		mat3_mul        : mat3_mul        ,
+		mat3_compmul    : mat3_compmul    ,
+		mat3_rotate     : mat3_rotate     ,
+		mat3_scale      : mat3_scale      ,
+		mat3_translate  : mat3_translate  ,
+
+		// mat4
+		mat4_quat          : mat4_quat          ,
+		mat4_identity      : mat4_identity      ,
+		mat4_rotation      : mat4_rotation      ,
+		mat4_scaling       : mat4_scaling       ,
+		mat4_translation   : mat4_translation   ,
+		mat4_frustum       : mat4_frustum       ,
+		mat4_perspective   : mat4_perspective   ,
+		mat4_orthogonal    : mat4_orthogonal    ,
+		mat4_lookat        : mat4_lookat        ,
+		mat4_rottrans      : mat4_rottrans      ,
+		mat4_rottransorigin: mat4_rottransorigin,
+		mat4_copy          : mat4_copy          ,
+		mat4_transpose     : mat4_transpose     ,
+		mat4_invert        : mat4_invert        ,
+		mat4_adjoint       : mat4_adjoint       ,
+		mat4_det           : mat4_det           ,
+		mat4_add           : mat4_add           ,
+		mat4_sub           : mat4_sub           ,
+		mat4_mul           : mat4_mul           ,
+		mat4_compmul       : mat4_compmul       ,
+		mat4_rotate        : mat4_rotate        ,
+		mat4_scale         : mat4_scale         ,
+		mat4_translate     : mat4_translate
+	};
 }
