@@ -86,8 +86,8 @@ static inline float num_mod(float a, float b){
 	return fmodf(a, b);
 }
 
-static inline float num_clamp(float v, float min, float max){
-	return v < min ? min : (v > max ? max : v);
+static inline float num_clamp(float n, float min, float max){
+	return n < min ? min : (n > max ? max : n);
 }
 
 static inline float num_lerp(float a, float b, float t){
@@ -326,7 +326,7 @@ static inline float vec3_dist2(vec3 a, vec3 b){
 	return vec3_len2(vec3_sub(b, a));
 }
 
-static inline float vec3_distance(vec3 a, vec3 b){
+static inline float vec3_dist(vec3 a, vec3 b){
 	return num_sqrt(vec3_len2(vec3_sub(a, b)));
 }
 

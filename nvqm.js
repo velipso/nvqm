@@ -72,8 +72,8 @@ function num_mod(a, b){
 	return a % b;
 }
 
-function num_clamp(v, min, max){
-	return v < min ? min : (v > max ? max : v);
+function num_clamp(n, min, max){
+	return n < min ? min : (n > max ? max : n);
 }
 
 function num_lerp(a, b, t){

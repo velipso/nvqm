@@ -33,7 +33,7 @@ float num_floor(float a);
 float num_round(float a);
 float num_log  (float n);
 float num_mod  (float a, float b);
-float num_clamp(float v, float min, float max);
+float num_clamp(float n, float min, float max);
 float num_lerp (float a, float b, float t);
 
 // vec2
@@ -53,9 +53,9 @@ vec2  vec2_applymat2(vec2 a, mat2 b);
 vec2  vec2_applymat3(vec2 a, mat3 *b);
 vec2  vec2_applymat4(vec2 a, mat4 *b);
 float vec2_dot      (vec2 a, vec2 b);
-float vec2_len2     (vec2 a);
+float vec2_len2     (vec2 a); // length squared
 float vec2_len      (vec2 a);
-float vec2_dist2    (vec2 a, vec2 b);
+float vec2_dist2    (vec2 a, vec2 b); // distance squared
 float vec2_dist     (vec2 a, vec2 b);
 
 // vec3
@@ -81,7 +81,7 @@ float vec3_angle    (vec3 a, vec3 b);
 float vec3_len2     (vec3 a);
 float vec3_len      (vec3 a);
 float vec3_dist2    (vec3 a, vec3 b);
-float vec3_distance (vec3 a, vec3 b);
+float vec3_dist     (vec3 a, vec3 b);
 
 // vec4
 vec4  vec4_neg      (vec4 a);
