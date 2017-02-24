@@ -718,8 +718,8 @@ static inline mat2 mat2_scale(mat2 a, vec2 b){
 	return (mat2){ a0 * b0, a1 * b0, a2 * b1, a3 * b1 };
 }
 
-static inline mat2 mat2_scaling(vec2 s){
-	return (mat2){ s.v[0], 0, 0, s.v[1] };
+static inline mat2 mat2_scaling(vec2 a){
+	return (mat2){ a.v[0], 0, 0, a.v[1] };
 }
 
 static inline mat2 mat2_sub(mat2 a, mat2 b){

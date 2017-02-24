@@ -151,7 +151,7 @@ mat2  mat2_mul      (mat2 a, mat2 b);
 mat2  mat2_rotate   (mat2 a, float ang);
 mat2  mat2_rotation (float ang);
 mat2  mat2_scale    (mat2 a, vec2 b);
-mat2  mat2_scaling  (vec2 s);
+mat2  mat2_scaling  (vec2 a);
 mat2  mat2_sub      (mat2 a, mat2 b);
 mat2  mat2_transpose(mat2 a);
 

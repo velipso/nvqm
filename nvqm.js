@@ -731,8 +731,8 @@ function mat2_scale(a, b){
 	return [a0 * b0, a1 * b0, a2 * b1, a3 * b1];
 }
 
-function mat2_scaling(s){
-	return [s[0], 0, 0, s[1]];
+function mat2_scaling(a){
+	return [a[0], 0, 0, a[1]];
 }
 
 function mat2_sub(a, b){
