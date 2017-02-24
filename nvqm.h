@@ -665,21 +665,24 @@ static inline quat quat_slerp(quat a, quat b, float t){
 // mat2
 //
 
+static inline mat2 mat2_add(mat2 a, mat2 b){
+	return (mat2){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3] };
+}
+
+static inline mat2 mat2_adjoint(mat2 a){
+	return (mat2){ a.v[3], -a.v[1], -a.v[2], a.v[0] };
+}
+
+static inline mat2 mat2_compmul(mat2 a, mat2 b){
+	return (mat2){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
+}
+
+static inline float mat2_det(mat2 a){
+	return a.v[0] * a.v[3] - a.v[2] * a.v[1];
+}
+
 static inline mat2 mat2_identity(){
 	return (mat2){ 1, 0, 0, 1 };
-}
-
-static inline mat2 mat2_rotation(float ang){
-	float s = num_sin(ang), c = num_cos(ang);
-	return (mat2){ c, s, -s, c };
-}
-
-static inline mat2 mat2_scaling(vec2 s){
-	return (mat2){ s.v[0], 0, 0, s.v[1] };
-}
-
-static inline mat2 mat2_transpose(mat2 a){
-	return (mat2){ a.v[0], a.v[2], a.v[1], a.v[3] };
 }
 
 static inline mat2 mat2_invert(mat2 a){
@@ -691,22 +694,6 @@ static inline mat2 mat2_invert(mat2 a){
 	return (mat2){ a3 * det, -a1 * det, -a2 * det, a0 * det };
 }
 
-static inline mat2 mat2_adjoint(mat2 a){
-	return (mat2){ a.v[3], -a.v[1], -a.v[2], a.v[0] };
-}
-
-static inline float mat2_det(mat2 a){
-	return a.v[0] * a.v[3] - a.v[2] * a.v[1];
-}
-
-static inline mat2 mat2_add(mat2 a, mat2 b){
-	return (mat2){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3] };
-}
-
-static inline mat2 mat2_sub(mat2 a, mat2 b){
-	return (mat2){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
-}
-
 static inline mat2 mat2_mul(mat2 a, mat2 b){
 	float
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
@@ -714,13 +701,14 @@ static inline mat2 mat2_mul(mat2 a, mat2 b){
 	return (mat2){ a0 * b0 + a2 * b1, a1 * b0 + a3 * b1, a0 * b2 + a2 * b3, a1 * b2 + a3 * b3 };
 }
 
-static inline mat2 mat2_compmul(mat2 a, mat2 b){
-	return (mat2){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
-}
-
 static inline mat2 mat2_rotate(mat2 a, float ang){
 	float a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3], s = num_sin(ang), c = num_cos(ang);
 	return (mat2){ a0 * c + a2 * s, a1 * c + a3 * s, a0 * -s + a2 * c, a1 * -s + a3 * c };
+}
+
+static inline mat2 mat2_rotation(float ang){
+	float s = num_sin(ang), c = num_cos(ang);
+	return (mat2){ c, s, -s, c };
 }
 
 static inline mat2 mat2_scale(mat2 a, vec2 b){
@@ -728,6 +716,18 @@ static inline mat2 mat2_scale(mat2 a, vec2 b){
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
 		b0 = b.v[0], b1 = b.v[1];
 	return (mat2){ a0 * b0, a1 * b0, a2 * b1, a3 * b1 };
+}
+
+static inline mat2 mat2_scaling(vec2 s){
+	return (mat2){ s.v[0], 0, 0, s.v[1] };
+}
+
+static inline mat2 mat2_sub(mat2 a, mat2 b){
+	return (mat2){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
+}
+
+static inline mat2 mat2_transpose(mat2 a){
+	return (mat2){ a.v[0], a.v[2], a.v[1], a.v[3] };
 }
 
 //

@@ -678,21 +678,24 @@ function quat_slerp(a, b, t){
 // mat2
 //
 
+function mat2_add(a, b){
+	return [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]];
+}
+
+function mat2_adjoint(a){
+	return [a[3], -a[1], -a[2], a[0]];
+}
+
+function mat2_compmul(a, b){
+	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
+}
+
+function mat2_det(a){
+	return a[0] * a[3] - a[2] * a[1];
+}
+
 function mat2_identity(){
 	return [1, 0, 0, 1];
-}
-
-function mat2_rotation(ang){
-	var s = num_sin(ang), c = num_cos(ang);
-	return [c, s, -s, c];
-}
-
-function mat2_scaling(s){
-	return [s[0], 0, 0, s[1]];
-}
-
-function mat2_transpose(a){
-	return [a[0], a[2], a[1], a[3]];
 }
 
 function mat2_invert(a){
@@ -704,22 +707,6 @@ function mat2_invert(a){
 	return [a3 * det, -a1 * det, -a2 * det, a0 * det];
 }
 
-function mat2_adjoint(a){
-	return [a[3], -a[1], -a[2], a[0]];
-}
-
-function mat2_det(a){
-	return a[0] * a[3] - a[2] * a[1];
-}
-
-function mat2_add(a, b){
-	return [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]];
-}
-
-function mat2_sub(a, b){
-	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
-}
-
 function mat2_mul(a, b){
 	var
 		a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
@@ -727,13 +714,14 @@ function mat2_mul(a, b){
 	return [a0 * b0 + a2 * b1, a1 * b0 + a3 * b1, a0 * b2 + a2 * b3, a1 * b2 + a3 * b3];
 }
 
-function mat2_compmul(a, b){
-	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
-}
-
 function mat2_rotate(a, ang){
 	var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], s = num_sin(ang), c = num_cos(ang);
 	return [a0 * c + a2 * s, a1 * c + a3 * s, a0 * -s + a2 * c, a1 * -s + a3 * c];
+}
+
+function mat2_rotation(ang){
+	var s = num_sin(ang), c = num_cos(ang);
+	return [c, s, -s, c];
 }
 
 function mat2_scale(a, b){
@@ -741,6 +729,18 @@ function mat2_scale(a, b){
 		a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 		b0 = b[0], b1 = b[1];
 	return [a0 * b0, a1 * b0, a2 * b1, a3 * b1];
+}
+
+function mat2_scaling(s){
+	return [s[0], 0, 0, s[1]];
+}
+
+function mat2_sub(a, b){
+	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
+}
+
+function mat2_transpose(a){
+	return [a[0], a[2], a[1], a[3]];
 }
 
 //
@@ -1793,19 +1793,19 @@ if (typeof module !== 'undefined' && module.exports){
 		quat_slerp    : quat_slerp    ,
 
 		// mat2
-		mat2_identity : mat2_identity ,
-		mat2_rotation : mat2_rotation ,
-		mat2_scaling  : mat2_scaling  ,
-		mat2_transpose: mat2_transpose,
-		mat2_invert   : mat2_invert   ,
-		mat2_adjoint  : mat2_adjoint  ,
-		mat2_det      : mat2_det      ,
 		mat2_add      : mat2_add      ,
-		mat2_sub      : mat2_sub      ,
-		mat2_mul      : mat2_mul      ,
+		mat2_adjoint  : mat2_adjoint  ,
 		mat2_compmul  : mat2_compmul  ,
+		mat2_det      : mat2_det      ,
+		mat2_identity : mat2_identity ,
+		mat2_invert   : mat2_invert   ,
+		mat2_mul      : mat2_mul      ,
 		mat2_rotate   : mat2_rotate   ,
+		mat2_rotation : mat2_rotation ,
 		mat2_scale    : mat2_scale    ,
+		mat2_scaling  : mat2_scaling  ,
+		mat2_sub      : mat2_sub      ,
+		mat2_transpose: mat2_transpose,
 
 		// mat3x2
 		// TODO: this
