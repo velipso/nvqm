@@ -21,6 +21,7 @@ Implementations
   * Values are stored as a flat array of numbers
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
     return the `out` parameter
+  * `num.*` functions aren't included due to them being native to sink itself
 
 Functions
 ---------
