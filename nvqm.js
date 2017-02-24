@@ -751,12 +751,124 @@ function mat2_transpose(a){
 // mat3
 //
 
-function mat3_new(){
-	return [
-		1, 0, 0,
-		0, 1, 0,
-		0, 0, 1
-	];
+function mat3_add(out, a, b){
+	out[0] = a[0] + b[0];
+	out[1] = a[1] + b[1];
+	out[2] = a[2] + b[2];
+	out[3] = a[3] + b[3];
+	out[4] = a[4] + b[4];
+	out[5] = a[5] + b[5];
+	out[6] = a[6] + b[6];
+	out[7] = a[7] + b[7];
+	out[8] = a[8] + b[8];
+	return out;
+}
+
+function mat3_adjoint(out, a){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8];
+	out[0] = a11 * a22 - a12 * a21;
+	out[1] = a02 * a21 - a01 * a22;
+	out[2] = a01 * a12 - a02 * a11;
+	out[3] = a12 * a20 - a10 * a22;
+	out[4] = a00 * a22 - a02 * a20;
+	out[5] = a02 * a10 - a00 * a12;
+	out[6] = a10 * a21 - a11 * a20;
+	out[7] = a01 * a20 - a00 * a21;
+	out[8] = a00 * a11 - a01 * a10;
+	return out;
+}
+
+function mat3_compmul(out, a, b){
+	out[0] = a[0] * b[0];
+	out[1] = a[1] * b[1];
+	out[2] = a[2] * b[2];
+	out[3] = a[3] * b[3];
+	out[4] = a[4] * b[4];
+	out[5] = a[5] * b[5];
+	out[6] = a[6] * b[6];
+	out[7] = a[7] * b[7];
+	out[8] = a[8] * b[8];
+	return out;
+}
+
+function mat3_copy(out, a){
+	out[0] = a[0];
+	out[1] = a[1];
+	out[2] = a[2];
+	out[3] = a[3];
+	out[4] = a[4];
+	out[5] = a[5];
+	out[6] = a[6];
+	out[7] = a[7];
+	out[8] = a[8];
+	return out;
+}
+
+function mat3_det(a){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8];
+	return
+		a00 * ( a22 * a11 - a12 * a21) +
+		a01 * (-a22 * a10 + a12 * a20) +
+		a02 * ( a21 * a10 - a11 * a20);
+}
+
+function mat3_identity(out){
+	if (typeof out === 'undefined')
+		out = [];
+	out[0] = 1; out[1] = 0; out[2] = 0;
+	out[3] = 0; out[4] = 1; out[5] = 0;
+	out[6] = 0; out[7] = 0; out[8] = 1;
+	return out;
+}
+
+function mat3_invert(out, a){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8],
+		b01 =  a22 * a11 - a12 * a21,
+		b11 = -a22 * a10 + a12 * a20,
+		b21 =  a21 * a10 - a11 * a20;
+	var det = a00 * b01 + a01 * b11 + a02 * b21;
+	if (det == 0)
+		return null;
+	det = 1 / det;
+	out[0] =   b01                    * det;
+	out[1] = (-a22 * a01 + a02 * a21) * det;
+	out[2] = ( a12 * a01 - a02 * a11) * det;
+	out[3] =   b11                    * det;
+	out[4] = ( a22 * a00 - a02 * a20) * det;
+	out[5] = (-a12 * a00 + a02 * a10) * det;
+	out[6] =   b21                    * det;
+	out[7] = (-a21 * a00 + a01 * a20) * det;
+	out[8] = ( a11 * a00 - a01 * a10) * det;
+	return out;
+}
+
+function mat3_mul(out, a, b){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8],
+		b00 = b[0], b01 = b[1], b02 = b[2],
+		b10 = b[3], b11 = b[4], b12 = b[5],
+		b20 = b[6], b21 = b[7], b22 = b[8];
+	out[0] = b00 * a00 + b01 * a10 + b02 * a20;
+	out[1] = b00 * a01 + b01 * a11 + b02 * a21;
+	out[2] = b00 * a02 + b01 * a12 + b02 * a22;
+	out[3] = b10 * a00 + b11 * a10 + b12 * a20;
+	out[4] = b10 * a01 + b11 * a11 + b12 * a21;
+	out[5] = b10 * a02 + b11 * a12 + b12 * a22;
+	out[6] = b20 * a00 + b21 * a10 + b22 * a20;
+	out[7] = b20 * a01 + b21 * a11 + b22 * a21;
+	out[8] = b20 * a02 + b21 * a12 + b22 * a22;
+	return out;
 }
 
 function mat3_quat(out, a){
@@ -785,12 +897,21 @@ function mat3_quat(out, a){
 	return out;
 }
 
-function mat3_identity(out){
-	if (typeof out === 'undefined')
-		out = [];
-	out[0] = 1; out[1] = 0; out[2] = 0;
-	out[3] = 0; out[4] = 1; out[5] = 0;
-	out[6] = 0; out[7] = 0; out[8] = 1;
+function mat3_rotate(out, a, ang){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8],
+		s = num_sin(ang), c = num_cos(ang);
+	out[0] = c * a00 + s * a10;
+	out[1] = c * a01 + s * a11;
+	out[2] = c * a02 + s * a12;
+	out[3] = c * a10 - s * a00;
+	out[4] = c * a11 - s * a01;
+	out[5] = c * a12 - s * a02;
+	out[6] = a20;
+	out[7] = a21;
+	out[8] = a22;
 	return out;
 }
 
@@ -808,6 +929,20 @@ function mat3_rotation(out, ang){
     return out;
 }
 
+function mat3_scale(out, a, b){
+	var bx = b[0], by = b[1];
+	out[0] = bx * a[0];
+	out[1] = bx * a[1];
+	out[2] = bx * a[2];
+	out[3] = by * a[3];
+	out[4] = by * a[4];
+	out[5] = by * a[5];
+	out[6] = a[6];
+	out[7] = a[7];
+	out[8] = a[8];
+	return out;
+}
+
 function mat3_scaling(out, a){
     out[0] = a[0];
     out[1] = 0;
@@ -821,6 +956,37 @@ function mat3_scaling(out, a){
     return out;
 }
 
+function mat3_sub(out, a, b){
+	out[0] = a[0] - b[0];
+	out[1] = a[1] - b[1];
+	out[2] = a[2] - b[2];
+	out[3] = a[3] - b[3];
+	out[4] = a[4] - b[4];
+	out[5] = a[5] - b[5];
+	out[6] = a[6] - b[6];
+	out[7] = a[7] - b[7];
+	out[8] = a[8] - b[8];
+	return out;
+}
+
+function mat3_translate(out, a, b){
+	var
+		a00 = a[0], a01 = a[1], a02 = a[2],
+		a10 = a[3], a11 = a[4], a12 = a[5],
+		a20 = a[6], a21 = a[7], a22 = a[8],
+		bx = b[0], by = b[1];
+	out[0] = a00;
+	out[1] = a01;
+	out[2] = a02;
+	out[3] = a10;
+	out[4] = a11;
+	out[5] = a12;
+	out[6] = bx * a00 + by * a10 + a20;
+	out[7] = bx * a01 + by * a11 + a21;
+	out[8] = bx * a02 + by * a12 + a22;
+	return out;
+}
+
 function mat3_translation(out, a){
 	out[0] = 1;
 	out[1] = 0;
@@ -831,19 +997,6 @@ function mat3_translation(out, a){
 	out[6] = a[0];
 	out[7] = a[1];
 	out[8] = 1;
-	return out;
-}
-
-function mat3_copy(out, a){
-	out[0] = a[0];
-	out[1] = a[1];
-	out[2] = a[2];
-	out[3] = a[3];
-	out[4] = a[4];
-	out[5] = a[5];
-	out[6] = a[6];
-	out[7] = a[7];
-	out[8] = a[8];
 	return out;
 }
 
@@ -868,167 +1021,6 @@ function mat3_transpose(out, a){
 		out[7] = a[5];
 		out[8] = a[8];
 	}
-	return out;
-}
-
-function mat3_invert(out, a){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8],
-		b01 =  a22 * a11 - a12 * a21,
-		b11 = -a22 * a10 + a12 * a20,
-		b21 =  a21 * a10 - a11 * a20;
-	var det = a00 * b01 + a01 * b11 + a02 * b21;
-	if (det == 0)
-		return null;
-	det = 1 / det;
-	out[0] =   b01                    * det;
-	out[1] = (-a22 * a01 + a02 * a21) * det;
-	out[2] = ( a12 * a01 - a02 * a11) * det;
-	out[3] =   b11                    * det;
-	out[4] = ( a22 * a00 - a02 * a20) * det;
-	out[5] = (-a12 * a00 + a02 * a10) * det;
-	out[6] =   b21                    * det;
-	out[7] = (-a21 * a00 + a01 * a20) * det;
-	out[8] = ( a11 * a00 - a01 * a10) * det;
-	return out;
-}
-
-function mat3_adjoint(out, a){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8];
-	out[0] = a11 * a22 - a12 * a21;
-	out[1] = a02 * a21 - a01 * a22;
-	out[2] = a01 * a12 - a02 * a11;
-	out[3] = a12 * a20 - a10 * a22;
-	out[4] = a00 * a22 - a02 * a20;
-	out[5] = a02 * a10 - a00 * a12;
-	out[6] = a10 * a21 - a11 * a20;
-	out[7] = a01 * a20 - a00 * a21;
-	out[8] = a00 * a11 - a01 * a10;
-	return out;
-}
-
-function mat3_det(a){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8];
-	return
-		a00 * ( a22 * a11 - a12 * a21) +
-		a01 * (-a22 * a10 + a12 * a20) +
-		a02 * ( a21 * a10 - a11 * a20);
-}
-
-function mat3_add(out, a, b){
-	out[0] = a[0] + b[0];
-	out[1] = a[1] + b[1];
-	out[2] = a[2] + b[2];
-	out[3] = a[3] + b[3];
-	out[4] = a[4] + b[4];
-	out[5] = a[5] + b[5];
-	out[6] = a[6] + b[6];
-	out[7] = a[7] + b[7];
-	out[8] = a[8] + b[8];
-	return out;
-}
-
-function mat3_sub(out, a, b){
-	out[0] = a[0] - b[0];
-	out[1] = a[1] - b[1];
-	out[2] = a[2] - b[2];
-	out[3] = a[3] - b[3];
-	out[4] = a[4] - b[4];
-	out[5] = a[5] - b[5];
-	out[6] = a[6] - b[6];
-	out[7] = a[7] - b[7];
-	out[8] = a[8] - b[8];
-	return out;
-}
-
-function mat3_mul(out, a, b){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8],
-		b00 = b[0], b01 = b[1], b02 = b[2],
-		b10 = b[3], b11 = b[4], b12 = b[5],
-		b20 = b[6], b21 = b[7], b22 = b[8];
-	out[0] = b00 * a00 + b01 * a10 + b02 * a20;
-	out[1] = b00 * a01 + b01 * a11 + b02 * a21;
-	out[2] = b00 * a02 + b01 * a12 + b02 * a22;
-	out[3] = b10 * a00 + b11 * a10 + b12 * a20;
-	out[4] = b10 * a01 + b11 * a11 + b12 * a21;
-	out[5] = b10 * a02 + b11 * a12 + b12 * a22;
-	out[6] = b20 * a00 + b21 * a10 + b22 * a20;
-	out[7] = b20 * a01 + b21 * a11 + b22 * a21;
-	out[8] = b20 * a02 + b21 * a12 + b22 * a22;
-	return out;
-}
-
-function mat3_compmul(out, a, b){
-	out[0] = a[0] * b[0];
-	out[1] = a[1] * b[1];
-	out[2] = a[2] * b[2];
-	out[3] = a[3] * b[3];
-	out[4] = a[4] * b[4];
-	out[5] = a[5] * b[5];
-	out[6] = a[6] * b[6];
-	out[7] = a[7] * b[7];
-	out[8] = a[8] * b[8];
-	return out;
-}
-
-function mat3_rotate(out, a, ang){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8],
-		s = num_sin(ang), c = num_cos(ang);
-	out[0] = c * a00 + s * a10;
-	out[1] = c * a01 + s * a11;
-	out[2] = c * a02 + s * a12;
-	out[3] = c * a10 - s * a00;
-	out[4] = c * a11 - s * a01;
-	out[5] = c * a12 - s * a02;
-	out[6] = a20;
-	out[7] = a21;
-	out[8] = a22;
-	return out;
-}
-
-function mat3_scale(out, a, b){
-	var bx = b[0], by = b[1];
-	out[0] = bx * a[0];
-	out[1] = bx * a[1];
-	out[2] = bx * a[2];
-	out[3] = by * a[3];
-	out[4] = by * a[4];
-	out[5] = by * a[5];
-	out[6] = a[6];
-	out[7] = a[7];
-	out[8] = a[8];
-	return out;
-}
-
-function mat3_translate(out, a, b){
-	var
-		a00 = a[0], a01 = a[1], a02 = a[2],
-		a10 = a[3], a11 = a[4], a12 = a[5],
-		a20 = a[6], a21 = a[7], a22 = a[8],
-		bx = b[0], by = b[1];
-	out[0] = a00;
-	out[1] = a01;
-	out[2] = a02;
-	out[3] = a10;
-	out[4] = a11;
-	out[5] = a12;
-	out[6] = bx * a00 + by * a10 + a20;
-	out[7] = bx * a01 + by * a11 + a21;
-	out[8] = bx * a02 + by * a12 + a22;
 	return out;
 }
 
@@ -1811,23 +1803,23 @@ if (typeof module !== 'undefined' && module.exports){
 		// TODO: this
 
 		// mat3
-		mat3_quat       : mat3_quat       ,
-		mat3_identity   : mat3_identity   ,
-		mat3_rotation   : mat3_rotation   ,
-		mat3_scaling    : mat3_scaling    ,
-		mat3_translation: mat3_translation,
-		mat3_copy       : mat3_copy       ,
-		mat3_transpose  : mat3_transpose  ,
-		mat3_invert     : mat3_invert     ,
-		mat3_adjoint    : mat3_adjoint    ,
-		mat3_det        : mat3_det        ,
 		mat3_add        : mat3_add        ,
-		mat3_sub        : mat3_sub        ,
-		mat3_mul        : mat3_mul        ,
+		mat3_adjoint    : mat3_adjoint    ,
 		mat3_compmul    : mat3_compmul    ,
+		mat3_copy       : mat3_copy       ,
+		mat3_det        : mat3_det        ,
+		mat3_identity   : mat3_identity   ,
+		mat3_invert     : mat3_invert     ,
+		mat3_mul        : mat3_mul        ,
+		mat3_quat       : mat3_quat       ,
 		mat3_rotate     : mat3_rotate     ,
+		mat3_rotation   : mat3_rotation   ,
 		mat3_scale      : mat3_scale      ,
+		mat3_scaling    : mat3_scaling    ,
+		mat3_sub        : mat3_sub        ,
 		mat3_translate  : mat3_translate  ,
+		mat3_translation: mat3_translation,
+		mat3_transpose  : mat3_transpose  ,
 
 		// mat4
 		mat4_quat          : mat4_quat          ,

@@ -738,23 +738,23 @@ static inline mat2 mat2_transpose(mat2 a){
 // mat3
 //
 
-mat3 *mat3_quat       (mat3 *out, quat a);
-mat3 *mat3_identity   (mat3 *out);
-mat3 *mat3_rotation   (mat3 *out, float ang);
-mat3 *mat3_scaling    (mat3 *out, vec2 a);
-mat3 *mat3_translation(mat3 *out, vec2 a);
-mat3 *mat3_copy       (mat3 *out, mat3 *a);
-mat3 *mat3_transpose  (mat3 *out, mat3 *a);
-mat3 *mat3_invert     (mat3 *out, mat3 *a);
-mat3 *mat3_adjoint    (mat3 *out, mat3 *a);
-float mat3_det        (mat3 *a);
 mat3 *mat3_add        (mat3 *out, mat3 *a, mat3 *b);
-mat3 *mat3_sub        (mat3 *out, mat3 *a, mat3 *b);
-mat3 *mat3_mul        (mat3 *out, mat3 *a, mat3 *b);
+mat3 *mat3_adjoint    (mat3 *out, mat3 *a);
 mat3 *mat3_compmul    (mat3 *out, mat3 *a, mat3 *b);
+mat3 *mat3_copy       (mat3 *out, mat3 *a);
+float mat3_det        (mat3 *a);
+mat3 *mat3_identity   (mat3 *out);
+mat3 *mat3_invert     (mat3 *out, mat3 *a);
+mat3 *mat3_mul        (mat3 *out, mat3 *a, mat3 *b);
+mat3 *mat3_quat       (mat3 *out, quat a);
 mat3 *mat3_rotate     (mat3 *out, mat3 *a, float ang);
+mat3 *mat3_rotation   (mat3 *out, float ang);
 mat3 *mat3_scale      (mat3 *out, mat3 *a, vec2 b);
+mat3 *mat3_scaling    (mat3 *out, vec2 a);
+mat3 *mat3_sub        (mat3 *out, mat3 *a, mat3 *b);
 mat3 *mat3_translate  (mat3 *out, mat3 *a, vec2 b);
+mat3 *mat3_translation(mat3 *out, vec2 a);
+mat3 *mat3_transpose  (mat3 *out, mat3 *a);
 
 //
 // mat4

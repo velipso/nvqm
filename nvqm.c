@@ -8,76 +8,46 @@
 // mat3
 //
 
-mat3 *mat3_quat(mat3 *out, quat a){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		ayx = ay * ax2,
-		ayy = ay * ay2,
-		azx = az * ax2,
-		azy = az * ay2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2;
-	out->v[0] = 1.0f - ayy - azz;
-	out->v[1] =        ayx + awz;
-	out->v[2] =        azx - awy;
-	out->v[3] =        ayx - awz;
-	out->v[4] = 1.0f - axx - azz;
-	out->v[5] =        azy + awx;
-	out->v[6] =        azx + awy;
-	out->v[7] =        azy - awx;
-	out->v[8] = 1.0f - axx - ayy;
+mat3 *mat3_add(mat3 *out, mat3 *a, mat3 *b){
+	out->v[0] = a->v[0] + b->v[0];
+	out->v[1] = a->v[1] + b->v[1];
+	out->v[2] = a->v[2] + b->v[2];
+	out->v[3] = a->v[3] + b->v[3];
+	out->v[4] = a->v[4] + b->v[4];
+	out->v[5] = a->v[5] + b->v[5];
+	out->v[6] = a->v[6] + b->v[6];
+	out->v[7] = a->v[7] + b->v[7];
+	out->v[8] = a->v[8] + b->v[8];
 	return out;
 }
 
-mat3 *mat3_identity(mat3 *out){
-	out->v[0] = 1.0f; out->v[1] = 0.0f; out->v[2] = 0.0f;
-	out->v[3] = 0.0f; out->v[4] = 1.0f; out->v[5] = 0.0f;
-	out->v[6] = 0.0f; out->v[7] = 0.0f; out->v[8] = 1.0f;
+mat3 *mat3_adjoint(mat3 *out, mat3 *a){
+	float
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
+	out->v[0] = a11 * a22 - a12 * a21;
+	out->v[1] = a02 * a21 - a01 * a22;
+	out->v[2] = a01 * a12 - a02 * a11;
+	out->v[3] = a12 * a20 - a10 * a22;
+	out->v[4] = a00 * a22 - a02 * a20;
+	out->v[5] = a02 * a10 - a00 * a12;
+	out->v[6] = a10 * a21 - a11 * a20;
+	out->v[7] = a01 * a20 - a00 * a21;
+	out->v[8] = a00 * a11 - a01 * a10;
 	return out;
 }
 
-mat3 *mat3_rotation(mat3 *out, float ang){
-    float s = num_sin(ang), c = num_cos(ang);
-    out->v[0] =  c;
-    out->v[1] =  s;
-    out->v[2] =  0.0f;
-    out->v[3] = -s;
-    out->v[4] =  c;
-    out->v[5] =  0.0f;
-    out->v[6] =  0.0f;
-    out->v[7] =  0.0f;
-    out->v[8] =  1.0f;
-    return out;
-}
-
-mat3 *mat3_scaling(mat3 *out, vec2 a){
-    out->v[0] = a.v[0];
-    out->v[1] = 0.0f;
-    out->v[2] = 0.0f;
-    out->v[3] = 0.0f;
-    out->v[4] = a.v[1];
-    out->v[5] = 0.0f;
-    out->v[6] = 0.0f;
-    out->v[7] = 0.0f;
-    out->v[8] = 1.0f;
-    return out;
-}
-
-mat3 *mat3_translation(mat3 *out, vec2 a){
-	out->v[0] = 1.0f;
-	out->v[1] = 0.0f;
-	out->v[2] = 0.0f;
-	out->v[3] = 0.0f;
-	out->v[4] = 1.0f;
-	out->v[5] = 0.0f;
-	out->v[6] = a.v[0];
-	out->v[7] = a.v[1];
-	out->v[8] = 1.0f;
+mat3 *mat3_compmul(mat3 *out, mat3 *a, mat3 *b){
+	out->v[0] = a->v[0] * b->v[0];
+	out->v[1] = a->v[1] * b->v[1];
+	out->v[2] = a->v[2] * b->v[2];
+	out->v[3] = a->v[3] * b->v[3];
+	out->v[4] = a->v[4] * b->v[4];
+	out->v[5] = a->v[5] * b->v[5];
+	out->v[6] = a->v[6] * b->v[6];
+	out->v[7] = a->v[7] * b->v[7];
+	out->v[8] = a->v[8] * b->v[8];
 	return out;
 }
 
@@ -94,27 +64,21 @@ mat3 *mat3_copy(mat3 *out, mat3 *a){
 	return out;
 }
 
-mat3 *mat3_transpose(mat3 *out, mat3 *a){
-	if (out == a) {
-		float a01 = a->v[1], a02 = a->v[2], a12 = a->v[5];
-		out->v[1] = a->v[3];
-		out->v[2] = a->v[6];
-		out->v[3] = a01;
-		out->v[5] = a->v[7];
-		out->v[6] = a02;
-		out->v[7] = a12;
-	}
-	else{
-		out->v[0] = a->v[0];
-		out->v[1] = a->v[3];
-		out->v[2] = a->v[6];
-		out->v[3] = a->v[1];
-		out->v[4] = a->v[4];
-		out->v[5] = a->v[7];
-		out->v[6] = a->v[2];
-		out->v[7] = a->v[5];
-		out->v[8] = a->v[8];
-	}
+float mat3_det(mat3 *a){
+	float
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
+	return
+		a00 * ( a22 * a11 - a12 * a21) +
+		a01 * (-a22 * a10 + a12 * a20) +
+		a02 * ( a21 * a10 - a11 * a20);
+}
+
+mat3 *mat3_identity(mat3 *out){
+	out->v[0] = 1.0f; out->v[1] = 0.0f; out->v[2] = 0.0f;
+	out->v[3] = 0.0f; out->v[4] = 1.0f; out->v[5] = 0.0f;
+	out->v[6] = 0.0f; out->v[7] = 0.0f; out->v[8] = 1.0f;
 	return out;
 }
 
@@ -142,60 +106,6 @@ mat3 *mat3_invert(mat3 *out, mat3 *a){
 	return out;
 }
 
-mat3 *mat3_adjoint(mat3 *out, mat3 *a){
-	float
-		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
-		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
-		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
-	out->v[0] = a11 * a22 - a12 * a21;
-	out->v[1] = a02 * a21 - a01 * a22;
-	out->v[2] = a01 * a12 - a02 * a11;
-	out->v[3] = a12 * a20 - a10 * a22;
-	out->v[4] = a00 * a22 - a02 * a20;
-	out->v[5] = a02 * a10 - a00 * a12;
-	out->v[6] = a10 * a21 - a11 * a20;
-	out->v[7] = a01 * a20 - a00 * a21;
-	out->v[8] = a00 * a11 - a01 * a10;
-	return out;
-}
-
-float mat3_det(mat3 *a){
-	float
-		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
-		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
-		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
-	return
-		a00 * ( a22 * a11 - a12 * a21) +
-		a01 * (-a22 * a10 + a12 * a20) +
-		a02 * ( a21 * a10 - a11 * a20);
-}
-
-mat3 *mat3_add(mat3 *out, mat3 *a, mat3 *b){
-	out->v[0] = a->v[0] + b->v[0];
-	out->v[1] = a->v[1] + b->v[1];
-	out->v[2] = a->v[2] + b->v[2];
-	out->v[3] = a->v[3] + b->v[3];
-	out->v[4] = a->v[4] + b->v[4];
-	out->v[5] = a->v[5] + b->v[5];
-	out->v[6] = a->v[6] + b->v[6];
-	out->v[7] = a->v[7] + b->v[7];
-	out->v[8] = a->v[8] + b->v[8];
-	return out;
-}
-
-mat3 *mat3_sub(mat3 *out, mat3 *a, mat3 *b){
-	out->v[0] = a->v[0] - b->v[0];
-	out->v[1] = a->v[1] - b->v[1];
-	out->v[2] = a->v[2] - b->v[2];
-	out->v[3] = a->v[3] - b->v[3];
-	out->v[4] = a->v[4] - b->v[4];
-	out->v[5] = a->v[5] - b->v[5];
-	out->v[6] = a->v[6] - b->v[6];
-	out->v[7] = a->v[7] - b->v[7];
-	out->v[8] = a->v[8] - b->v[8];
-	return out;
-}
-
 mat3 *mat3_mul(mat3 *out, mat3 *a, mat3 *b){
 	float
 		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
@@ -216,16 +126,29 @@ mat3 *mat3_mul(mat3 *out, mat3 *a, mat3 *b){
 	return out;
 }
 
-mat3 *mat3_compmul(mat3 *out, mat3 *a, mat3 *b){
-	out->v[0] = a->v[0] * b->v[0];
-	out->v[1] = a->v[1] * b->v[1];
-	out->v[2] = a->v[2] * b->v[2];
-	out->v[3] = a->v[3] * b->v[3];
-	out->v[4] = a->v[4] * b->v[4];
-	out->v[5] = a->v[5] * b->v[5];
-	out->v[6] = a->v[6] * b->v[6];
-	out->v[7] = a->v[7] * b->v[7];
-	out->v[8] = a->v[8] * b->v[8];
+mat3 *mat3_quat(mat3 *out, quat a){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		ayx = ay * ax2,
+		ayy = ay * ay2,
+		azx = az * ax2,
+		azy = az * ay2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2;
+	out->v[0] = 1.0f - ayy - azz;
+	out->v[1] =        ayx + awz;
+	out->v[2] =        azx - awy;
+	out->v[3] =        ayx - awz;
+	out->v[4] = 1.0f - axx - azz;
+	out->v[5] =        azy + awx;
+	out->v[6] =        azx + awy;
+	out->v[7] =        azy - awx;
+	out->v[8] = 1.0f - axx - ayy;
 	return out;
 }
 
@@ -247,6 +170,20 @@ mat3 *mat3_rotate(mat3 *out, mat3 *a, float ang){
 	return out;
 }
 
+mat3 *mat3_rotation(mat3 *out, float ang){
+    float s = num_sin(ang), c = num_cos(ang);
+    out->v[0] =  c;
+    out->v[1] =  s;
+    out->v[2] =  0.0f;
+    out->v[3] = -s;
+    out->v[4] =  c;
+    out->v[5] =  0.0f;
+    out->v[6] =  0.0f;
+    out->v[7] =  0.0f;
+    out->v[8] =  1.0f;
+    return out;
+}
+
 mat3 *mat3_scale(mat3 *out, mat3 *a, vec2 b){
 	float bx = b.v[0], by = b.v[1];
 	out->v[0] = bx * a->v[0];
@@ -258,6 +195,32 @@ mat3 *mat3_scale(mat3 *out, mat3 *a, vec2 b){
 	out->v[6] = a->v[6];
 	out->v[7] = a->v[7];
 	out->v[8] = a->v[8];
+	return out;
+}
+
+mat3 *mat3_scaling(mat3 *out, vec2 a){
+    out->v[0] = a.v[0];
+    out->v[1] = 0.0f;
+    out->v[2] = 0.0f;
+    out->v[3] = 0.0f;
+    out->v[4] = a.v[1];
+    out->v[5] = 0.0f;
+    out->v[6] = 0.0f;
+    out->v[7] = 0.0f;
+    out->v[8] = 1.0f;
+    return out;
+}
+
+mat3 *mat3_sub(mat3 *out, mat3 *a, mat3 *b){
+	out->v[0] = a->v[0] - b->v[0];
+	out->v[1] = a->v[1] - b->v[1];
+	out->v[2] = a->v[2] - b->v[2];
+	out->v[3] = a->v[3] - b->v[3];
+	out->v[4] = a->v[4] - b->v[4];
+	out->v[5] = a->v[5] - b->v[5];
+	out->v[6] = a->v[6] - b->v[6];
+	out->v[7] = a->v[7] - b->v[7];
+	out->v[8] = a->v[8] - b->v[8];
 	return out;
 }
 
@@ -276,6 +239,43 @@ mat3 *mat3_translate(mat3 *out, mat3 *a, vec2 b){
 	out->v[6] = bx * a00 + by * a10 + a20;
 	out->v[7] = bx * a01 + by * a11 + a21;
 	out->v[8] = bx * a02 + by * a12 + a22;
+	return out;
+}
+
+mat3 *mat3_translation(mat3 *out, vec2 a){
+	out->v[0] = 1.0f;
+	out->v[1] = 0.0f;
+	out->v[2] = 0.0f;
+	out->v[3] = 0.0f;
+	out->v[4] = 1.0f;
+	out->v[5] = 0.0f;
+	out->v[6] = a.v[0];
+	out->v[7] = a.v[1];
+	out->v[8] = 1.0f;
+	return out;
+}
+
+mat3 *mat3_transpose(mat3 *out, mat3 *a){
+	if (out == a) {
+		float a01 = a->v[1], a02 = a->v[2], a12 = a->v[5];
+		out->v[1] = a->v[3];
+		out->v[2] = a->v[6];
+		out->v[3] = a01;
+		out->v[5] = a->v[7];
+		out->v[6] = a02;
+		out->v[7] = a12;
+	}
+	else{
+		out->v[0] = a->v[0];
+		out->v[1] = a->v[3];
+		out->v[2] = a->v[6];
+		out->v[3] = a->v[1];
+		out->v[4] = a->v[4];
+		out->v[5] = a->v[7];
+		out->v[6] = a->v[2];
+		out->v[7] = a->v[5];
+		out->v[8] = a->v[8];
+	}
 	return out;
 }
 
