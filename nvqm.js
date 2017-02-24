@@ -107,10 +107,6 @@ function vec2_clamp(a, min, max){
 	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
 }
 
-function vec2_dot(a, b){
-	return a[0] * b[0] + a[1] * b[1];
-}
-
 function vec2_dist(a, b){
 	return num_sqrt(vec2_len2(vec2_sub(a, b)));
 }
@@ -121,6 +117,10 @@ function vec2_dist2(a, b){
 
 function vec2_div(a, b){
 	return [a[0] / b[0], a[1] / b[1]];
+}
+
+function vec2_dot(a, b){
+	return a[0] * b[0] + a[1] * b[1];
 }
 
 function vec2_inverse(a){
@@ -178,73 +178,12 @@ function vec2_sub(a, b){
 // vec3
 //
 
-function vec3_neg(a){
-	return [-a[0], -a[1], -a[2]];
-}
-
 function vec3_add(a, b){
 	return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
 
-function vec3_sub(a, b){
-	return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-}
-
-function vec3_mul(a, b){
-	return [a[0] * b[0], a[1] * b[1], a[2] * b[2]];
-}
-
-function vec3_div(a, b){
-	return [a[0] / b[0], a[1] / b[1], a[2] / b[2]];
-}
-
-function vec3_min(a, b){
-	return [num_min(a[0], b[0]), num_min(a[1], b[1]), num_min(a[2], b[2])];
-}
-
-function vec3_max(a, b){
-	return [num_max(a[0], b[0]), num_max(a[1], b[1]), num_max(a[2], b[2])];
-}
-
-function vec3_clamp(a, min, max){
-	return [
-		num_clamp(a[0], min[0], max[0]),
-		num_clamp(a[1], min[1], max[1]),
-		num_clamp(a[2], min[2], max[2])
-	];
-}
-
-function vec3_lerp(a, b, t){
-	return [
-		num_lerp(a[0], b[0], t),
-		num_lerp(a[1], b[1], t),
-		num_lerp(a[2], b[2], t)
-	];
-}
-
-function vec3_inverse(a){
-	return [1 / a[0], 1 / a[1], 1 / a[2]];
-}
-
-function vec3_normal(a){
-	var ax = a[0], ay = a[1], az = a[2];
-	var len = ax * ax + ay * ay + az * az;
-	if (len > 0){
-		len = 1 / num_sqrt(len);
-		return [ax * len, ay * len, az * len];
-	}
-	return a;
-}
-
-function vec3_cross(a, b){
-	var
-		ax = a[0], ay = a[1], az = a[2],
-		bx = b[0], by = b[1], bz = b[2];
-	return [ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx];
-}
-
-function vec3_scale(a, s){
-	return [a[0] * s, a[1] * s, a[2] * s];
+function vec3_angle(a, b){
+	return vec3_nangle(vec3_normal(a), vec3_normal(b));
 }
 
 function vec3_applymat3(a, b){
@@ -284,8 +223,68 @@ function vec3_applyquat(a, b){
 	];
 }
 
+function vec3_clamp(a, min, max){
+	return [
+		num_clamp(a[0], min[0], max[0]),
+		num_clamp(a[1], min[1], max[1]),
+		num_clamp(a[2], min[2], max[2])
+	];
+}
+
+function vec3_cross(a, b){
+	var
+		ax = a[0], ay = a[1], az = a[2],
+		bx = b[0], by = b[1], bz = b[2];
+	return [ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx];
+}
+
+function vec3_dist(a, b){
+	return num_sqrt(vec3_len2(vec3_sub(a, b)));
+}
+
+function vec3_dist2(a, b){
+	return vec3_len2(vec3_sub(b, a));
+}
+
+function vec3_div(a, b){
+	return [a[0] / b[0], a[1] / b[1], a[2] / b[2]];
+}
+
 function vec3_dot(a, b){
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function vec3_inverse(a){
+	return [1 / a[0], 1 / a[1], 1 / a[2]];
+}
+
+function vec3_len(a){
+	return num_sqrt(vec3_len2(a));
+}
+
+function vec3_len2(a){
+	var ax = a[0], ay = a[1], az = a[2];
+	return ax * ax + ay * ay + az * az;
+}
+
+function vec3_lerp(a, b, t){
+	return [
+		num_lerp(a[0], b[0], t),
+		num_lerp(a[1], b[1], t),
+		num_lerp(a[2], b[2], t)
+	];
+}
+
+function vec3_max(a, b){
+	return [num_max(a[0], b[0]), num_max(a[1], b[1]), num_max(a[2], b[2])];
+}
+
+function vec3_min(a, b){
+	return [num_min(a[0], b[0]), num_min(a[1], b[1]), num_min(a[2], b[2])];
+}
+
+function vec3_mul(a, b){
+	return [a[0] * b[0], a[1] * b[1], a[2] * b[2]];
 }
 
 function vec3_nangle(a, b){ // a and b are normalized
@@ -295,25 +294,26 @@ function vec3_nangle(a, b){ // a and b are normalized
 	return num_acos(c);
 }
 
-function vec3_angle(a, b){
-	return vec3_nangle(vec3_normal(a), vec3_normal(b));
+function vec3_neg(a){
+	return [-a[0], -a[1], -a[2]];
 }
 
-function vec3_len2(a){
+function vec3_normal(a){
 	var ax = a[0], ay = a[1], az = a[2];
-	return ax * ax + ay * ay + az * az;
+	var len = ax * ax + ay * ay + az * az;
+	if (len > 0){
+		len = 1 / num_sqrt(len);
+		return [ax * len, ay * len, az * len];
+	}
+	return a;
 }
 
-function vec3_len(a){
-	return num_sqrt(vec3_len2(a));
+function vec3_scale(a, s){
+	return [a[0] * s, a[1] * s, a[2] * s];
 }
 
-function vec3_dist2(a, b){
-	return vec3_len2(vec3_sub(b, a));
-}
-
-function vec3_dist(a, b){
-	return num_sqrt(vec3_len2(vec3_sub(a, b)));
+function vec3_sub(a, b){
+	return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 }
 
 //
@@ -1708,10 +1708,10 @@ if (typeof module !== 'undefined' && module.exports){
 		vec2_applymat3: vec2_applymat3,
 		vec2_applymat4: vec2_applymat4,
 		vec2_clamp    : vec2_clamp    ,
-		vec2_dot      : vec2_dot      ,
 		vec2_dist     : vec2_dist     ,
 		vec2_dist2    : vec2_dist2    ,
 		vec2_div      : vec2_div      ,
+		vec2_dot      : vec2_dot      ,
 		vec2_inverse  : vec2_inverse  ,
 		vec2_len      : vec2_len      ,
 		vec2_len2     : vec2_len2     ,
@@ -1725,29 +1725,29 @@ if (typeof module !== 'undefined' && module.exports){
 		vec2_sub      : vec2_sub      ,
 
 		// vec3
-		vec3_neg      : vec3_neg      ,
 		vec3_add      : vec3_add      ,
-		vec3_sub      : vec3_sub      ,
-		vec3_mul      : vec3_mul      ,
-		vec3_div      : vec3_div      ,
-		vec3_min      : vec3_min      ,
-		vec3_max      : vec3_max      ,
-		vec3_clamp    : vec3_clamp    ,
-		vec3_lerp     : vec3_lerp     ,
-		vec3_inverse  : vec3_inverse  ,
-		vec3_normal   : vec3_normal   ,
-		vec3_cross    : vec3_cross    ,
-		vec3_scale    : vec3_scale    ,
+		vec3_angle    : vec3_angle    ,
 		vec3_applymat3: vec3_applymat3,
 		vec3_applymat4: vec3_applymat4,
 		vec3_applyquat: vec3_applyquat,
-		vec3_dot      : vec3_dot      ,
-		vec3_nangle   : vec3_nangle   ,
-		vec3_angle    : vec3_angle    ,
-		vec3_len2     : vec3_len2     ,
-		vec3_len      : vec3_len      ,
-		vec3_dist2    : vec3_dist2    ,
+		vec3_clamp    : vec3_clamp    ,
+		vec3_cross    : vec3_cross    ,
+		vec3_div      : vec3_div      ,
 		vec3_dist     : vec3_dist     ,
+		vec3_dist2    : vec3_dist2    ,
+		vec3_dot      : vec3_dot      ,
+		vec3_inverse  : vec3_inverse  ,
+		vec3_len      : vec3_len      ,
+		vec3_len2     : vec3_len2     ,
+		vec3_lerp     : vec3_lerp     ,
+		vec3_max      : vec3_max      ,
+		vec3_min      : vec3_min      ,
+		vec3_mul      : vec3_mul      ,
+		vec3_nangle   : vec3_nangle   ,
+		vec3_neg      : vec3_neg      ,
+		vec3_normal   : vec3_normal   ,
+		vec3_scale    : vec3_scale    ,
+		vec3_sub      : vec3_sub      ,
 
 		// vec4
 		vec4_neg      : vec4_neg      ,

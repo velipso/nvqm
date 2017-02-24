@@ -121,10 +121,6 @@ static inline vec2 vec2_clamp(vec2 a, vec2 min, vec2 max){
 	return (vec2){ num_clamp(a.v[0], min.v[0], max.v[0]), num_clamp(a.v[1], min.v[1], max.v[1]) };
 }
 
-static inline float vec2_dot(vec2 a, vec2 b){
-	return a.v[0] * b.v[0] + a.v[1] * b.v[1];
-}
-
 static inline float vec2_len2(vec2 a);
 static inline vec2 vec2_sub(vec2 a, vec2 b);
 static inline float vec2_dist(vec2 a, vec2 b){
@@ -137,6 +133,10 @@ static inline float vec2_dist2(vec2 a, vec2 b){
 
 static inline vec2 vec2_div(vec2 a, vec2 b){
 	return (vec2){ a.v[0] / b.v[0], a.v[1] / b.v[1] };
+}
+
+static inline float vec2_dot(vec2 a, vec2 b){
+	return a.v[0] * b.v[0] + a.v[1] * b.v[1];
 }
 
 static inline vec2 vec2_inverse(vec2 a){
@@ -194,73 +194,14 @@ static inline vec2 vec2_sub(vec2 a, vec2 b){
 // vec3
 //
 
-static inline vec3 vec3_neg(vec3 a){
-	return (vec3){ -a.v[0], -a.v[1], -a.v[2] };
-}
-
 static inline vec3 vec3_add(vec3 a, vec3 b){
 	return (vec3){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2] };
 }
 
-static inline vec3 vec3_sub(vec3 a, vec3 b){
-	return (vec3){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2] };
-}
-
-static inline vec3 vec3_mul(vec3 a, vec3 b){
-	return (vec3){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2] };
-}
-
-static inline vec3 vec3_div(vec3 a, vec3 b){
-	return (vec3){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2] };
-}
-
-static inline vec3 vec3_min(vec3 a, vec3 b){
-	return (vec3){ num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]), num_min(a.v[2], b.v[2]) };
-}
-
-static inline vec3 vec3_max(vec3 a, vec3 b){
-	return (vec3){ num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]), num_max(a.v[2], b.v[2]) };
-}
-
-static inline vec3 vec3_clamp(vec3 a, vec3 min, vec3 max){
-	return (vec3){
-		num_clamp(a.v[0], min.v[0], max.v[0]),
-		num_clamp(a.v[1], min.v[1], max.v[1]),
-		num_clamp(a.v[2], min.v[2], max.v[2])
-	};
-}
-
-static inline vec3 vec3_lerp(vec3 a, vec3 b, float t){
-	return (vec3){
-		num_lerp(a.v[0], b.v[0], t),
-		num_lerp(a.v[1], b.v[1], t),
-		num_lerp(a.v[2], b.v[2], t)
-	};
-}
-
-static inline vec3 vec3_inverse(vec3 a){
-	return (vec3){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2] };
-}
-
-static inline vec3 vec3_normal(vec3 a){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2];
-	float len = ax * ax + ay * ay + az * az;
-	if (len > 0.0f){
-		len = 1.0f / num_sqrt(len);
-		return (vec3){ ax * len, ay * len, az * len };
-	}
-	return a;
-}
-
-static inline vec3 vec3_cross(vec3 a, vec3 b){
-	float
-		ax = a.v[0], ay = a.v[1], az = a.v[2],
-		bx = b.v[0], by = b.v[1], bz = b.v[2];
-	return (vec3){ ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx };
-}
-
-static inline vec3 vec3_scale(vec3 a, float s){
-	return (vec3){ a.v[0] * s, a.v[1] * s, a.v[2] * s };
+static inline float vec3_nangle(vec3 a, vec3 b);
+static inline vec3 vec3_normal(vec3 a);
+static inline float vec3_angle(vec3 a, vec3 b){
+	return vec3_nangle(vec3_normal(a), vec3_normal(b));
 }
 
 static inline vec3 vec3_applymat3(vec3 a, mat3 *b){
@@ -300,8 +241,71 @@ static inline vec3 vec3_applyquat(vec3 a, quat b){
 	};
 }
 
+static inline vec3 vec3_clamp(vec3 a, vec3 min, vec3 max){
+	return (vec3){
+		num_clamp(a.v[0], min.v[0], max.v[0]),
+		num_clamp(a.v[1], min.v[1], max.v[1]),
+		num_clamp(a.v[2], min.v[2], max.v[2])
+	};
+}
+
+static inline vec3 vec3_cross(vec3 a, vec3 b){
+	float
+		ax = a.v[0], ay = a.v[1], az = a.v[2],
+		bx = b.v[0], by = b.v[1], bz = b.v[2];
+	return (vec3){ ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx };
+}
+
+static inline float vec3_len2(vec3 a);
+static inline vec3 vec3_sub(vec3 a, vec3 b);
+static inline float vec3_dist(vec3 a, vec3 b){
+	return num_sqrt(vec3_len2(vec3_sub(a, b)));
+}
+
+static inline float vec3_dist2(vec3 a, vec3 b){
+	return vec3_len2(vec3_sub(b, a));
+}
+
+static inline vec3 vec3_div(vec3 a, vec3 b){
+	return (vec3){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2] };
+}
+
 static inline float vec3_dot(vec3 a, vec3 b){
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2];
+}
+
+static inline vec3 vec3_inverse(vec3 a){
+	return (vec3){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2] };
+}
+
+static inline float vec3_len2(vec3 a);
+static inline float vec3_len(vec3 a){
+	return num_sqrt(vec3_len2(a));
+}
+
+static inline float vec3_len2(vec3 a){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2];
+	return ax * ax + ay * ay + az * az;
+}
+
+static inline vec3 vec3_lerp(vec3 a, vec3 b, float t){
+	return (vec3){
+		num_lerp(a.v[0], b.v[0], t),
+		num_lerp(a.v[1], b.v[1], t),
+		num_lerp(a.v[2], b.v[2], t)
+	};
+}
+
+static inline vec3 vec3_max(vec3 a, vec3 b){
+	return (vec3){ num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]), num_max(a.v[2], b.v[2]) };
+}
+
+static inline vec3 vec3_min(vec3 a, vec3 b){
+	return (vec3){ num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]), num_min(a.v[2], b.v[2]) };
+}
+
+static inline vec3 vec3_mul(vec3 a, vec3 b){
+	return (vec3){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2] };
 }
 
 static inline float vec3_nangle(vec3 a, vec3 b){ // a and b are normalized
@@ -311,25 +315,26 @@ static inline float vec3_nangle(vec3 a, vec3 b){ // a and b are normalized
 	return num_acos(c);
 }
 
-static inline float vec3_angle(vec3 a, vec3 b){
-	return vec3_nangle(vec3_normal(a), vec3_normal(b));
+static inline vec3 vec3_neg(vec3 a){
+	return (vec3){ -a.v[0], -a.v[1], -a.v[2] };
 }
 
-static inline float vec3_len2(vec3 a){
+static inline vec3 vec3_normal(vec3 a){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2];
-	return ax * ax + ay * ay + az * az;
+	float len = ax * ax + ay * ay + az * az;
+	if (len > 0.0f){
+		len = 1.0f / num_sqrt(len);
+		return (vec3){ ax * len, ay * len, az * len };
+	}
+	return a;
 }
 
-static inline float vec3_len(vec3 a){
-	return num_sqrt(vec3_len2(a));
+static inline vec3 vec3_scale(vec3 a, float s){
+	return (vec3){ a.v[0] * s, a.v[1] * s, a.v[2] * s };
 }
 
-static inline float vec3_dist2(vec3 a, vec3 b){
-	return vec3_len2(vec3_sub(b, a));
-}
-
-static inline float vec3_dist(vec3 a, vec3 b){
-	return num_sqrt(vec3_len2(vec3_sub(a, b)));
+static inline vec3 vec3_sub(vec3 a, vec3 b){
+	return (vec3){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2] };
 }
 
 //

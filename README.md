@@ -42,10 +42,10 @@ vec2  vec2_applymat2(vec2 a, mat2 b);
 vec2  vec2_applymat3(vec2 a, mat3 *b);
 vec2  vec2_applymat4(vec2 a, mat4 *b);
 vec2  vec2_clamp    (vec2 a, vec2 min, vec2 max);
-float vec2_dot      (vec2 a, vec2 b);
 float vec2_dist     (vec2 a, vec2 b);
 float vec2_dist2    (vec2 a, vec2 b); // distance squared
 vec2  vec2_div      (vec2 a, vec2 b);
+float vec2_dot      (vec2 a, vec2 b);
 vec2  vec2_inverse  (vec2 a);
 float vec2_len      (vec2 a);
 float vec2_len2     (vec2 a); // length squared
@@ -59,29 +59,29 @@ vec2  vec2_scale    (vec2 a, float s);
 vec2  vec2_sub      (vec2 a, vec2 b);
 
 // vec3
-vec3  vec3_neg      (vec3 a);
 vec3  vec3_add      (vec3 a, vec3 b);
-vec3  vec3_sub      (vec3 a, vec3 b);
-vec3  vec3_mul      (vec3 a, vec3 b);
-vec3  vec3_div      (vec3 a, vec3 b);
-vec3  vec3_min      (vec3 a, vec3 b);
-vec3  vec3_max      (vec3 a, vec3 b);
-vec3  vec3_clamp    (vec3 a, vec3 min, vec3 max);
-vec3  vec3_lerp     (vec3 a, vec3 b, float t);
-vec3  vec3_inverse  (vec3 a);
-vec3  vec3_normal   (vec3 a);
-vec3  vec3_cross    (vec3 a, vec3 b);
-vec3  vec3_scale    (vec3 a, float s);
+float vec3_angle    (vec3 a, vec3 b);
 vec3  vec3_applymat3(vec3 a, mat3 *b);
 vec3  vec3_applymat4(vec3 a, mat4 *b);
 vec3  vec3_applyquat(vec3 a, quat b);
-float vec3_dot      (vec3 a, vec3 b);
-float vec3_nangle   (vec3 a, vec3 b); // a and b are normalized
-float vec3_angle    (vec3 a, vec3 b);
-float vec3_len2     (vec3 a);
-float vec3_len      (vec3 a);
-float vec3_dist2    (vec3 a, vec3 b);
+vec3  vec3_clamp    (vec3 a, vec3 min, vec3 max);
+vec3  vec3_cross    (vec3 a, vec3 b);
 float vec3_dist     (vec3 a, vec3 b);
+float vec3_dist2    (vec3 a, vec3 b);
+vec3  vec3_div      (vec3 a, vec3 b);
+float vec3_dot      (vec3 a, vec3 b);
+vec3  vec3_inverse  (vec3 a);
+float vec3_len      (vec3 a);
+float vec3_len2     (vec3 a);
+vec3  vec3_lerp     (vec3 a, vec3 b, float t);
+vec3  vec3_max      (vec3 a, vec3 b);
+vec3  vec3_min      (vec3 a, vec3 b);
+vec3  vec3_mul      (vec3 a, vec3 b);
+float vec3_nangle   (vec3 a, vec3 b); // a and b are normalized
+vec3  vec3_neg      (vec3 a);
+vec3  vec3_normal   (vec3 a);
+vec3  vec3_scale    (vec3 a, float s);
+vec3  vec3_sub      (vec3 a, vec3 b);
 
 // vec4
 vec4  vec4_neg      (vec4 a);
