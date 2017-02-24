@@ -278,7 +278,6 @@ static inline vec3 vec3_inverse(vec3 a){
 	return (vec3){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2] };
 }
 
-static inline float vec3_len2(vec3 a);
 static inline float vec3_len(vec3 a){
 	return num_sqrt(vec3_len2(a));
 }
@@ -341,78 +340,8 @@ static inline vec3 vec3_sub(vec3 a, vec3 b){
 // vec4
 //
 
-static inline vec4 vec4_neg(vec4 a){
-	return (vec4){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
-}
-
 static inline vec4 vec4_add(vec4 a, vec4 b){
 	return (vec4){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3] };
-}
-
-static inline vec4 vec4_sub(vec4 a, vec4 b){
-	return (vec4){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
-}
-
-static inline vec4 vec4_mul(vec4 a, vec4 b){
-	return (vec4){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
-}
-
-static inline vec4 vec4_div(vec4 a, vec4 b){
-	return (vec4){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2], a.v[3] / b.v[3] };
-}
-
-static inline vec4 vec4_min(vec4 a, vec4 b){
-	return (vec4){
-		num_min(a.v[0], b.v[0]),
-		num_min(a.v[1], b.v[1]),
-		num_min(a.v[2], b.v[2]),
-		num_min(a.v[3], b.v[3])
-	};
-}
-
-static inline vec4 vec4_max(vec4 a, vec4 b){
-	return (vec4){
-		num_max(a.v[0], b.v[0]),
-		num_max(a.v[1], b.v[1]),
-		num_max(a.v[2], b.v[2]),
-		num_max(a.v[3], b.v[3])
-	};
-}
-
-static inline vec4 vec4_clamp(vec4 a, vec4 min, vec4 max){
-	return (vec4){
-		num_clamp(a.v[0], min.v[0], max.v[0]),
-		num_clamp(a.v[1], min.v[1], max.v[1]),
-		num_clamp(a.v[2], min.v[2], max.v[2]),
-		num_clamp(a.v[3], min.v[3], max.v[3])
-	};
-}
-
-static inline vec4 vec4_lerp(vec4 a, vec4 b, float t){
-	return (vec4){
-		num_lerp(a.v[0], b.v[0], t),
-		num_lerp(a.v[1], b.v[1], t),
-		num_lerp(a.v[2], b.v[2], t),
-		num_lerp(a.v[3], b.v[3], t)
-	};
-}
-
-static inline vec4 vec4_inverse(vec4 a){
-	return (vec4){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2], 1.0f / a.v[3] };
-}
-
-static inline vec4 vec4_normal(vec4 a){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
-	float len = ax * ax + ay * ay + az * az + aw * aw;
-	if (len > 0.0f){
-		len = 1.0f / num_sqrt(len);
-		return (vec4){ ax * len, ay * len, az * len, aw * len };
-	}
-	return a;
-}
-
-static inline vec4 vec4_scale(vec4 a, float s){
-	return (vec4){ a.v[0] * s, a.v[1] * s, a.v[2] * s, a.v[3] * s };
 }
 
 static inline vec4 vec4_applymat4(vec4 a, mat4 *b){
@@ -442,8 +371,39 @@ static inline vec4 vec4_applyquat(vec4 a, quat b){
 	};
 }
 
+static inline vec4 vec4_clamp(vec4 a, vec4 min, vec4 max){
+	return (vec4){
+		num_clamp(a.v[0], min.v[0], max.v[0]),
+		num_clamp(a.v[1], min.v[1], max.v[1]),
+		num_clamp(a.v[2], min.v[2], max.v[2]),
+		num_clamp(a.v[3], min.v[3], max.v[3])
+	};
+}
+
+static inline float vec4_len2(vec4 a);
+static inline vec4 vec4_sub(vec4 a, vec4 b);
+static inline float vec4_dist(vec4 a, vec4 b){
+	return num_sqrt(vec4_len2(vec4_sub(a, b)));
+}
+
+static inline float vec4_dist2(vec4 a, vec4 b){
+	return vec4_len2(vec4_sub(b, a));
+}
+
+static inline vec4 vec4_div(vec4 a, vec4 b){
+	return (vec4){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2], a.v[3] / b.v[3] };
+}
+
 static inline float vec4_dot(vec4 a, vec4 b){
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2] + a.v[3] * b.v[3];
+}
+
+static inline vec4 vec4_inverse(vec4 a){
+	return (vec4){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2], 1.0f / a.v[3] };
+}
+
+static inline float vec4_len(vec4 a){
+	return num_sqrt(vec4_len2(a));
 }
 
 static inline float vec4_len2(vec4 a){
@@ -451,16 +411,57 @@ static inline float vec4_len2(vec4 a){
 	return ax * ax + ay * ay + az * az + aw * aw;
 }
 
-static inline float vec4_len(vec4 a){
-	return num_sqrt(vec4_len2(a));
+static inline vec4 vec4_lerp(vec4 a, vec4 b, float t){
+	return (vec4){
+		num_lerp(a.v[0], b.v[0], t),
+		num_lerp(a.v[1], b.v[1], t),
+		num_lerp(a.v[2], b.v[2], t),
+		num_lerp(a.v[3], b.v[3], t)
+	};
 }
 
-static inline float vec4_dist2(vec4 a, vec4 b){
-	return vec4_len2(vec4_sub(b, a));
+static inline vec4 vec4_max(vec4 a, vec4 b){
+	return (vec4){
+		num_max(a.v[0], b.v[0]),
+		num_max(a.v[1], b.v[1]),
+		num_max(a.v[2], b.v[2]),
+		num_max(a.v[3], b.v[3])
+	};
 }
 
-static inline float vec4_dist(vec4 a, vec4 b){
-	return num_sqrt(vec4_len2(vec4_sub(a, b)));
+static inline vec4 vec4_min(vec4 a, vec4 b){
+	return (vec4){
+		num_min(a.v[0], b.v[0]),
+		num_min(a.v[1], b.v[1]),
+		num_min(a.v[2], b.v[2]),
+		num_min(a.v[3], b.v[3])
+	};
+}
+
+static inline vec4 vec4_mul(vec4 a, vec4 b){
+	return (vec4){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
+}
+
+static inline vec4 vec4_neg(vec4 a){
+	return (vec4){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+}
+
+static inline vec4 vec4_normal(vec4 a){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
+	float len = ax * ax + ay * ay + az * az + aw * aw;
+	if (len > 0.0f){
+		len = 1.0f / num_sqrt(len);
+		return (vec4){ ax * len, ay * len, az * len, aw * len };
+	}
+	return a;
+}
+
+static inline vec4 vec4_scale(vec4 a, float s){
+	return (vec4){ a.v[0] * s, a.v[1] * s, a.v[2] * s, a.v[3] * s };
+}
+
+static inline vec4 vec4_sub(vec4 a, vec4 b){
+	return (vec4){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
 }
 
 //

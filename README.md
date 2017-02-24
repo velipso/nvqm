@@ -84,25 +84,25 @@ vec3  vec3_scale    (vec3 a, float s);
 vec3  vec3_sub      (vec3 a, vec3 b);
 
 // vec4
-vec4  vec4_neg      (vec4 a);
 vec4  vec4_add      (vec4 a, vec4 b);
-vec4  vec4_sub      (vec4 a, vec4 b);
-vec4  vec4_mul      (vec4 a, vec4 b);
-vec4  vec4_div      (vec4 a, vec4 b);
-vec4  vec4_min      (vec4 a, vec4 b);
-vec4  vec4_max      (vec4 a, vec4 b);
-vec4  vec4_clamp    (vec4 a, vec4 min, vec4 max);
-vec4  vec4_lerp     (vec4 a, vec4 b, float t);
-vec4  vec4_inverse  (vec4 a);
-vec4  vec4_normal   (vec4 a);
-vec4  vec4_scale    (vec4 a, float s);
 vec4  vec4_applymat4(vec4 a, mat4 *b);
 vec4  vec4_applyquat(vec4 a, quat b);
-float vec4_dot      (vec4 a, vec4 b);
-float vec4_len2     (vec4 a);
-float vec4_len      (vec4 a);
-float vec4_dist2    (vec4 a, vec4 b);
+vec4  vec4_clamp    (vec4 a, vec4 min, vec4 max);
+vec4  vec4_div      (vec4 a, vec4 b);
 float vec4_dist     (vec4 a, vec4 b);
+float vec4_dist2    (vec4 a, vec4 b);
+float vec4_dot      (vec4 a, vec4 b);
+vec4  vec4_inverse  (vec4 a);
+float vec4_len      (vec4 a);
+float vec4_len2     (vec4 a);
+vec4  vec4_lerp     (vec4 a, vec4 b, float t);
+vec4  vec4_max      (vec4 a, vec4 b);
+vec4  vec4_min      (vec4 a, vec4 b);
+vec4  vec4_mul      (vec4 a, vec4 b);
+vec4  vec4_neg      (vec4 a);
+vec4  vec4_normal   (vec4 a);
+vec4  vec4_scale    (vec4 a, float s);
+vec4  vec4_sub      (vec4 a, vec4 b);
 
 // quat
 quat  quat_axisang  (vec3 axis, float ang);

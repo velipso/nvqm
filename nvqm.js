@@ -320,78 +320,8 @@ function vec3_sub(a, b){
 // vec4
 //
 
-function vec4_neg(a){
-	return [-a[0], -a[1], -a[2], -a[3]];
-}
-
 function vec4_add(a, b){
 	return [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]];
-}
-
-function vec4_sub(a, b){
-	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
-}
-
-function vec4_mul(a, b){
-	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
-}
-
-function vec4_div(a, b){
-	return [a[0] / b[0], a[1] / b[1], a[2] / b[2], a[3] / b[3]];
-}
-
-function vec4_min(a, b){
-	return [
-		num_min(a[0], b[0]),
-		num_min(a[1], b[1]),
-		num_min(a[2], b[2]),
-		num_min(a[3], b[3])
-	];
-}
-
-function vec4_max(a, b){
-	return [
-		num_max(a[0], b[0]),
-		num_max(a[1], b[1]),
-		num_max(a[2], b[2]),
-		num_max(a[3], b[3])
-	];
-}
-
-function vec4_clamp(a, min, max){
-	return [
-		num_clamp(a[0], min[0], max[0]),
-		num_clamp(a[1], min[1], max[1]),
-		num_clamp(a[2], min[2], max[2]),
-		num_clamp(a[3], min[3], max[3])
-	];
-}
-
-function vec4_lerp(a, b, t){
-	return [
-		num_lerp(a[0], b[0], t),
-		num_lerp(a[1], b[1], t),
-		num_lerp(a[2], b[2], t),
-		num_lerp(a[3], b[3], t)
-	];
-}
-
-function vec4_inverse(a){
-	return [1 / a[0], 1 / a[1], 1 / a[2], 1 / a[3]];
-}
-
-function vec4_normal(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var len = ax * ax + ay * ay + az * az + aw * aw;
-	if (len > 0){
-		len = 1 / num_sqrt(len);
-		return [ax * len, ay * len, az * len, aw * len];
-	}
-	return a;
-}
-
-function vec4_scale(a, s){
-	return [a[0] * s, a[1] * s, a[2] * s, a[3] * s];
 }
 
 function vec4_applymat4(a, b){
@@ -421,8 +351,37 @@ function vec4_applyquat(a, b){
 	];
 }
 
+function vec4_clamp(a, min, max){
+	return [
+		num_clamp(a[0], min[0], max[0]),
+		num_clamp(a[1], min[1], max[1]),
+		num_clamp(a[2], min[2], max[2]),
+		num_clamp(a[3], min[3], max[3])
+	];
+}
+
+function vec4_dist(a, b){
+	return num_sqrt(vec4_len2(vec4_sub(a, b)));
+}
+
+function vec4_dist2(a, b){
+	return vec4_len2(vec4_sub(b, a));
+}
+
+function vec4_div(a, b){
+	return [a[0] / b[0], a[1] / b[1], a[2] / b[2], a[3] / b[3]];
+}
+
 function vec4_dot(a, b){
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+}
+
+function vec4_inverse(a){
+	return [1 / a[0], 1 / a[1], 1 / a[2], 1 / a[3]];
+}
+
+function vec4_len(a){
+	return num_sqrt(vec4_len2(a));
 }
 
 function vec4_len2(a){
@@ -430,16 +389,58 @@ function vec4_len2(a){
 	return ax * ax + ay * ay + az * az + aw * aw;
 }
 
-function vec4_len(a){
-	return num_sqrt(vec4_len2(a));
+function vec4_lerp(a, b, t){
+	return [
+		num_lerp(a[0], b[0], t),
+		num_lerp(a[1], b[1], t),
+		num_lerp(a[2], b[2], t),
+		num_lerp(a[3], b[3], t)
+	];
 }
 
-function vec4_dist2(a, b){
-	return vec4_len2(vec4_sub(b, a));
+function vec4_max(a, b){
+	return [
+		num_max(a[0], b[0]),
+		num_max(a[1], b[1]),
+		num_max(a[2], b[2]),
+		num_max(a[3], b[3])
+	];
 }
 
-function vec4_dist(a, b){
-	return num_sqrt(vec4_len2(vec4_sub(a, b)));
+function vec4_min(a, b){
+	return [
+		num_min(a[0], b[0]),
+		num_min(a[1], b[1]),
+		num_min(a[2], b[2]),
+		num_min(a[3], b[3])
+	];
+}
+
+function vec4_mul(a, b){
+	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
+}
+
+function vec4_neg(a){
+	return [-a[0], -a[1], -a[2], -a[3]];
+}
+
+function vec4_normal(a){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	var len = ax * ax + ay * ay + az * az + aw * aw;
+	if (len > 0){
+		len = 1 / num_sqrt(len);
+		return [ax * len, ay * len, az * len, aw * len];
+	}
+	return a;
+}
+
+function vec4_scale(a, s){
+	return [a[0] * s, a[1] * s, a[2] * s, a[3] * s];
+}
+
+
+function vec4_sub(a, b){
+	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
 }
 
 //
@@ -1750,25 +1751,25 @@ if (typeof module !== 'undefined' && module.exports){
 		vec3_sub      : vec3_sub      ,
 
 		// vec4
-		vec4_neg      : vec4_neg      ,
 		vec4_add      : vec4_add      ,
-		vec4_sub      : vec4_sub      ,
-		vec4_mul      : vec4_mul      ,
-		vec4_div      : vec4_div      ,
-		vec4_min      : vec4_min      ,
-		vec4_max      : vec4_max      ,
-		vec4_clamp    : vec4_clamp    ,
-		vec4_lerp     : vec4_lerp     ,
-		vec4_inverse  : vec4_inverse  ,
-		vec4_normal   : vec4_normal   ,
-		vec4_scale    : vec4_scale    ,
 		vec4_applymat4: vec4_applymat4,
 		vec4_applyquat: vec4_applyquat,
-		vec4_dot      : vec4_dot      ,
-		vec4_len2     : vec4_len2     ,
-		vec4_len      : vec4_len      ,
-		vec4_dist2    : vec4_dist2    ,
+		vec4_clamp    : vec4_clamp    ,
 		vec4_dist     : vec4_dist     ,
+		vec4_dist2    : vec4_dist2    ,
+		vec4_div      : vec4_div      ,
+		vec4_dot      : vec4_dot      ,
+		vec4_inverse  : vec4_inverse  ,
+		vec4_len      : vec4_len      ,
+		vec4_len2     : vec4_len2     ,
+		vec4_lerp     : vec4_lerp     ,
+		vec4_max      : vec4_max      ,
+		vec4_min      : vec4_min      ,
+		vec4_mul      : vec4_mul      ,
+		vec4_neg      : vec4_neg      ,
+		vec4_normal   : vec4_normal   ,
+		vec4_scale    : vec4_scale    ,
+		vec4_sub      : vec4_sub      ,
 
 		// quat
 		quat_axisang  : quat_axisang  ,
