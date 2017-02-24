@@ -52,15 +52,9 @@ mat3 *mat3_compmul(mat3 *out, mat3 *a, mat3 *b){
 }
 
 mat3 *mat3_copy(mat3 *out, mat3 *a){
-	out->v[0] = a->v[0];
-	out->v[1] = a->v[1];
-	out->v[2] = a->v[2];
-	out->v[3] = a->v[3];
-	out->v[4] = a->v[4];
-	out->v[5] = a->v[5];
-	out->v[6] = a->v[6];
-	out->v[7] = a->v[7];
-	out->v[8] = a->v[8];
+	out->v[0] = a->v[0]; out->v[1] = a->v[1]; out->v[2] = a->v[2];
+	out->v[3] = a->v[3]; out->v[4] = a->v[4]; out->v[5] = a->v[5];
+	out->v[6] = a->v[6]; out->v[7] = a->v[7]; out->v[8] = a->v[8];
 	return out;
 }
 
@@ -283,361 +277,23 @@ mat3 *mat3_transpose(mat3 *out, mat3 *a){
 // mat4
 //
 
-mat4 *mat4_quat(mat4 *out, quat a){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		ayx = ay * ax2,
-		ayy = ay * ay2,
-		azx = az * ax2,
-		azy = az * ay2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2;
-	out->v[ 0] = 1.0f - ayy - azz;
-	out->v[ 1] =        ayx + awz;
-	out->v[ 2] =        azx - awy;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] =        ayx - awz;
-	out->v[ 5] = 1.0f - axx - azz;
-	out->v[ 6] =        azy + awx;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] =        azx + awy;
-	out->v[ 9] =        azy - awx;
-	out->v[10] = 1.0f - axx - ayy;
-	out->v[11] = 0.0f;
-	out->v[12] = 0.0f;
-	out->v[13] = 0.0f;
-	out->v[14] = 0.0f;
-	out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_identity(mat4 *out){
-	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
-	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
-	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
-	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_rotation(mat4 *out, vec3 axis, float ang){
-	float x = axis.v[0], y = axis.v[1], z = axis.v[2],
-		s = num_sin(ang), c = num_cos(ang),
-		t = 1.0f - c;
-	out->v[ 0] = x * x * t + c;
-	out->v[ 1] = y * x * t + z * s;
-	out->v[ 2] = z * x * t - y * s;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] = x * y * t - z * s;
-	out->v[ 5] = y * y * t + c;
-	out->v[ 6] = z * y * t + x * s;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] = x * z * t + y * s;
-	out->v[ 9] = y * z * t - x * s;
-	out->v[10] = z * z * t + c;
-	out->v[11] = 0.0f;
-	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_scaling(mat4 *out, vec3 a){
-	out->v[ 0] = a.v[0]; out->v[ 1] =   0.0f; out->v[ 2] =   0.0f; out->v[ 3] = 0.0f;
-	out->v[ 4] =   0.0f; out->v[ 5] = a.v[1]; out->v[ 6] =   0.0f; out->v[ 7] = 0.0f;
-	out->v[ 8] =   0.0f; out->v[ 9] =   0.0f; out->v[10] = a.v[2]; out->v[11] = 0.0f;
-	out->v[12] =   0.0f; out->v[13] =   0.0f; out->v[14] =   0.0f; out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_translation(mat4 *out, vec3 a){
-	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
-	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
-	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
-	out->v[12] = a.v[0]; out->v[13] = a.v[1]; out->v[14] = a.v[2]; out->v[15] = 1;
-	return out;
-}
-
-mat4 *mat4_frustum(mat4 *out, float L, float R, float B, float T, float N, float F){
-	float
-		rl = 1.0f / (R - L),
-		tb = 1.0f / (T - B),
-		nf = 1.0f / (N - F);
-	out->v[ 0] = (2.0f * N) * rl;
-	out->v[ 1] =  0.0f;
-	out->v[ 2] =  0.0f;
-	out->v[ 3] =  0.0f;
-	out->v[ 4] =  0.0f;
-	out->v[ 5] = (2.0f * N) * tb;
-	out->v[ 6] =  0.0f;
-	out->v[ 7] =  0.0f;
-	out->v[ 8] = (R + L) * rl;
-	out->v[ 9] = (T + B) * tb;
-	out->v[10] = (F + N) * nf;
-	out->v[11] = -1.0f;
-	out->v[12] =  0.0f;
-	out->v[13] =  0.0f;
-	out->v[14] = (2.0f * N * F) * nf;
-	out->v[15] =  0.0f;
-	return out;
-}
-
-mat4 *mat4_perspective(mat4 *out, float fov, float width, float height, float N, float F){
-	float
-		f  = 1.0f / num_tan(fov * 0.5f),
-		nf = 1.0f / (N - F);
-	out->v[ 0] = f;
-	out->v[ 1] =  0.0f;
-	out->v[ 2] =  0.0f;
-	out->v[ 3] =  0.0f;
-	out->v[ 4] =  0.0f;
-	out->v[ 5] = f * width / height;
-	out->v[ 6] =  0.0f;
-	out->v[ 7] =  0.0f;
-	out->v[ 8] =  0.0f;
-	out->v[ 9] =  0.0f;
-	out->v[10] = (F + N) * nf;
-	out->v[11] = -1.0f;
-	out->v[12] =  0.0f;
-	out->v[13] =  0.0f;
-	out->v[14] = (2.0f * F * N) * nf;
-	out->v[15] =  0.0f;
-	return out;
-}
-
-mat4 *mat4_orthogonal(mat4 *out, float W, float H, float N, float F){
-	float nf = 1.0f / (N - F);
-	out->v[ 0] = 2.0f / W;
-	out->v[ 1] = 0.0f;
-	out->v[ 2] = 0.0f;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] = 0.0f;
-	out->v[ 5] = 2.0f / H;
-	out->v[ 6] = 0.0f;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] = 0.0f;
-	out->v[ 9] = 0.0f;
-	out->v[10] = 2.0f * nf;
-	out->v[11] = 0.0f;
-	out->v[12] = 0.0f;
-	out->v[13] = 0.0f;
-	out->v[14] = (N + F) * nf;
-	out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_lookat(mat4 *out, vec3 eye, vec3 position, vec3 up){
-	float
-		ex = eye.v[0], ey = eye.v[1], ez = eye.v[2],
-		ux = up.v[0], uy = up.v[1], uz = up.v[2],
-		px = position.v[0], py = position.v[1], pz = position.v[2];
-	float z0 = ex - px, z1 = ey - py, z2 = ez - pz;
-	if (z0 == 0.0f && z1 == 0.0f && z2 == 0.0f)
-		return mat4_identity(out);
-	float len = 1.0f / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
-	z0 *= len;
-	z1 *= len;
-	z2 *= len;
-	float x0 = uy * z2 - uz * z1;
-	float x1 = uz * z0 - ux * z2;
-	float x2 = ux * z1 - uy * z0;
-	len = num_sqrt(
-		x0 * x0 +
-		x1 * x1 +
-		x2 * x2
-	);
-	if (len == 0.0f){
-		x0 = 0.0f;
-		x1 = 0.0f;
-		x2 = 0.0f;
-	}
-	else{
-		len = 1.0f / len;
-		x0 *= len;
-		x1 *= len;
-		x2 *= len;
-	}
-	float y0 = z1 * x2 - z2 * x1;
-	float y1 = z2 * x0 - z0 * x2;
-	float y2 = z0 * x1 - z1 * x0;
-	len = num_sqrt(
-		y0 * y0 +
-		y1 * y1 +
-		y2 * y2
-	);
-	if (len == 0.0f){
-		y0 = 0.0f;
-		y1 = 0.0f;
-		y2 = 0.0f;
-	}
-	else{
-		len = 1.0f / len;
-		y0 *= len;
-		y1 *= len;
-		y2 *= len;
-	}
-	out->v[ 0] = x0;
-	out->v[ 1] = y0;
-	out->v[ 2] = z0;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] = x1;
-	out->v[ 5] = y1;
-	out->v[ 6] = z1;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] = x2;
-	out->v[ 9] = y2;
-	out->v[10] = z2;
-	out->v[11] = 0.0f;
-	out->v[12] = -(x0 * ex + x1 * ey + x2 * ez);
-	out->v[13] = -(y0 * ex + y1 * ey + y2 * ez);
-	out->v[14] = -(z0 * ex + z1 * ey + z2 * ez);
-	out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_rottrans(mat4 *out, quat a, vec3 b){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		axy = ax * ay2,
-		axz = ax * az2,
-		ayy = ay * ay2,
-		ayz = ay * az2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2;
-	out->v[ 0] = 1.0f - ayy - azz;
-	out->v[ 1] =        axy + awz;
-	out->v[ 2] =        axz - awy;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] =        axy - awz;
-	out->v[ 5] = 1.0f - axx - azz;
-	out->v[ 6] =        ayz + awx;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] =        axz + awy;
-	out->v[ 9] =        ayz - awx;
-	out->v[10] = 1.0f - axx - ayy;
-	out->v[11] = 0.0f;
-	out->v[12] = b.v[0];
-	out->v[13] = b.v[1];
-	out->v[14] = b.v[2];
-	out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_rottransorigin(mat4 *out, quat a, vec3 b, vec3 origin){
-	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		axy = ax * ay2,
-		axz = ax * az2,
-		ayy = ay * ay2,
-		ayz = ay * az2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2,
-		ox = origin.v[0], oy = origin.v[1], oz = origin.v[2];
-	out->v[ 0] = 1.0f - ayy - azz;
-	out->v[ 1] =        axy + awz;
-	out->v[ 2] =        axz - awy;
-	out->v[ 3] = 0.0f;
-	out->v[ 4] =        axy - awz;
-	out->v[ 5] = 1.0f - axx - azz;
-	out->v[ 6] =        ayz + awx;
-	out->v[ 7] = 0.0f;
-	out->v[ 8] =        axz + awy;
-	out->v[ 9] =        ayz - awx;
-	out->v[10] = 1.0f - axx - ayy;
-	out->v[11] = 0.0f;
-	out->v[12] = b.v[0] + ox - (out->v[0] * ox + out->v[4] * oy + out->v[ 8] * oz);
-	out->v[13] = b.v[1] + oy - (out->v[1] * ox + out->v[5] * oy + out->v[ 9] * oz);
-	out->v[14] = b.v[2] + oz - (out->v[2] * ox + out->v[6] * oy + out->v[10] * oz);
-	out->v[15] = 1.0f;
-	return out;
-}
-
-mat4 *mat4_copy(mat4 *out, mat4 *a){
-	out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 1]; out->v[ 2] = a->v[ 2]; out->v[ 3] = a->v[ 3];
-	out->v[ 4] = a->v[ 4]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 6]; out->v[ 7] = a->v[ 7];
-	out->v[ 8] = a->v[ 8]; out->v[ 9] = a->v[ 9]; out->v[10] = a->v[10]; out->v[11] = a->v[11];
-	out->v[12] = a->v[12]; out->v[13] = a->v[13]; out->v[14] = a->v[14]; out->v[15] = a->v[15];
-	return out;
-}
-
-mat4 *mat4_transpose(mat4 *out, mat4 *a){
-	if (out == a){
-		float
-			a01 = a->v[1], a02 = a->v[2], a03 = a->v[ 3],
-			/*          */ a12 = a->v[6], a13 = a->v[ 7],
-			/*                         */ a23 = a->v[11];
-		out->v[ 1] = a->v[ 4];
-		out->v[ 2] = a->v[ 8];
-		out->v[ 3] = a->v[12];
-		out->v[ 4] = a01;
-		out->v[ 6] = a->v[ 9];
-		out->v[ 7] = a->v[13];
-		out->v[ 8] = a02;
-		out->v[ 9] = a12;
-		out->v[11] = a->v[14];
-		out->v[12] = a03;
-		out->v[13] = a13;
-		out->v[14] = a23;
-	}
-	else{
-		out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 4]; out->v[ 2] = a->v[ 8]; out->v[ 3] = a->v[12];
-		out->v[ 4] = a->v[ 1]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 9]; out->v[ 7] = a->v[13];
-		out->v[ 8] = a->v[ 2]; out->v[ 9] = a->v[ 6]; out->v[10] = a->v[10]; out->v[11] = a->v[14];
-		out->v[12] = a->v[ 3]; out->v[13] = a->v[ 7]; out->v[14] = a->v[11]; out->v[15] = a->v[15];
-	}
-	return out;
-}
-
-mat4 *mat4_invert(mat4 *out, mat4 *a){
-	float
-		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
-		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
-		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
-		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15],
-		b00 = a00 * a11 - a01 * a10,
-		b01 = a00 * a12 - a02 * a10,
-		b02 = a00 * a13 - a03 * a10,
-		b03 = a01 * a12 - a02 * a11,
-		b04 = a01 * a13 - a03 * a11,
-		b05 = a02 * a13 - a03 * a12,
-		b06 = a20 * a31 - a21 * a30,
-		b07 = a20 * a32 - a22 * a30,
-		b08 = a20 * a33 - a23 * a30,
-		b09 = a21 * a32 - a22 * a31,
-		b10 = a21 * a33 - a23 * a31,
-		b11 = a22 * a33 - a23 * a32;
-	float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-	if (det == 0.0f)
-		return (mat4 *)0;
-	det = 1.0f / det;
-	out->v[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-	out->v[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-	out->v[ 2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-	out->v[ 3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-	out->v[ 4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-	out->v[ 5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-	out->v[ 6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-	out->v[ 7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-	out->v[ 8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-	out->v[ 9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-	out->v[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-	out->v[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-	out->v[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-	out->v[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-	out->v[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-	out->v[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+mat4 *mat4_add(mat4 *out, mat4 *a, mat4 *b){
+	out->v[ 0] = a->v[ 0] + b->v[ 0];
+	out->v[ 1] = a->v[ 1] + b->v[ 1];
+	out->v[ 2] = a->v[ 2] + b->v[ 2];
+	out->v[ 3] = a->v[ 3] + b->v[ 3];
+	out->v[ 4] = a->v[ 4] + b->v[ 4];
+	out->v[ 5] = a->v[ 5] + b->v[ 5];
+	out->v[ 6] = a->v[ 6] + b->v[ 6];
+	out->v[ 7] = a->v[ 7] + b->v[ 7];
+	out->v[ 8] = a->v[ 8] + b->v[ 8];
+	out->v[ 9] = a->v[ 9] + b->v[ 9];
+	out->v[10] = a->v[10] + b->v[10];
+	out->v[11] = a->v[11] + b->v[11];
+	out->v[12] = a->v[12] + b->v[12];
+	out->v[13] = a->v[13] + b->v[13];
+	out->v[14] = a->v[14] + b->v[14];
+	out->v[15] = a->v[15] + b->v[15];
 	return out;
 }
 
@@ -714,6 +370,34 @@ mat4 *mat4_adjoint(mat4 *out, mat4 *a){
 	return out;
 }
 
+mat4 *mat4_compmul(mat4 *out, mat4 *a, mat4 *b){
+	out->v[ 0] = a->v[ 0] * b->v[ 0];
+	out->v[ 1] = a->v[ 1] * b->v[ 1];
+	out->v[ 2] = a->v[ 2] * b->v[ 2];
+	out->v[ 3] = a->v[ 3] * b->v[ 3];
+	out->v[ 4] = a->v[ 4] * b->v[ 4];
+	out->v[ 5] = a->v[ 5] * b->v[ 5];
+	out->v[ 6] = a->v[ 6] * b->v[ 6];
+	out->v[ 7] = a->v[ 7] * b->v[ 7];
+	out->v[ 8] = a->v[ 8] * b->v[ 8];
+	out->v[ 9] = a->v[ 9] * b->v[ 9];
+	out->v[10] = a->v[10] * b->v[10];
+	out->v[11] = a->v[11] * b->v[11];
+	out->v[12] = a->v[12] * b->v[12];
+	out->v[13] = a->v[13] * b->v[13];
+	out->v[14] = a->v[14] * b->v[14];
+	out->v[15] = a->v[15] * b->v[15];
+	return out;
+}
+
+mat4 *mat4_copy(mat4 *out, mat4 *a){
+	out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 1]; out->v[ 2] = a->v[ 2]; out->v[ 3] = a->v[ 3];
+	out->v[ 4] = a->v[ 4]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 6]; out->v[ 7] = a->v[ 7];
+	out->v[ 8] = a->v[ 8]; out->v[ 9] = a->v[ 9]; out->v[10] = a->v[10]; out->v[11] = a->v[11];
+	out->v[12] = a->v[12]; out->v[13] = a->v[13]; out->v[14] = a->v[14]; out->v[15] = a->v[15];
+	return out;
+}
+
 float mat4_det(mat4 *a){
 	float
 		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
@@ -735,43 +419,145 @@ float mat4_det(mat4 *a){
 	return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 }
 
-mat4 *mat4_add(mat4 *out, mat4 *a, mat4 *b){
-	out->v[ 0] = a->v[ 0] + b->v[ 0];
-	out->v[ 1] = a->v[ 1] + b->v[ 1];
-	out->v[ 2] = a->v[ 2] + b->v[ 2];
-	out->v[ 3] = a->v[ 3] + b->v[ 3];
-	out->v[ 4] = a->v[ 4] + b->v[ 4];
-	out->v[ 5] = a->v[ 5] + b->v[ 5];
-	out->v[ 6] = a->v[ 6] + b->v[ 6];
-	out->v[ 7] = a->v[ 7] + b->v[ 7];
-	out->v[ 8] = a->v[ 8] + b->v[ 8];
-	out->v[ 9] = a->v[ 9] + b->v[ 9];
-	out->v[10] = a->v[10] + b->v[10];
-	out->v[11] = a->v[11] + b->v[11];
-	out->v[12] = a->v[12] + b->v[12];
-	out->v[13] = a->v[13] + b->v[13];
-	out->v[14] = a->v[14] + b->v[14];
-	out->v[15] = a->v[15] + b->v[15];
+mat4 *mat4_frustum(mat4 *out, float L, float R, float B, float T, float N, float F){
+	float
+		rl = 1.0f / (R - L),
+		tb = 1.0f / (T - B),
+		nf = 1.0f / (N - F);
+	out->v[ 0] = (2.0f * N) * rl;
+	out->v[ 1] =  0.0f;
+	out->v[ 2] =  0.0f;
+	out->v[ 3] =  0.0f;
+	out->v[ 4] =  0.0f;
+	out->v[ 5] = (2.0f * N) * tb;
+	out->v[ 6] =  0.0f;
+	out->v[ 7] =  0.0f;
+	out->v[ 8] = (R + L) * rl;
+	out->v[ 9] = (T + B) * tb;
+	out->v[10] = (F + N) * nf;
+	out->v[11] = -1.0f;
+	out->v[12] =  0.0f;
+	out->v[13] =  0.0f;
+	out->v[14] = (2.0f * N * F) * nf;
+	out->v[15] =  0.0f;
 	return out;
 }
 
-mat4 *mat4_sub(mat4 *out, mat4 *a, mat4 *b){
-	out->v[ 0] = a->v[ 0] - b->v[ 0];
-	out->v[ 1] = a->v[ 1] - b->v[ 1];
-	out->v[ 2] = a->v[ 2] - b->v[ 2];
-	out->v[ 3] = a->v[ 3] - b->v[ 3];
-	out->v[ 4] = a->v[ 4] - b->v[ 4];
-	out->v[ 5] = a->v[ 5] - b->v[ 5];
-	out->v[ 6] = a->v[ 6] - b->v[ 6];
-	out->v[ 7] = a->v[ 7] - b->v[ 7];
-	out->v[ 8] = a->v[ 8] - b->v[ 8];
-	out->v[ 9] = a->v[ 9] - b->v[ 9];
-	out->v[10] = a->v[10] - b->v[10];
-	out->v[11] = a->v[11] - b->v[11];
-	out->v[12] = a->v[12] - b->v[12];
-	out->v[13] = a->v[13] - b->v[13];
-	out->v[14] = a->v[14] - b->v[14];
-	out->v[15] = a->v[15] - b->v[15];
+mat4 *mat4_identity(mat4 *out){
+	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
+	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
+	return out;
+}
+
+mat4 *mat4_invert(mat4 *out, mat4 *a){
+	float
+		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
+		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15],
+		b00 = a00 * a11 - a01 * a10,
+		b01 = a00 * a12 - a02 * a10,
+		b02 = a00 * a13 - a03 * a10,
+		b03 = a01 * a12 - a02 * a11,
+		b04 = a01 * a13 - a03 * a11,
+		b05 = a02 * a13 - a03 * a12,
+		b06 = a20 * a31 - a21 * a30,
+		b07 = a20 * a32 - a22 * a30,
+		b08 = a20 * a33 - a23 * a30,
+		b09 = a21 * a32 - a22 * a31,
+		b10 = a21 * a33 - a23 * a31,
+		b11 = a22 * a33 - a23 * a32;
+	float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+	if (det == 0.0f)
+		return (mat4 *)0;
+	det = 1.0f / det;
+	out->v[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+	out->v[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+	out->v[ 2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+	out->v[ 3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+	out->v[ 4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+	out->v[ 5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+	out->v[ 6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+	out->v[ 7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+	out->v[ 8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+	out->v[ 9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+	out->v[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+	out->v[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+	out->v[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+	out->v[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+	out->v[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+	out->v[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+	return out;
+}
+
+mat4 *mat4_lookat(mat4 *out, vec3 eye, vec3 position, vec3 up){
+	float
+		ex = eye.v[0], ey = eye.v[1], ez = eye.v[2],
+		ux = up.v[0], uy = up.v[1], uz = up.v[2],
+		px = position.v[0], py = position.v[1], pz = position.v[2];
+	float z0 = ex - px, z1 = ey - py, z2 = ez - pz;
+	if (z0 == 0.0f && z1 == 0.0f && z2 == 0.0f)
+		return mat4_identity(out);
+	float len = 1.0f / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+	z0 *= len;
+	z1 *= len;
+	z2 *= len;
+	float x0 = uy * z2 - uz * z1;
+	float x1 = uz * z0 - ux * z2;
+	float x2 = ux * z1 - uy * z0;
+	len = num_sqrt(
+		x0 * x0 +
+		x1 * x1 +
+		x2 * x2
+	);
+	if (len == 0.0f){
+		x0 = 0.0f;
+		x1 = 0.0f;
+		x2 = 0.0f;
+	}
+	else{
+		len = 1.0f / len;
+		x0 *= len;
+		x1 *= len;
+		x2 *= len;
+	}
+	float y0 = z1 * x2 - z2 * x1;
+	float y1 = z2 * x0 - z0 * x2;
+	float y2 = z0 * x1 - z1 * x0;
+	len = num_sqrt(
+		y0 * y0 +
+		y1 * y1 +
+		y2 * y2
+	);
+	if (len == 0.0f){
+		y0 = 0.0f;
+		y1 = 0.0f;
+		y2 = 0.0f;
+	}
+	else{
+		len = 1.0f / len;
+		y0 *= len;
+		y1 *= len;
+		y2 *= len;
+	}
+	out->v[ 0] = x0;
+	out->v[ 1] = y0;
+	out->v[ 2] = z0;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] = x1;
+	out->v[ 5] = y1;
+	out->v[ 6] = z1;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] = x2;
+	out->v[ 9] = y2;
+	out->v[10] = z2;
+	out->v[11] = 0.0f;
+	out->v[12] = -(x0 * ex + x1 * ey + x2 * ez);
+	out->v[13] = -(y0 * ex + y1 * ey + y2 * ez);
+	out->v[14] = -(z0 * ex + z1 * ey + z2 * ez);
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -817,23 +603,80 @@ mat4 *mat4_mul(mat4 *out, mat4 *a, mat4 *b){
 	return out;
 }
 
-mat4 *mat4_compmul(mat4 *out, mat4 *a, mat4 *b){
-	out->v[ 0] = a->v[ 0] * b->v[ 0];
-	out->v[ 1] = a->v[ 1] * b->v[ 1];
-	out->v[ 2] = a->v[ 2] * b->v[ 2];
-	out->v[ 3] = a->v[ 3] * b->v[ 3];
-	out->v[ 4] = a->v[ 4] * b->v[ 4];
-	out->v[ 5] = a->v[ 5] * b->v[ 5];
-	out->v[ 6] = a->v[ 6] * b->v[ 6];
-	out->v[ 7] = a->v[ 7] * b->v[ 7];
-	out->v[ 8] = a->v[ 8] * b->v[ 8];
-	out->v[ 9] = a->v[ 9] * b->v[ 9];
-	out->v[10] = a->v[10] * b->v[10];
-	out->v[11] = a->v[11] * b->v[11];
-	out->v[12] = a->v[12] * b->v[12];
-	out->v[13] = a->v[13] * b->v[13];
-	out->v[14] = a->v[14] * b->v[14];
-	out->v[15] = a->v[15] * b->v[15];
+mat4 *mat4_orthogonal(mat4 *out, float W, float H, float N, float F){
+	float nf = 1.0f / (N - F);
+	out->v[ 0] = 2.0f / W;
+	out->v[ 1] = 0.0f;
+	out->v[ 2] = 0.0f;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f;
+	out->v[ 5] = 2.0f / H;
+	out->v[ 6] = 0.0f;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f;
+	out->v[ 9] = 0.0f;
+	out->v[10] = 2.0f * nf;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f;
+	out->v[13] = 0.0f;
+	out->v[14] = (N + F) * nf;
+	out->v[15] = 1.0f;
+	return out;
+}
+
+mat4 *mat4_perspective(mat4 *out, float fov, float width, float height, float N, float F){
+	float
+		f  = 1.0f / num_tan(fov * 0.5f),
+		nf = 1.0f / (N - F);
+	out->v[ 0] = f;
+	out->v[ 1] =  0.0f;
+	out->v[ 2] =  0.0f;
+	out->v[ 3] =  0.0f;
+	out->v[ 4] =  0.0f;
+	out->v[ 5] = f * width / height;
+	out->v[ 6] =  0.0f;
+	out->v[ 7] =  0.0f;
+	out->v[ 8] =  0.0f;
+	out->v[ 9] =  0.0f;
+	out->v[10] = (F + N) * nf;
+	out->v[11] = -1.0f;
+	out->v[12] =  0.0f;
+	out->v[13] =  0.0f;
+	out->v[14] = (2.0f * F * N) * nf;
+	out->v[15] =  0.0f;
+	return out;
+}
+
+mat4 *mat4_quat(mat4 *out, quat a){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		ayx = ay * ax2,
+		ayy = ay * ay2,
+		azx = az * ax2,
+		azy = az * ay2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2;
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        ayx + awz;
+	out->v[ 2] =        azx - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        ayx - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        azy + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        azx + awy;
+	out->v[ 9] =        azy - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f;
+	out->v[13] = 0.0f;
+	out->v[14] = 0.0f;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -869,6 +712,93 @@ mat4 *mat4_rotate(mat4 *out, mat4 *a, vec3 axis, float ang){
 	return out;
 }
 
+mat4 *mat4_rotation(mat4 *out, vec3 axis, float ang){
+	float x = axis.v[0], y = axis.v[1], z = axis.v[2],
+		s = num_sin(ang), c = num_cos(ang),
+		t = 1.0f - c;
+	out->v[ 0] = x * x * t + c;
+	out->v[ 1] = y * x * t + z * s;
+	out->v[ 2] = z * x * t - y * s;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] = x * y * t - z * s;
+	out->v[ 5] = y * y * t + c;
+	out->v[ 6] = z * y * t + x * s;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] = x * z * t + y * s;
+	out->v[ 9] = y * z * t - x * s;
+	out->v[10] = z * z * t + c;
+	out->v[11] = 0.0f;
+	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
+	return out;
+}
+
+mat4 *mat4_rottrans(mat4 *out, quat a, vec3 b){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		axy = ax * ay2,
+		axz = ax * az2,
+		ayy = ay * ay2,
+		ayz = ay * az2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2;
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        axy + awz;
+	out->v[ 2] =        axz - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        axy - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        ayz + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        axz + awy;
+	out->v[ 9] =        ayz - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
+	out->v[12] = b.v[0];
+	out->v[13] = b.v[1];
+	out->v[14] = b.v[2];
+	out->v[15] = 1.0f;
+	return out;
+}
+
+mat4 *mat4_rottransorigin(mat4 *out, quat a, vec3 b, vec3 origin){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		axy = ax * ay2,
+		axz = ax * az2,
+		ayy = ay * ay2,
+		ayz = ay * az2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2,
+		ox = origin.v[0], oy = origin.v[1], oz = origin.v[2];
+	out->v[ 0] = 1.0f - ayy - azz;
+	out->v[ 1] =        axy + awz;
+	out->v[ 2] =        axz - awy;
+	out->v[ 3] = 0.0f;
+	out->v[ 4] =        axy - awz;
+	out->v[ 5] = 1.0f - axx - azz;
+	out->v[ 6] =        ayz + awx;
+	out->v[ 7] = 0.0f;
+	out->v[ 8] =        axz + awy;
+	out->v[ 9] =        ayz - awx;
+	out->v[10] = 1.0f - axx - ayy;
+	out->v[11] = 0.0f;
+	out->v[12] = b.v[0] + ox - (out->v[0] * ox + out->v[4] * oy + out->v[ 8] * oz);
+	out->v[13] = b.v[1] + oy - (out->v[1] * ox + out->v[5] * oy + out->v[ 9] * oz);
+	out->v[14] = b.v[2] + oz - (out->v[2] * ox + out->v[6] * oy + out->v[10] * oz);
+	out->v[15] = 1.0f;
+	return out;
+}
+
 mat4 *mat4_scale(mat4 *out, mat4 *a, vec3 b){
 	float bx = b.v[0], by = b.v[1], bz = b.v[2];
 	out->v[ 0] = a->v[ 0] * bx;
@@ -887,6 +817,34 @@ mat4 *mat4_scale(mat4 *out, mat4 *a, vec3 b){
 	out->v[13] = a->v[13]     ;
 	out->v[14] = a->v[14]     ;
 	out->v[15] = a->v[15]     ;
+	return out;
+}
+
+mat4 *mat4_scaling(mat4 *out, vec3 a){
+	out->v[ 0] = a.v[0]; out->v[ 1] =   0.0f; out->v[ 2] =   0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] =   0.0f; out->v[ 5] = a.v[1]; out->v[ 6] =   0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] =   0.0f; out->v[ 9] =   0.0f; out->v[10] = a.v[2]; out->v[11] = 0.0f;
+	out->v[12] =   0.0f; out->v[13] =   0.0f; out->v[14] =   0.0f; out->v[15] = 1.0f;
+	return out;
+}
+
+mat4 *mat4_sub(mat4 *out, mat4 *a, mat4 *b){
+	out->v[ 0] = a->v[ 0] - b->v[ 0];
+	out->v[ 1] = a->v[ 1] - b->v[ 1];
+	out->v[ 2] = a->v[ 2] - b->v[ 2];
+	out->v[ 3] = a->v[ 3] - b->v[ 3];
+	out->v[ 4] = a->v[ 4] - b->v[ 4];
+	out->v[ 5] = a->v[ 5] - b->v[ 5];
+	out->v[ 6] = a->v[ 6] - b->v[ 6];
+	out->v[ 7] = a->v[ 7] - b->v[ 7];
+	out->v[ 8] = a->v[ 8] - b->v[ 8];
+	out->v[ 9] = a->v[ 9] - b->v[ 9];
+	out->v[10] = a->v[10] - b->v[10];
+	out->v[11] = a->v[11] - b->v[11];
+	out->v[12] = a->v[12] - b->v[12];
+	out->v[13] = a->v[13] - b->v[13];
+	out->v[14] = a->v[14] - b->v[14];
+	out->v[15] = a->v[15] - b->v[15];
 	return out;
 }
 
@@ -919,6 +877,42 @@ mat4 *mat4_translate(mat4 *out, mat4 *a, vec3 b){
 		out->v[13] = a01 * bx + a11 * by + a21 * bz + a->v[13];
 		out->v[14] = a02 * bx + a12 * by + a22 * bz + a->v[14];
 		out->v[15] = a03 * bx + a13 * by + a23 * bz + a->v[15];
+	}
+	return out;
+}
+
+mat4 *mat4_translation(mat4 *out, vec3 a){
+	out->v[ 0] = 1.0f; out->v[ 1] = 0.0f; out->v[ 2] = 0.0f; out->v[ 3] = 0.0f;
+	out->v[ 4] = 0.0f; out->v[ 5] = 1.0f; out->v[ 6] = 0.0f; out->v[ 7] = 0.0f;
+	out->v[ 8] = 0.0f; out->v[ 9] = 0.0f; out->v[10] = 1.0f; out->v[11] = 0.0f;
+	out->v[12] = a.v[0]; out->v[13] = a.v[1]; out->v[14] = a.v[2]; out->v[15] = 1;
+	return out;
+}
+
+mat4 *mat4_transpose(mat4 *out, mat4 *a){
+	if (out == a){
+		float
+			a01 = a->v[1], a02 = a->v[2], a03 = a->v[ 3],
+			/*          */ a12 = a->v[6], a13 = a->v[ 7],
+			/*                         */ a23 = a->v[11];
+		out->v[ 1] = a->v[ 4];
+		out->v[ 2] = a->v[ 8];
+		out->v[ 3] = a->v[12];
+		out->v[ 4] = a01;
+		out->v[ 6] = a->v[ 9];
+		out->v[ 7] = a->v[13];
+		out->v[ 8] = a02;
+		out->v[ 9] = a12;
+		out->v[11] = a->v[14];
+		out->v[12] = a03;
+		out->v[13] = a13;
+		out->v[14] = a23;
+	}
+	else{
+		out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 4]; out->v[ 2] = a->v[ 8]; out->v[ 3] = a->v[12];
+		out->v[ 4] = a->v[ 1]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 9]; out->v[ 7] = a->v[13];
+		out->v[ 8] = a->v[ 2]; out->v[ 9] = a->v[ 6]; out->v[10] = a->v[10]; out->v[11] = a->v[14];
+		out->v[12] = a->v[ 3]; out->v[13] = a->v[ 7]; out->v[14] = a->v[11]; out->v[15] = a->v[15];
 	}
 	return out;
 }

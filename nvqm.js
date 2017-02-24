@@ -795,15 +795,9 @@ function mat3_compmul(out, a, b){
 }
 
 function mat3_copy(out, a){
-	out[0] = a[0];
-	out[1] = a[1];
-	out[2] = a[2];
-	out[3] = a[3];
-	out[4] = a[4];
-	out[5] = a[5];
-	out[6] = a[6];
-	out[7] = a[7];
-	out[8] = a[8];
+	out[0] = a[0]; out[1] = a[1]; out[2] = a[2];
+	out[3] = a[3]; out[4] = a[4]; out[5] = a[5];
+	out[6] = a[6]; out[7] = a[7]; out[8] = a[8];
 	return out;
 }
 
@@ -1028,363 +1022,23 @@ function mat3_transpose(out, a){
 // mat4
 //
 
-function mat4_quat(out, a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		ayx = ay * ax2,
-		ayy = ay * ay2,
-		azx = az * ax2,
-		azy = az * ay2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2;
-	out[ 0] = 1 - ayy - azz;
-	out[ 1] =     ayx + awz;
-	out[ 2] =     azx - awy;
-	out[ 3] = 0;
-	out[ 4] =     ayx - awz;
-	out[ 5] = 1 - axx - azz;
-	out[ 6] =     azy + awx;
-	out[ 7] = 0;
-	out[ 8] =     azx + awy;
-	out[ 9] =     azy - awx;
-	out[10] = 1 - axx - ayy;
-	out[11] = 0;
-	out[12] = 0;
-	out[13] = 0;
-	out[14] = 0;
-	out[15] = 1;
-	return out;
-}
-
-function mat4_identity(out){
-	if (typeof out === 'undefined')
-		out = [];
-	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
-	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
-	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
-	out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 1;
-	return out;
-}
-
-function mat4_rotation(out, ang){
-	var x = axis[0], y = axis[1], z = axis[2],
-		s = num_sin(ang), c = num_cos(ang),
-		t = 1 - c;
-	out[ 0] = x * x * t + c;
-	out[ 1] = y * x * t + z * s;
-	out[ 2] = z * x * t - y * s;
-	out[ 3] = 0;
-	out[ 4] = x * y * t - z * s;
-	out[ 5] = y * y * t + c;
-	out[ 6] = z * y * t + x * s;
-	out[ 7] = 0;
-	out[ 8] = x * z * t + y * s;
-	out[ 9] = y * z * t - x * s;
-	out[10] = z * z * t + c;
-	out[11] = 0;
-	out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 1;
-	return out;
-}
-
-function mat4_scaling(out, a){
-	out[ 0] = a[0]; out[ 1] =    0; out[ 2] =    0; out[ 3] = 0;
-	out[ 4] =    0; out[ 5] = a[1]; out[ 6] =    0; out[ 7] = 0;
-	out[ 8] =    0; out[ 9] =    0; out[10] = a[2]; out[11] = 0;
-	out[12] =    0; out[13] =    0; out[14] =    0; out[15] = 1;
-	return out;
-}
-
-function mat4_translation(out, a){
-	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
-	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
-	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
-	out[12] = a[0]; out[13] = a[1]; out[14] = a[2]; out[15] = 1;
-	return out;
-}
-
-function mat4_frustum(out, L, R, B, T, N, F){
-	var
-		rl = 1 / (R - L),
-		tb = 1 / (T - B),
-		nf = 1 / (N - F);
-	out[ 0] = (2 * N) * rl;
-	out[ 1] =  0;
-	out[ 2] =  0;
-	out[ 3] =  0;
-	out[ 4] =  0;
-	out[ 5] = (2 * N) * tb;
-	out[ 6] =  0;
-	out[ 7] =  0;
-	out[ 8] = (R + L) * rl;
-	out[ 9] = (T + B) * tb;
-	out[10] = (F + N) * nf;
-	out[11] = -1;
-	out[12] =  0;
-	out[13] =  0;
-	out[14] = (2 * N * F) * nf;
-	out[15] =  0;
-	return out;
-}
-
-function mat4_perspective(out, fov, width, height, N, F){
-	var
-		f  = 1 / num_tan(fov * 0.5),
-		nf = 1 / (N - F);
-	out[ 0] = f;
-	out[ 1] = 0;
-	out[ 2] = 0;
-	out[ 3] = 0;
-	out[ 4] = 0;
-	out[ 5] = f * width / height;
-	out[ 6] = 0;
-	out[ 7] = 0;
-	out[ 8] = 0;
-	out[ 9] = 0;
-	out[10] = (F + N) * nf;
-	out[11] = -1;
-	out[12] = 0;
-	out[13] = 0;
-	out[14] = (2 * F * N) * nf;
-	out[15] = 0;
-	return out;
-}
-
-function mat4_orthogonal(out, W, H, N, F){
-	var nf = 1 / (N - F);
-	out[ 0] = 2 / W;
-	out[ 1] = 0;
-	out[ 2] = 0;
-	out[ 3] = 0;
-	out[ 4] = 0;
-	out[ 5] = 2 / H;
-	out[ 6] = 0;
-	out[ 7] = 0;
-	out[ 8] = 0;
-	out[ 9] = 0;
-	out[10] = 2 * nf;
-	out[11] = 0;
-	out[12] = 0;
-	out[13] = 0;
-	out[14] = (N + F) * nf;
-	out[15] = 1;
-	return out;
-}
-
-function mat4_lookat(out, eye, position, up){
-	var
-		ex = eye[0], ey = eye[1], ez = eye[2],
-		ux = up[0], uy = up[1], uz = up[2],
-		px = position[0], py = position[1], pz = position[2];
-	var z0 = ex - px, z1 = ey - py, z2 = ez - pz;
-	if (z0 == 0 && z1 == 0 && z2 == 0)
-		return mat4_identity(out);
-	var len = 1 / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
-	z0 *= len;
-	z1 *= len;
-	z2 *= len;
-	var x0 = uy * z2 - uz * z1;
-	var x1 = uz * z0 - ux * z2;
-	var x2 = ux * z1 - uy * z0;
-	len = num_sqrt(
-		x0 * x0 +
-		x1 * x1 +
-		x2 * x2
-	);
-	if (len == 0){
-		x0 = 0;
-		x1 = 0;
-		x2 = 0;
-	}
-	else{
-		len = 1 / len;
-		x0 *= len;
-		x1 *= len;
-		x2 *= len;
-	}
-	var y0 = z1 * x2 - z2 * x1;
-	var y1 = z2 * x0 - z0 * x2;
-	var y2 = z0 * x1 - z1 * x0;
-	len = num_sqrt(
-		y0 * y0 +
-		y1 * y1 +
-		y2 * y2
-	);
-	if (len == 0){
-		y0 = 0;
-		y1 = 0;
-		y2 = 0;
-	}
-	else{
-		len = 1 / len;
-		y0 *= len;
-		y1 *= len;
-		y2 *= len;
-	}
-	out[ 0] = x0;
-	out[ 1] = y0;
-	out[ 2] = z0;
-	out[ 3] = 0;
-	out[ 4] = x1;
-	out[ 5] = y1;
-	out[ 6] = z1;
-	out[ 7] = 0;
-	out[ 8] = x2;
-	out[ 9] = y2;
-	out[10] = z2;
-	out[11] = 0;
-	out[12] = -(x0 * ex + x1 * ey + x2 * ez);
-	out[13] = -(y0 * ex + y1 * ey + y2 * ez);
-	out[14] = -(z0 * ex + z1 * ey + z2 * ez);
-	out[15] = 1;
-	return out;
-}
-
-function mat4_rottrans(out, a, b){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		axy = ax * ay2,
-		axz = ax * az2,
-		ayy = ay * ay2,
-		ayz = ay * az2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2;
-	out[ 0] = 1 - ayy - azz;
-	out[ 1] =     axy + awz;
-	out[ 2] =     axz - awy;
-	out[ 3] = 0;
-	out[ 4] =     axy - awz;
-	out[ 5] = 1 - axx - azz;
-	out[ 6] =     ayz + awx;
-	out[ 7] = 0;
-	out[ 8] =     axz + awy;
-	out[ 9] =     ayz - awx;
-	out[10] = 1 - axx - ayy;
-	out[11] = 0;
-	out[12] = b[0];
-	out[13] = b[1];
-	out[14] = b[2];
-	out[15] = 1;
-	return out;
-}
-
-function mat4_rottransorigin(out, a, b, origin){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
-		ax2 = ax + ax,
-		ay2 = ay + ay,
-		az2 = az + az,
-		axx = ax * ax2,
-		axy = ax * ay2,
-		axz = ax * az2,
-		ayy = ay * ay2,
-		ayz = ay * az2,
-		azz = az * az2,
-		awx = aw * ax2,
-		awy = aw * ay2,
-		awz = aw * az2,
-		ox = origin[0], oy = origin[1], oz = origin[2];
-	out[ 0] = 1 - ayy - azz;
-	out[ 1] =     axy + awz;
-	out[ 2] =     axz - awy;
-	out[ 3] = 0;
-	out[ 4] =     axy - awz;
-	out[ 5] = 1 - axx - azz;
-	out[ 6] =     ayz + awx;
-	out[ 7] = 0;
-	out[ 8] =     axz + awy;
-	out[ 9] =     ayz - awx;
-	out[10] = 1 - axx - ayy;
-	out[11] = 0;
-	out[12] = b[0] + ox - (out[0] * ox + out[4] * oy + out[ 8] * oz);
-	out[13] = b[1] + oy - (out[1] * ox + out[5] * oy + out[ 9] * oz);
-	out[14] = b[2] + oz - (out[2] * ox + out[6] * oy + out[10] * oz);
-	out[15] = 1;
-	return out;
-}
-
-function mat4_copy(out, a){
-	out[ 0] = a[ 0]; out[ 1] = a[ 1]; out[ 2] = a[ 2]; out[ 3] = a[ 3];
-	out[ 4] = a[ 4]; out[ 5] = a[ 5]; out[ 6] = a[ 6]; out[ 7] = a[ 7];
-	out[ 8] = a[ 8]; out[ 9] = a[ 9]; out[10] = a[10]; out[11] = a[11];
-	out[12] = a[12]; out[13] = a[13]; out[14] = a[14]; out[15] = a[15];
-	return out;
-}
-
-function mat4_transpose(out, a){
-	if (out === a){
-		var
-			a01 = a[1], a02 = a[2], a03 = a[ 3],
-			/*       */ a12 = a[6], a13 = a[ 7],
-			/*                   */ a23 = a[11];
-		out[ 1] = a[ 4];
-		out[ 2] = a[ 8];
-		out[ 3] = a[12];
-		out[ 4] = a01;
-		out[ 6] = a[ 9];
-		out[ 7] = a[13];
-		out[ 8] = a02;
-		out[ 9] = a12;
-		out[11] = a[14];
-		out[12] = a03;
-		out[13] = a13;
-		out[14] = a23;
-	}
-	else{
-		out[ 0] = a[ 0]; out[ 1] = a[ 4]; out[ 2] = a[ 8]; out[ 3] = a[12];
-		out[ 4] = a[ 1]; out[ 5] = a[ 5]; out[ 6] = a[ 9]; out[ 7] = a[13];
-		out[ 8] = a[ 2]; out[ 9] = a[ 6]; out[10] = a[10]; out[11] = a[14];
-		out[12] = a[ 3]; out[13] = a[ 7]; out[14] = a[11]; out[15] = a[15];
-	}
-	return out;
-}
-
-function mat4_invert(out, a){
-	var
-		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
-		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
-		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
-		a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
-		b00 = a00 * a11 - a01 * a10,
-		b01 = a00 * a12 - a02 * a10,
-		b02 = a00 * a13 - a03 * a10,
-		b03 = a01 * a12 - a02 * a11,
-		b04 = a01 * a13 - a03 * a11,
-		b05 = a02 * a13 - a03 * a12,
-		b06 = a20 * a31 - a21 * a30,
-		b07 = a20 * a32 - a22 * a30,
-		b08 = a20 * a33 - a23 * a30,
-		b09 = a21 * a32 - a22 * a31,
-		b10 = a21 * a33 - a23 * a31,
-		b11 = a22 * a33 - a23 * a32;
-	var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-	if (det == 0)
-		return null;
-	det = 1 / det;
-	out[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-	out[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-	out[ 2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-	out[ 3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-	out[ 4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-	out[ 5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-	out[ 6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-	out[ 7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-	out[ 8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-	out[ 9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-	out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-	out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-	out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-	out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-	out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-	out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+function mat4_add(out, a, b){
+	out[ 0] = a[ 0] + b[ 0];
+	out[ 1] = a[ 1] + b[ 1];
+	out[ 2] = a[ 2] + b[ 2];
+	out[ 3] = a[ 3] + b[ 3];
+	out[ 4] = a[ 4] + b[ 4];
+	out[ 5] = a[ 5] + b[ 5];
+	out[ 6] = a[ 6] + b[ 6];
+	out[ 7] = a[ 7] + b[ 7];
+	out[ 8] = a[ 8] + b[ 8];
+	out[ 9] = a[ 9] + b[ 9];
+	out[10] = a[10] + b[10];
+	out[11] = a[11] + b[11];
+	out[12] = a[12] + b[12];
+	out[13] = a[13] + b[13];
+	out[14] = a[14] + b[14];
+	out[15] = a[15] + b[15];
 	return out;
 }
 
@@ -1461,6 +1115,34 @@ function mat4_adjoint(out, a){
 	return out;
 }
 
+function mat4_compmul(out, a, b){
+	out[ 0] = a[ 0] * b[ 0];
+	out[ 1] = a[ 1] * b[ 1];
+	out[ 2] = a[ 2] * b[ 2];
+	out[ 3] = a[ 3] * b[ 3];
+	out[ 4] = a[ 4] * b[ 4];
+	out[ 5] = a[ 5] * b[ 5];
+	out[ 6] = a[ 6] * b[ 6];
+	out[ 7] = a[ 7] * b[ 7];
+	out[ 8] = a[ 8] * b[ 8];
+	out[ 9] = a[ 9] * b[ 9];
+	out[10] = a[10] * b[10];
+	out[11] = a[11] * b[11];
+	out[12] = a[12] * b[12];
+	out[13] = a[13] * b[13];
+	out[14] = a[14] * b[14];
+	out[15] = a[15] * b[15];
+	return out;
+}
+
+function mat4_copy(out, a){
+	out[ 0] = a[ 0]; out[ 1] = a[ 1]; out[ 2] = a[ 2]; out[ 3] = a[ 3];
+	out[ 4] = a[ 4]; out[ 5] = a[ 5]; out[ 6] = a[ 6]; out[ 7] = a[ 7];
+	out[ 8] = a[ 8]; out[ 9] = a[ 9]; out[10] = a[10]; out[11] = a[11];
+	out[12] = a[12]; out[13] = a[13]; out[14] = a[14]; out[15] = a[15];
+	return out;
+}
+
 function mat4_det(a){
 	var
 		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
@@ -1482,43 +1164,147 @@ function mat4_det(a){
 	return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 }
 
-function mat4_add(out, a, b){
-	out[ 0] = a[ 0] + b[ 0];
-	out[ 1] = a[ 1] + b[ 1];
-	out[ 2] = a[ 2] + b[ 2];
-	out[ 3] = a[ 3] + b[ 3];
-	out[ 4] = a[ 4] + b[ 4];
-	out[ 5] = a[ 5] + b[ 5];
-	out[ 6] = a[ 6] + b[ 6];
-	out[ 7] = a[ 7] + b[ 7];
-	out[ 8] = a[ 8] + b[ 8];
-	out[ 9] = a[ 9] + b[ 9];
-	out[10] = a[10] + b[10];
-	out[11] = a[11] + b[11];
-	out[12] = a[12] + b[12];
-	out[13] = a[13] + b[13];
-	out[14] = a[14] + b[14];
-	out[15] = a[15] + b[15];
+function mat4_frustum(out, L, R, B, T, N, F){
+	var
+		rl = 1 / (R - L),
+		tb = 1 / (T - B),
+		nf = 1 / (N - F);
+	out[ 0] = (2 * N) * rl;
+	out[ 1] =  0;
+	out[ 2] =  0;
+	out[ 3] =  0;
+	out[ 4] =  0;
+	out[ 5] = (2 * N) * tb;
+	out[ 6] =  0;
+	out[ 7] =  0;
+	out[ 8] = (R + L) * rl;
+	out[ 9] = (T + B) * tb;
+	out[10] = (F + N) * nf;
+	out[11] = -1;
+	out[12] =  0;
+	out[13] =  0;
+	out[14] = (2 * N * F) * nf;
+	out[15] =  0;
 	return out;
 }
 
-function mat4_sub(out, a, b){
-	out[ 0] = a[ 0] - b[ 0];
-	out[ 1] = a[ 1] - b[ 1];
-	out[ 2] = a[ 2] - b[ 2];
-	out[ 3] = a[ 3] - b[ 3];
-	out[ 4] = a[ 4] - b[ 4];
-	out[ 5] = a[ 5] - b[ 5];
-	out[ 6] = a[ 6] - b[ 6];
-	out[ 7] = a[ 7] - b[ 7];
-	out[ 8] = a[ 8] - b[ 8];
-	out[ 9] = a[ 9] - b[ 9];
-	out[10] = a[10] - b[10];
-	out[11] = a[11] - b[11];
-	out[12] = a[12] - b[12];
-	out[13] = a[13] - b[13];
-	out[14] = a[14] - b[14];
-	out[15] = a[15] - b[15];
+function mat4_identity(out){
+	if (typeof out === 'undefined')
+		out = [];
+	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
+	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
+	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
+	out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 1;
+	return out;
+}
+
+function mat4_invert(out, a){
+	var
+		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
+		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
+		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
+		a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+		b00 = a00 * a11 - a01 * a10,
+		b01 = a00 * a12 - a02 * a10,
+		b02 = a00 * a13 - a03 * a10,
+		b03 = a01 * a12 - a02 * a11,
+		b04 = a01 * a13 - a03 * a11,
+		b05 = a02 * a13 - a03 * a12,
+		b06 = a20 * a31 - a21 * a30,
+		b07 = a20 * a32 - a22 * a30,
+		b08 = a20 * a33 - a23 * a30,
+		b09 = a21 * a32 - a22 * a31,
+		b10 = a21 * a33 - a23 * a31,
+		b11 = a22 * a33 - a23 * a32;
+	var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+	if (det == 0)
+		return null;
+	det = 1 / det;
+	out[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+	out[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+	out[ 2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+	out[ 3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+	out[ 4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+	out[ 5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+	out[ 6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+	out[ 7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+	out[ 8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+	out[ 9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+	out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+	out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+	out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+	out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+	out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+	out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+	return out;
+}
+
+function mat4_lookat(out, eye, position, up){
+	var
+		ex = eye[0], ey = eye[1], ez = eye[2],
+		ux = up[0], uy = up[1], uz = up[2],
+		px = position[0], py = position[1], pz = position[2];
+	var z0 = ex - px, z1 = ey - py, z2 = ez - pz;
+	if (z0 == 0 && z1 == 0 && z2 == 0)
+		return mat4_identity(out);
+	var len = 1 / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+	z0 *= len;
+	z1 *= len;
+	z2 *= len;
+	var x0 = uy * z2 - uz * z1;
+	var x1 = uz * z0 - ux * z2;
+	var x2 = ux * z1 - uy * z0;
+	len = num_sqrt(
+		x0 * x0 +
+		x1 * x1 +
+		x2 * x2
+	);
+	if (len == 0){
+		x0 = 0;
+		x1 = 0;
+		x2 = 0;
+	}
+	else{
+		len = 1 / len;
+		x0 *= len;
+		x1 *= len;
+		x2 *= len;
+	}
+	var y0 = z1 * x2 - z2 * x1;
+	var y1 = z2 * x0 - z0 * x2;
+	var y2 = z0 * x1 - z1 * x0;
+	len = num_sqrt(
+		y0 * y0 +
+		y1 * y1 +
+		y2 * y2
+	);
+	if (len == 0){
+		y0 = 0;
+		y1 = 0;
+		y2 = 0;
+	}
+	else{
+		len = 1 / len;
+		y0 *= len;
+		y1 *= len;
+		y2 *= len;
+	}
+	out[ 0] = x0;
+	out[ 1] = y0;
+	out[ 2] = z0;
+	out[ 3] = 0;
+	out[ 4] = x1;
+	out[ 5] = y1;
+	out[ 6] = z1;
+	out[ 7] = 0;
+	out[ 8] = x2;
+	out[ 9] = y2;
+	out[10] = z2;
+	out[11] = 0;
+	out[12] = -(x0 * ex + x1 * ey + x2 * ez);
+	out[13] = -(y0 * ex + y1 * ey + y2 * ez);
+	out[14] = -(z0 * ex + z1 * ey + z2 * ez);
+	out[15] = 1;
 	return out;
 }
 
@@ -1564,23 +1350,80 @@ function mat4_mul(out, a, b){
 	return out;
 }
 
-function mat4_compmul(out, a, b){
-	out[ 0] = a[ 0] * b[ 0];
-	out[ 1] = a[ 1] * b[ 1];
-	out[ 2] = a[ 2] * b[ 2];
-	out[ 3] = a[ 3] * b[ 3];
-	out[ 4] = a[ 4] * b[ 4];
-	out[ 5] = a[ 5] * b[ 5];
-	out[ 6] = a[ 6] * b[ 6];
-	out[ 7] = a[ 7] * b[ 7];
-	out[ 8] = a[ 8] * b[ 8];
-	out[ 9] = a[ 9] * b[ 9];
-	out[10] = a[10] * b[10];
-	out[11] = a[11] * b[11];
-	out[12] = a[12] * b[12];
-	out[13] = a[13] * b[13];
-	out[14] = a[14] * b[14];
-	out[15] = a[15] * b[15];
+function mat4_orthogonal(out, W, H, N, F){
+	var nf = 1 / (N - F);
+	out[ 0] = 2 / W;
+	out[ 1] = 0;
+	out[ 2] = 0;
+	out[ 3] = 0;
+	out[ 4] = 0;
+	out[ 5] = 2 / H;
+	out[ 6] = 0;
+	out[ 7] = 0;
+	out[ 8] = 0;
+	out[ 9] = 0;
+	out[10] = 2 * nf;
+	out[11] = 0;
+	out[12] = 0;
+	out[13] = 0;
+	out[14] = (N + F) * nf;
+	out[15] = 1;
+	return out;
+}
+
+function mat4_perspective(out, fov, width, height, N, F){
+	var
+		f  = 1 / num_tan(fov * 0.5),
+		nf = 1 / (N - F);
+	out[ 0] = f;
+	out[ 1] = 0;
+	out[ 2] = 0;
+	out[ 3] = 0;
+	out[ 4] = 0;
+	out[ 5] = f * width / height;
+	out[ 6] = 0;
+	out[ 7] = 0;
+	out[ 8] = 0;
+	out[ 9] = 0;
+	out[10] = (F + N) * nf;
+	out[11] = -1;
+	out[12] = 0;
+	out[13] = 0;
+	out[14] = (2 * F * N) * nf;
+	out[15] = 0;
+	return out;
+}
+
+function mat4_quat(out, a){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		ayx = ay * ax2,
+		ayy = ay * ay2,
+		azx = az * ax2,
+		azy = az * ay2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2;
+	out[ 0] = 1 - ayy - azz;
+	out[ 1] =     ayx + awz;
+	out[ 2] =     azx - awy;
+	out[ 3] = 0;
+	out[ 4] =     ayx - awz;
+	out[ 5] = 1 - axx - azz;
+	out[ 6] =     azy + awx;
+	out[ 7] = 0;
+	out[ 8] =     azx + awy;
+	out[ 9] =     azy - awx;
+	out[10] = 1 - axx - ayy;
+	out[11] = 0;
+	out[12] = 0;
+	out[13] = 0;
+	out[14] = 0;
+	out[15] = 1;
 	return out;
 }
 
@@ -1616,6 +1459,93 @@ function mat4_rotate(out, a, axis, ang){
 	return out;
 }
 
+function mat4_rotation(out, ang){
+	var x = axis[0], y = axis[1], z = axis[2],
+		s = num_sin(ang), c = num_cos(ang),
+		t = 1 - c;
+	out[ 0] = x * x * t + c;
+	out[ 1] = y * x * t + z * s;
+	out[ 2] = z * x * t - y * s;
+	out[ 3] = 0;
+	out[ 4] = x * y * t - z * s;
+	out[ 5] = y * y * t + c;
+	out[ 6] = z * y * t + x * s;
+	out[ 7] = 0;
+	out[ 8] = x * z * t + y * s;
+	out[ 9] = y * z * t - x * s;
+	out[10] = z * z * t + c;
+	out[11] = 0;
+	out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 1;
+	return out;
+}
+
+function mat4_rottrans(out, a, b){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		axy = ax * ay2,
+		axz = ax * az2,
+		ayy = ay * ay2,
+		ayz = ay * az2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2;
+	out[ 0] = 1 - ayy - azz;
+	out[ 1] =     axy + awz;
+	out[ 2] =     axz - awy;
+	out[ 3] = 0;
+	out[ 4] =     axy - awz;
+	out[ 5] = 1 - axx - azz;
+	out[ 6] =     ayz + awx;
+	out[ 7] = 0;
+	out[ 8] =     axz + awy;
+	out[ 9] =     ayz - awx;
+	out[10] = 1 - axx - ayy;
+	out[11] = 0;
+	out[12] = b[0];
+	out[13] = b[1];
+	out[14] = b[2];
+	out[15] = 1;
+	return out;
+}
+
+function mat4_rottransorigin(out, a, b, origin){
+	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+		ax2 = ax + ax,
+		ay2 = ay + ay,
+		az2 = az + az,
+		axx = ax * ax2,
+		axy = ax * ay2,
+		axz = ax * az2,
+		ayy = ay * ay2,
+		ayz = ay * az2,
+		azz = az * az2,
+		awx = aw * ax2,
+		awy = aw * ay2,
+		awz = aw * az2,
+		ox = origin[0], oy = origin[1], oz = origin[2];
+	out[ 0] = 1 - ayy - azz;
+	out[ 1] =     axy + awz;
+	out[ 2] =     axz - awy;
+	out[ 3] = 0;
+	out[ 4] =     axy - awz;
+	out[ 5] = 1 - axx - azz;
+	out[ 6] =     ayz + awx;
+	out[ 7] = 0;
+	out[ 8] =     axz + awy;
+	out[ 9] =     ayz - awx;
+	out[10] = 1 - axx - ayy;
+	out[11] = 0;
+	out[12] = b[0] + ox - (out[0] * ox + out[4] * oy + out[ 8] * oz);
+	out[13] = b[1] + oy - (out[1] * ox + out[5] * oy + out[ 9] * oz);
+	out[14] = b[2] + oz - (out[2] * ox + out[6] * oy + out[10] * oz);
+	out[15] = 1;
+	return out;
+}
+
 function mat4_scale(out, a, b){
 	var bx = b[0], by = b[1], bz = b[2];
 	out[ 0] = a[ 0] * bx;
@@ -1634,6 +1564,34 @@ function mat4_scale(out, a, b){
 	out[13] = a[13]     ;
 	out[14] = a[14]     ;
 	out[15] = a[15]     ;
+	return out;
+}
+
+function mat4_scaling(out, a){
+	out[ 0] = a[0]; out[ 1] =    0; out[ 2] =    0; out[ 3] = 0;
+	out[ 4] =    0; out[ 5] = a[1]; out[ 6] =    0; out[ 7] = 0;
+	out[ 8] =    0; out[ 9] =    0; out[10] = a[2]; out[11] = 0;
+	out[12] =    0; out[13] =    0; out[14] =    0; out[15] = 1;
+	return out;
+}
+
+function mat4_sub(out, a, b){
+	out[ 0] = a[ 0] - b[ 0];
+	out[ 1] = a[ 1] - b[ 1];
+	out[ 2] = a[ 2] - b[ 2];
+	out[ 3] = a[ 3] - b[ 3];
+	out[ 4] = a[ 4] - b[ 4];
+	out[ 5] = a[ 5] - b[ 5];
+	out[ 6] = a[ 6] - b[ 6];
+	out[ 7] = a[ 7] - b[ 7];
+	out[ 8] = a[ 8] - b[ 8];
+	out[ 9] = a[ 9] - b[ 9];
+	out[10] = a[10] - b[10];
+	out[11] = a[11] - b[11];
+	out[12] = a[12] - b[12];
+	out[13] = a[13] - b[13];
+	out[14] = a[14] - b[14];
+	out[15] = a[15] - b[15];
 	return out;
 }
 
@@ -1666,6 +1624,42 @@ function mat4_translate(out, a, b){
 		out[13] = a01 * bx + a11 * by + a21 * bz + a[13];
 		out[14] = a02 * bx + a12 * by + a22 * bz + a[14];
 		out[15] = a03 * bx + a13 * by + a23 * bz + a[15];
+	}
+	return out;
+}
+
+function mat4_translation(out, a){
+	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
+	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
+	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
+	out[12] = a[0]; out[13] = a[1]; out[14] = a[2]; out[15] = 1;
+	return out;
+}
+
+function mat4_transpose(out, a){
+	if (out === a){
+		var
+			a01 = a[1], a02 = a[2], a03 = a[ 3],
+			/*       */ a12 = a[6], a13 = a[ 7],
+			/*                   */ a23 = a[11];
+		out[ 1] = a[ 4];
+		out[ 2] = a[ 8];
+		out[ 3] = a[12];
+		out[ 4] = a01;
+		out[ 6] = a[ 9];
+		out[ 7] = a[13];
+		out[ 8] = a02;
+		out[ 9] = a12;
+		out[11] = a[14];
+		out[12] = a03;
+		out[13] = a13;
+		out[14] = a23;
+	}
+	else{
+		out[ 0] = a[ 0]; out[ 1] = a[ 4]; out[ 2] = a[ 8]; out[ 3] = a[12];
+		out[ 4] = a[ 1]; out[ 5] = a[ 5]; out[ 6] = a[ 9]; out[ 7] = a[13];
+		out[ 8] = a[ 2]; out[ 9] = a[ 6]; out[10] = a[10]; out[11] = a[14];
+		out[12] = a[ 3]; out[13] = a[ 7]; out[14] = a[11]; out[15] = a[15];
 	}
 	return out;
 }
@@ -1822,28 +1816,28 @@ if (typeof module !== 'undefined' && module.exports){
 		mat3_transpose  : mat3_transpose  ,
 
 		// mat4
-		mat4_quat          : mat4_quat          ,
-		mat4_identity      : mat4_identity      ,
-		mat4_rotation      : mat4_rotation      ,
-		mat4_scaling       : mat4_scaling       ,
-		mat4_translation   : mat4_translation   ,
+		mat4_add           : mat4_add           ,
+		mat4_adjoint       : mat4_adjoint       ,
+		mat4_compmul       : mat4_compmul       ,
+		mat4_copy          : mat4_copy          ,
+		mat4_det           : mat4_det           ,
 		mat4_frustum       : mat4_frustum       ,
-		mat4_perspective   : mat4_perspective   ,
-		mat4_orthogonal    : mat4_orthogonal    ,
+		mat4_identity      : mat4_identity      ,
+		mat4_invert        : mat4_invert        ,
 		mat4_lookat        : mat4_lookat        ,
+		mat4_mul           : mat4_mul           ,
+		mat4_orthogonal    : mat4_orthogonal    ,
+		mat4_perspective   : mat4_perspective   ,
+		mat4_quat          : mat4_quat          ,
+		mat4_rotate        : mat4_rotate        ,
+		mat4_rotation      : mat4_rotation      ,
 		mat4_rottrans      : mat4_rottrans      ,
 		mat4_rottransorigin: mat4_rottransorigin,
-		mat4_copy          : mat4_copy          ,
-		mat4_transpose     : mat4_transpose     ,
-		mat4_invert        : mat4_invert        ,
-		mat4_adjoint       : mat4_adjoint       ,
-		mat4_det           : mat4_det           ,
-		mat4_add           : mat4_add           ,
-		mat4_sub           : mat4_sub           ,
-		mat4_mul           : mat4_mul           ,
-		mat4_compmul       : mat4_compmul       ,
-		mat4_rotate        : mat4_rotate        ,
 		mat4_scale         : mat4_scale         ,
-		mat4_translate     : mat4_translate
+		mat4_scaling       : mat4_scaling       ,
+		mat4_sub           : mat4_sub           ,
+		mat4_translate     : mat4_translate     ,
+		mat4_translation   : mat4_translation   ,
+		mat4_transpose     : mat4_transpose
 	};
 }

@@ -760,28 +760,28 @@ mat3 *mat3_transpose  (mat3 *out, mat3 *a);
 // mat4
 //
 
-mat4 *mat4_quat          (mat4 *out, quat a);
-mat4 *mat4_identity      (mat4 *out);
-mat4 *mat4_rotation      (mat4 *out, vec3 axis, float ang);
-mat4 *mat4_scaling       (mat4 *out, vec3 a);
-mat4 *mat4_translation   (mat4 *out, vec3 a);
+mat4 *mat4_add           (mat4 *out, mat4 *a, mat4 *b);
+mat4 *mat4_adjoint       (mat4 *out, mat4 *a);
+mat4 *mat4_compmul       (mat4 *out, mat4 *a, mat4 *b);
+mat4 *mat4_copy          (mat4 *out, mat4 *a);
+float mat4_det           (mat4 *a);
 mat4 *mat4_frustum       (mat4 *out, float L, float R, float B, float T, float N, float F);
-mat4 *mat4_perspective   (mat4 *out, float fov, float width, float height, float N, float F);
-mat4 *mat4_orthogonal    (mat4 *out, float W, float H, float N, float F);
+mat4 *mat4_identity      (mat4 *out);
+mat4 *mat4_invert        (mat4 *out, mat4 *a);
 mat4 *mat4_lookat        (mat4 *out, vec3 eye, vec3 position, vec3 up);
+mat4 *mat4_mul           (mat4 *out, mat4 *a, mat4 *b);
+mat4 *mat4_orthogonal    (mat4 *out, float W, float H, float N, float F);
+mat4 *mat4_perspective   (mat4 *out, float fov, float width, float height, float N, float F);
+mat4 *mat4_quat          (mat4 *out, quat a);
+mat4 *mat4_rotate        (mat4 *out, mat4 *a, vec3 axis, float ang);
+mat4 *mat4_rotation      (mat4 *out, vec3 axis, float ang);
 mat4 *mat4_rottrans      (mat4 *out, quat a, vec3 b);
 mat4 *mat4_rottransorigin(mat4 *out, quat a, vec3 b, vec3 origin);
-mat4 *mat4_copy          (mat4 *out, mat4 *a);
-mat4 *mat4_transpose     (mat4 *out, mat4 *a);
-mat4 *mat4_invert        (mat4 *out, mat4 *a);
-mat4 *mat4_adjoint       (mat4 *out, mat4 *a);
-float mat4_det           (mat4 *a);
-mat4 *mat4_add           (mat4 *out, mat4 *a, mat4 *b);
-mat4 *mat4_sub           (mat4 *out, mat4 *a, mat4 *b);
-mat4 *mat4_mul           (mat4 *out, mat4 *a, mat4 *b);
-mat4 *mat4_compmul       (mat4 *out, mat4 *a, mat4 *b);
-mat4 *mat4_rotate        (mat4 *out, mat4 *a, vec3 axis, float ang);
 mat4 *mat4_scale         (mat4 *out, mat4 *a, vec3 b);
+mat4 *mat4_scaling       (mat4 *out, vec3 a);
+mat4 *mat4_sub           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_translate     (mat4 *out, mat4 *a, vec3 b);
+mat4 *mat4_translation   (mat4 *out, vec3 a);
+mat4 *mat4_transpose     (mat4 *out, mat4 *a);
 
 #endif // NVQM__H
