@@ -12,6 +12,7 @@ Implementations
 
 * C99 (`nvqm.h`+`nvqm.c`)
   * Values stored as structured arrays to facilitate pass-by-value
+  * Pass-by-value functions are `static inline`
 * JavaScript (`nvqm.js`)
   * Values stored as a flat array of numbers
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
