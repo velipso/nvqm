@@ -747,6 +747,88 @@ function mat2_transpose(a){
 // TODO: mat3x2
 //
 
+/*
+var trans2d = {
+	create: function(){
+		//                         | a c e |
+		// [a, b, c, d, e, f]  ==  | b d f |
+		//                         | 0 0 1 |
+		return [1, 0, 0, 1, 0, 0];
+	},
+	_ctx: function(t, ctx){
+		ctx.setTransform(t[0], t[1], t[2], t[3], t[4], t[5]);
+	},
+	reset: function(t){
+		getvec6(t);
+		t[0] = 1; t[1] = 0;
+		t[2] = 0; t[3] = 1;
+		t[4] = 0; t[5] = 0;
+		return t;
+	},
+	mul: function(t1, t2){
+		getvec6(t1);
+		getvec6(t2);
+		var m11 = t1[0] * t2[0] + t1[2] * t2[1];
+		var m12 = t1[1] * t2[0] + t1[3] * t2[1];
+		var m21 = t1[0] * t2[2] + t1[2] * t2[3];
+		var m22 = t1[1] * t2[2] + t1[3] * t2[3];
+		var dx  = t1[0] * t2[4] + t1[2] * t2[5] + t1[4];
+		var dy  = t1[1] * t2[4] + t1[3] * t2[5] + t1[5];
+		return [m11, m12, m21, m22, dx, dy];
+	},
+	invert: function(t){
+		getvec6(t);
+		var d = 1 / (t[0] * t[3] - t[1] * t[2]);
+		var m0 =  t[3] * d;
+		var m1 = -t[1] * d;
+		var m2 = -t[2] * d;
+		var m3 =  t[0] * d;
+		var m4 = d * (t[2] * t[5] - t[3] * t[4]);
+		var m5 = d * (t[1] * t[4] - t[0] * t[5]);
+		return [m0, m1, m2, m3, m4, m5];
+	},
+	rotate: function(t, ang){
+		getvec6(t);
+		getnum(ang);
+		var c = Math.cos(ang);
+		var s = Math.sin(ang);
+		var m11 = t[0] *  c + t[2] * s;
+		var m12 = t[1] *  c + t[3] * s;
+		var m21 = t[0] * -s + t[2] * c;
+		var m22 = t[1] * -s + t[3] * c;
+		return [m11, m12, m21, m22, t[4], t[5]];
+	},
+	translate: function(t, pt){
+		getvec6(t);
+		getvec2(pt);
+		var dx = t[4] + t[0] * pt[0] + t[2] * pt[1];
+		var dy = t[5] + t[1] * pt[0] + t[3] * pt[1];
+		return [t[0], t[1], t[2], t[3], dx, dy];
+	},
+	scale: function(t, sc){
+		getvec6(t);
+		var x, y;
+		if (isvec2(sc)){
+			x = sc[0];
+			y = sc[1];
+		}
+		else
+			x = y = getnum(sc);
+		return [t[0] * x, t[1] * x, t[2] * y, t[3] * y, t[4], t[5]];
+	},
+	applyPoint: function(t, pts){
+		getvec6(t);
+		return ptsop(pts, isvec2, function(pt){
+			return [
+				pt[0] * t[0] + pt[1] * t[2] + t[4],
+				pt[0] * t[1] + pt[1] * t[3] + t[5]
+			];
+		});
+	}
+};
+
+*/
+
 //
 // mat3
 //
@@ -1665,179 +1747,177 @@ function mat4_transpose(out, a){
 }
 
 if (typeof module !== 'undefined' && module.exports){
-	// inside node.js, so export functions
-	module.exports = {
-		TAU: TAU,
+	// inside node.js, so export functions into global namespace
+	global.TAU = TAU;
 
-		// num (scalars)
-		num_abs  : num_abs  ,
-		num_acos : num_acos ,
-		num_asin : num_asin ,
-		num_atan2: num_atan2,
-		num_ceil : num_ceil ,
-		num_clamp: num_clamp,
-		num_cos  : num_cos  ,
-		num_floor: num_floor,
-		num_lerp : num_lerp ,
-		num_log  : num_log  ,
-		num_max  : num_max  ,
-		num_min  : num_min  ,
-		num_mod  : num_mod  ,
-		num_pow  : num_pow  ,
-		num_round: num_round,
-		num_sin  : num_sin  ,
-		num_sqrt : num_sqrt ,
-		num_tan  : num_tan  ,
+	// num (scalars)
+	global.num_abs   = num_abs  ;
+	global.num_acos  = num_acos ;
+	global.num_asin  = num_asin ;
+	global.num_atan2 = num_atan2;
+	global.num_ceil  = num_ceil ;
+	global.num_clamp = num_clamp;
+	global.num_cos   = num_cos  ;
+	global.num_floor = num_floor;
+	global.num_lerp  = num_lerp ;
+	global.num_log   = num_log  ;
+	global.num_max   = num_max  ;
+	global.num_min   = num_min  ;
+	global.num_mod   = num_mod  ;
+	global.num_pow   = num_pow  ;
+	global.num_round = num_round;
+	global.num_sin   = num_sin  ;
+	global.num_sqrt  = num_sqrt ;
+	global.num_tan   = num_tan  ;
 
-		// vec2
-		vec2_add      : vec2_add      ,
-		vec2_applymat2: vec2_applymat2,
-		vec2_applymat3: vec2_applymat3,
-		vec2_applymat4: vec2_applymat4,
-		vec2_clamp    : vec2_clamp    ,
-		vec2_dist     : vec2_dist     ,
-		vec2_dist2    : vec2_dist2    ,
-		vec2_div      : vec2_div      ,
-		vec2_dot      : vec2_dot      ,
-		vec2_inverse  : vec2_inverse  ,
-		vec2_len      : vec2_len      ,
-		vec2_len2     : vec2_len2     ,
-		vec2_lerp     : vec2_lerp     ,
-		vec2_max      : vec2_max      ,
-		vec2_min      : vec2_min      ,
-		vec2_mul      : vec2_mul      ,
-		vec2_neg      : vec2_neg      ,
-		vec2_normal   : vec2_normal   ,
-		vec2_scale    : vec2_scale    ,
-		vec2_sub      : vec2_sub      ,
+	// vec2
+	global.vec2_add       = vec2_add      ;
+	global.vec2_applymat2 = vec2_applymat2;
+	global.vec2_applymat3 = vec2_applymat3;
+	global.vec2_applymat4 = vec2_applymat4;
+	global.vec2_clamp     = vec2_clamp    ;
+	global.vec2_dist      = vec2_dist     ;
+	global.vec2_dist2     = vec2_dist2    ;
+	global.vec2_div       = vec2_div      ;
+	global.vec2_dot       = vec2_dot      ;
+	global.vec2_inverse   = vec2_inverse  ;
+	global.vec2_len       = vec2_len      ;
+	global.vec2_len2      = vec2_len2     ;
+	global.vec2_lerp      = vec2_lerp     ;
+	global.vec2_max       = vec2_max      ;
+	global.vec2_min       = vec2_min      ;
+	global.vec2_mul       = vec2_mul      ;
+	global.vec2_neg       = vec2_neg      ;
+	global.vec2_normal    = vec2_normal   ;
+	global.vec2_scale     = vec2_scale    ;
+	global.vec2_sub       = vec2_sub      ;
 
-		// vec3
-		vec3_add      : vec3_add      ,
-		vec3_angle    : vec3_angle    ,
-		vec3_applymat3: vec3_applymat3,
-		vec3_applymat4: vec3_applymat4,
-		vec3_applyquat: vec3_applyquat,
-		vec3_clamp    : vec3_clamp    ,
-		vec3_cross    : vec3_cross    ,
-		vec3_div      : vec3_div      ,
-		vec3_dist     : vec3_dist     ,
-		vec3_dist2    : vec3_dist2    ,
-		vec3_dot      : vec3_dot      ,
-		vec3_inverse  : vec3_inverse  ,
-		vec3_len      : vec3_len      ,
-		vec3_len2     : vec3_len2     ,
-		vec3_lerp     : vec3_lerp     ,
-		vec3_max      : vec3_max      ,
-		vec3_min      : vec3_min      ,
-		vec3_mul      : vec3_mul      ,
-		vec3_nangle   : vec3_nangle   ,
-		vec3_neg      : vec3_neg      ,
-		vec3_normal   : vec3_normal   ,
-		vec3_scale    : vec3_scale    ,
-		vec3_sub      : vec3_sub      ,
+	// vec3
+	global.vec3_add       = vec3_add      ;
+	global.vec3_angle     = vec3_angle    ;
+	global.vec3_applymat3 = vec3_applymat3;
+	global.vec3_applymat4 = vec3_applymat4;
+	global.vec3_applyquat = vec3_applyquat;
+	global.vec3_clamp     = vec3_clamp    ;
+	global.vec3_cross     = vec3_cross    ;
+	global.vec3_div       = vec3_div      ;
+	global.vec3_dist      = vec3_dist     ;
+	global.vec3_dist2     = vec3_dist2    ;
+	global.vec3_dot       = vec3_dot      ;
+	global.vec3_inverse   = vec3_inverse  ;
+	global.vec3_len       = vec3_len      ;
+	global.vec3_len2      = vec3_len2     ;
+	global.vec3_lerp      = vec3_lerp     ;
+	global.vec3_max       = vec3_max      ;
+	global.vec3_min       = vec3_min      ;
+	global.vec3_mul       = vec3_mul      ;
+	global.vec3_nangle    = vec3_nangle   ;
+	global.vec3_neg       = vec3_neg      ;
+	global.vec3_normal    = vec3_normal   ;
+	global.vec3_scale     = vec3_scale    ;
+	global.vec3_sub       = vec3_sub      ;
 
-		// vec4
-		vec4_add      : vec4_add      ,
-		vec4_applymat4: vec4_applymat4,
-		vec4_applyquat: vec4_applyquat,
-		vec4_clamp    : vec4_clamp    ,
-		vec4_dist     : vec4_dist     ,
-		vec4_dist2    : vec4_dist2    ,
-		vec4_div      : vec4_div      ,
-		vec4_dot      : vec4_dot      ,
-		vec4_inverse  : vec4_inverse  ,
-		vec4_len      : vec4_len      ,
-		vec4_len2     : vec4_len2     ,
-		vec4_lerp     : vec4_lerp     ,
-		vec4_max      : vec4_max      ,
-		vec4_min      : vec4_min      ,
-		vec4_mul      : vec4_mul      ,
-		vec4_neg      : vec4_neg      ,
-		vec4_normal   : vec4_normal   ,
-		vec4_scale    : vec4_scale    ,
-		vec4_sub      : vec4_sub      ,
+	// vec4
+	global.vec4_add       = vec4_add      ;
+	global.vec4_applymat4 = vec4_applymat4;
+	global.vec4_applyquat = vec4_applyquat;
+	global.vec4_clamp     = vec4_clamp    ;
+	global.vec4_dist      = vec4_dist     ;
+	global.vec4_dist2     = vec4_dist2    ;
+	global.vec4_div       = vec4_div      ;
+	global.vec4_dot       = vec4_dot      ;
+	global.vec4_inverse   = vec4_inverse  ;
+	global.vec4_len       = vec4_len      ;
+	global.vec4_len2      = vec4_len2     ;
+	global.vec4_lerp      = vec4_lerp     ;
+	global.vec4_max       = vec4_max      ;
+	global.vec4_min       = vec4_min      ;
+	global.vec4_mul       = vec4_mul      ;
+	global.vec4_neg       = vec4_neg      ;
+	global.vec4_normal    = vec4_normal   ;
+	global.vec4_scale     = vec4_scale    ;
+	global.vec4_sub       = vec4_sub      ;
 
-		// quat
-		quat_axisang  : quat_axisang  ,
-		quat_between  : quat_between  ,
-		quat_dot      : quat_dot      ,
-		quat_euler_xyz: quat_euler_xyz,
-		quat_euler_xzy: quat_euler_xzy,
-		quat_euler_yxz: quat_euler_yxz,
-		quat_euler_yzx: quat_euler_yzx,
-		quat_euler_zxy: quat_euler_zxy,
-		quat_euler_zyx: quat_euler_zyx,
-		quat_identity : quat_identity ,
-		quat_invert   : quat_invert   ,
-		quat_lerp     : quat_lerp     ,
-		quat_mul      : quat_mul      ,
-		quat_naxisang : quat_naxisang ,
-		quat_nbetween : quat_nbetween ,
-		quat_neg      : quat_neg      ,
-		quat_nlerp    : quat_nlerp    ,
-		quat_normal   : quat_normal   ,
-		quat_slerp    : quat_slerp    ,
+	// quat
+	global.quat_axisang   = quat_axisang  ;
+	global.quat_between   = quat_between  ;
+	global.quat_dot       = quat_dot      ;
+	global.quat_euler_xyz = quat_euler_xyz;
+	global.quat_euler_xzy = quat_euler_xzy;
+	global.quat_euler_yxz = quat_euler_yxz;
+	global.quat_euler_yzx = quat_euler_yzx;
+	global.quat_euler_zxy = quat_euler_zxy;
+	global.quat_euler_zyx = quat_euler_zyx;
+	global.quat_identity  = quat_identity ;
+	global.quat_invert    = quat_invert   ;
+	global.quat_lerp      = quat_lerp     ;
+	global.quat_mul       = quat_mul      ;
+	global.quat_naxisang  = quat_naxisang ;
+	global.quat_nbetween  = quat_nbetween ;
+	global.quat_neg       = quat_neg      ;
+	global.quat_nlerp     = quat_nlerp    ;
+	global.quat_normal    = quat_normal   ;
+	global.quat_slerp     = quat_slerp    ;
 
-		// mat2
-		mat2_add      : mat2_add      ,
-		mat2_adjoint  : mat2_adjoint  ,
-		mat2_compmul  : mat2_compmul  ,
-		mat2_det      : mat2_det      ,
-		mat2_identity : mat2_identity ,
-		mat2_invert   : mat2_invert   ,
-		mat2_mul      : mat2_mul      ,
-		mat2_rotate   : mat2_rotate   ,
-		mat2_rotation : mat2_rotation ,
-		mat2_scale    : mat2_scale    ,
-		mat2_scaling  : mat2_scaling  ,
-		mat2_sub      : mat2_sub      ,
-		mat2_transpose: mat2_transpose,
+	// mat2
+	global.mat2_add       = mat2_add      ;
+	global.mat2_adjoint   = mat2_adjoint  ;
+	global.mat2_compmul   = mat2_compmul  ;
+	global.mat2_det       = mat2_det      ;
+	global.mat2_identity  = mat2_identity ;
+	global.mat2_invert    = mat2_invert   ;
+	global.mat2_mul       = mat2_mul      ;
+	global.mat2_rotate    = mat2_rotate   ;
+	global.mat2_rotation  = mat2_rotation ;
+	global.mat2_scale     = mat2_scale    ;
+	global.mat2_scaling   = mat2_scaling  ;
+	global.mat2_sub       = mat2_sub      ;
+	global.mat2_transpose = mat2_transpose;
 
-		// mat3x2
-		// TODO: this
+	// mat3x2
+	// TODO: this
 
-		// mat3
-		mat3_add        : mat3_add        ,
-		mat3_adjoint    : mat3_adjoint    ,
-		mat3_compmul    : mat3_compmul    ,
-		mat3_copy       : mat3_copy       ,
-		mat3_det        : mat3_det        ,
-		mat3_identity   : mat3_identity   ,
-		mat3_invert     : mat3_invert     ,
-		mat3_mul        : mat3_mul        ,
-		mat3_quat       : mat3_quat       ,
-		mat3_rotate     : mat3_rotate     ,
-		mat3_rotation   : mat3_rotation   ,
-		mat3_scale      : mat3_scale      ,
-		mat3_scaling    : mat3_scaling    ,
-		mat3_sub        : mat3_sub        ,
-		mat3_translate  : mat3_translate  ,
-		mat3_translation: mat3_translation,
-		mat3_transpose  : mat3_transpose  ,
+	// mat3
+	global.mat3_add         = mat3_add        ;
+	global.mat3_adjoint     = mat3_adjoint    ;
+	global.mat3_compmul     = mat3_compmul    ;
+	global.mat3_copy        = mat3_copy       ;
+	global.mat3_det         = mat3_det        ;
+	global.mat3_identity    = mat3_identity   ;
+	global.mat3_invert      = mat3_invert     ;
+	global.mat3_mul         = mat3_mul        ;
+	global.mat3_quat        = mat3_quat       ;
+	global.mat3_rotate      = mat3_rotate     ;
+	global.mat3_rotation    = mat3_rotation   ;
+	global.mat3_scale       = mat3_scale      ;
+	global.mat3_scaling     = mat3_scaling    ;
+	global.mat3_sub         = mat3_sub        ;
+	global.mat3_translate   = mat3_translate  ;
+	global.mat3_translation = mat3_translation;
+	global.mat3_transpose   = mat3_transpose  ;
 
-		// mat4
-		mat4_add           : mat4_add           ,
-		mat4_adjoint       : mat4_adjoint       ,
-		mat4_compmul       : mat4_compmul       ,
-		mat4_copy          : mat4_copy          ,
-		mat4_det           : mat4_det           ,
-		mat4_frustum       : mat4_frustum       ,
-		mat4_identity      : mat4_identity      ,
-		mat4_invert        : mat4_invert        ,
-		mat4_lookat        : mat4_lookat        ,
-		mat4_mul           : mat4_mul           ,
-		mat4_orthogonal    : mat4_orthogonal    ,
-		mat4_perspective   : mat4_perspective   ,
-		mat4_quat          : mat4_quat          ,
-		mat4_rotate        : mat4_rotate        ,
-		mat4_rotation      : mat4_rotation      ,
-		mat4_rottrans      : mat4_rottrans      ,
-		mat4_rottransorigin: mat4_rottransorigin,
-		mat4_scale         : mat4_scale         ,
-		mat4_scaling       : mat4_scaling       ,
-		mat4_sub           : mat4_sub           ,
-		mat4_translate     : mat4_translate     ,
-		mat4_translation   : mat4_translation   ,
-		mat4_transpose     : mat4_transpose
-	};
+	// mat4
+	global.mat4_add            = mat4_add           ;
+	global.mat4_adjoint        = mat4_adjoint       ;
+	global.mat4_compmul        = mat4_compmul       ;
+	global.mat4_copy           = mat4_copy          ;
+	global.mat4_det            = mat4_det           ;
+	global.mat4_frustum        = mat4_frustum       ;
+	global.mat4_identity       = mat4_identity      ;
+	global.mat4_invert         = mat4_invert        ;
+	global.mat4_lookat         = mat4_lookat        ;
+	global.mat4_mul            = mat4_mul           ;
+	global.mat4_orthogonal     = mat4_orthogonal    ;
+	global.mat4_perspective    = mat4_perspective   ;
+	global.mat4_quat           = mat4_quat          ;
+	global.mat4_rotate         = mat4_rotate        ;
+	global.mat4_rotation       = mat4_rotation      ;
+	global.mat4_rottrans       = mat4_rottrans      ;
+	global.mat4_rottransorigin = mat4_rottransorigin;
+	global.mat4_scale          = mat4_scale         ;
+	global.mat4_scaling        = mat4_scaling       ;
+	global.mat4_sub            = mat4_sub           ;
+	global.mat4_translate      = mat4_translate     ;
+	global.mat4_translation    = mat4_translation   ;
+	global.mat4_transpose      = mat4_transpose     ;
 }

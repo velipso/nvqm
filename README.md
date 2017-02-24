@@ -7,6 +7,21 @@ The number of times I've had to lookup a simple vector operation is too damn hig
 attempt to pick a single reasonable API to consistently apply across any programming language I
 happen to be using.
 
+Implementations
+---------------
+
+* C99 (`nvqm.h`+`nvqm.c`)
+  * Values stored as structured arrays to facilitate pass-by-value
+* JavaScript (`nvqm.js`)
+  * Values stored as a flat array of numbers
+  * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
+    return the `out` parameter
+  * When `require`d in node.js, functions are exported into global namespace
+* [Sink](https://github.com/voidqk/sink) (`sink_vqm.js`, `sink_vqm.h`+`sink_vqm.c`)
+  * Values are stored as a flat array of numbers
+  * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
+    return the `out` parameter
+
 Functions
 ---------
 
