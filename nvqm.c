@@ -165,17 +165,17 @@ mat3 *mat3_rotate(mat3 *out, mat3 *a, float ang){
 }
 
 mat3 *mat3_rotation(mat3 *out, float ang){
-    float s = num_sin(ang), c = num_cos(ang);
-    out->v[0] =  c;
-    out->v[1] =  s;
-    out->v[2] =  0.0f;
-    out->v[3] = -s;
-    out->v[4] =  c;
-    out->v[5] =  0.0f;
-    out->v[6] =  0.0f;
-    out->v[7] =  0.0f;
-    out->v[8] =  1.0f;
-    return out;
+	float s = num_sin(ang), c = num_cos(ang);
+	out->v[0] =  c;
+	out->v[1] =  s;
+	out->v[2] =  0.0f;
+	out->v[3] = -s;
+	out->v[4] =  c;
+	out->v[5] =  0.0f;
+	out->v[6] =  0.0f;
+	out->v[7] =  0.0f;
+	out->v[8] =  1.0f;
+	return out;
 }
 
 mat3 *mat3_scale(mat3 *out, mat3 *a, vec2 b){
@@ -193,16 +193,16 @@ mat3 *mat3_scale(mat3 *out, mat3 *a, vec2 b){
 }
 
 mat3 *mat3_scaling(mat3 *out, vec2 a){
-    out->v[0] = a.v[0];
-    out->v[1] = 0.0f;
-    out->v[2] = 0.0f;
-    out->v[3] = 0.0f;
-    out->v[4] = a.v[1];
-    out->v[5] = 0.0f;
-    out->v[6] = 0.0f;
-    out->v[7] = 0.0f;
-    out->v[8] = 1.0f;
-    return out;
+	out->v[0] = a.v[0];
+	out->v[1] = 0.0f;
+	out->v[2] = 0.0f;
+	out->v[3] = 0.0f;
+	out->v[4] = a.v[1];
+	out->v[5] = 0.0f;
+	out->v[6] = 0.0f;
+	out->v[7] = 0.0f;
+	out->v[8] = 1.0f;
+	return out;
 }
 
 mat3 *mat3_sub(mat3 *out, mat3 *a, mat3 *b){

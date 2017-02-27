@@ -53,7 +53,7 @@ float num_sin  (float a);
 float num_sqrt (float a);
 float num_tan  (float a);
 
-// vec2
+// vec2  [x, y]
 vec2  vec2_add      (vec2 a, vec2 b);
 vec2  vec2_applymat2(vec2 a, mat2 b);
 vec2  vec2_applymat3(vec2 a, mat3 *b);
@@ -75,7 +75,7 @@ vec2  vec2_normal   (vec2 a);
 vec2  vec2_scale    (vec2 a, float s);
 vec2  vec2_sub      (vec2 a, vec2 b);
 
-// vec3
+// vec3  [x, y, z]
 vec3  vec3_add      (vec3 a, vec3 b);
 float vec3_angle    (vec3 a, vec3 b);
 vec3  vec3_applymat3(vec3 a, mat3 *b);
@@ -100,7 +100,7 @@ vec3  vec3_normal   (vec3 a);
 vec3  vec3_scale    (vec3 a, float s);
 vec3  vec3_sub      (vec3 a, vec3 b);
 
-// vec4
+// vec4  [x, y, z, w]
 vec4  vec4_add      (vec4 a, vec4 b);
 vec4  vec4_applymat4(vec4 a, mat4 *b);
 vec4  vec4_applyquat(vec4 a, quat b);
@@ -121,7 +121,7 @@ vec4  vec4_normal   (vec4 a);
 vec4  vec4_scale    (vec4 a, float s);
 vec4  vec4_sub      (vec4 a, vec4 b);
 
-// quat
+// quat  [x, y, z, w]
 quat  quat_axisang  (vec3 axis, float ang);
 quat  quat_between  (vec3 from, vec3 to);
 float quat_dot      (quat a, quat b);
@@ -143,6 +143,8 @@ quat  quat_normal   (quat a);
 quat  quat_slerp    (quat a, quat b, float t);
 
 // mat2
+// [a, b, c, d] = | a c |
+//                | b d |
 mat2  mat2_add      (mat2 a, mat2 b);
 mat2  mat2_adjoint  (mat2 a);
 mat2  mat2_compmul  (mat2 a, mat2 b);
@@ -158,9 +160,27 @@ mat2  mat2_sub      (mat2 a, mat2 b);
 mat2  mat2_transpose(mat2 a);
 
 // mat3x2
-// TODO: this
+//                      | a c e |
+// [a, b, c, d, e, f] = | b d f |
+//                      | 0 0 1 |
+mat3x2 mat3x2_add        (mat3x2 a, mat3x2 b);
+mat3x2 mat3x2_compmul    (mat3x2 a, mat3x2 b);
+float  mat3x2_det        (mat3x2 a);
+mat3x2 mat3x2_identity   ();
+mat3x2 mat3x2_invert     (mat3x2 a);
+mat3x2 mat3x2_mul        (mat3x2 a, mat3x2 b);
+mat3x2 mat3x2_rotate     (mat3x2 a, float ang);
+mat3x2 mat3x2_rotation   (float ang);
+mat3x2 mat3x2_scale      (mat3x2 a, vec2 b);
+mat3x2 mat3x2_scaling    (vec2 a);
+mat3x2 mat3x2_sub        (mat3x2 a, mat3x2 b);
+mat3x2 mat3x2_translate  (mat3x2 a, vec2 b);
+mat3x2 mat3x2_translation(vec2 a);
 
 // mat3
+//                               | a d g |
+// [a, b, c, d, e, f, g, h, i] = | b e h |
+//                               | c f i |
 mat3 *mat3_add        (mat3 *out, mat3 *a, mat3 *b);
 mat3 *mat3_adjoint    (mat3 *out, mat3 *a);
 mat3 *mat3_compmul    (mat3 *out, mat3 *a, mat3 *b);
@@ -180,6 +200,10 @@ mat3 *mat3_translation(mat3 *out, vec2 a);
 mat3 *mat3_transpose  (mat3 *out, mat3 *a);
 
 // mat4
+//                                                    | a e i m |
+// [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p] = | b f j n |
+//                                                    | c g k o |
+//                                                    | d h l p |
 mat4 *mat4_add           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_adjoint       (mat4 *out, mat4 *a);
 mat4 *mat4_compmul       (mat4 *out, mat4 *a, mat4 *b);

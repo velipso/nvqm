@@ -107,6 +107,11 @@ static inline vec2 vec2_applymat2(vec2 a, mat2 b){
 	return (vec2){ b.v[0] * ax + b.v[2] * ay, b.v[1] * ax + b.v[3] * ay };
 }
 
+static inline vec2 vec2_applymat3x2(vec2 a, mat3x2 b){
+	float ax = a.v[0], ay = a.v[1];
+	return (vec2){ b.v[0] * ax + b.v[2] * ay + b.v[4], b.v[1] * ax + b.v[3] * ay + b.v[5] };
+}
+
 static inline vec2 vec2_applymat3(vec2 a, mat3 *b){
 	float ax = a.v[0], ay = a.v[1];
 	return (vec2){ b->v[0] * ax + b->v[3] * ay + b->v[6], b->v[1] * ax + b->v[4] * ay + b->v[7] };
@@ -202,6 +207,15 @@ static inline float vec3_nangle(vec3 a, vec3 b);
 static inline vec3 vec3_normal(vec3 a);
 static inline float vec3_angle(vec3 a, vec3 b){
 	return vec3_nangle(vec3_normal(a), vec3_normal(b));
+}
+
+static inline vec3 vec3_applymat3x2(vec3 a, mat3x2 b){
+	float ax = a.v[0], ay = a.v[1], az = a.v[2];
+	return (vec3){
+		ax * b.v[0] + ay * b.v[2] + az * b.v[4],
+		ax * b.v[1] + ay * b.v[3] + az * b.v[5],
+		az
+	};
 }
 
 static inline vec3 vec3_applymat3(vec3 a, mat3 *b){
@@ -731,8 +745,119 @@ static inline mat2 mat2_transpose(mat2 a){
 }
 
 //
-// TODO: mat3x2
+// mat3x2
 //
+
+static inline mat3x2 mat3x2_add(mat3x2 a, mat3x2 b){
+	return (mat3x2){
+		a.v[0] + b.v[0], a.v[1] + b.v[1],
+		a.v[2] + b.v[2], a.v[3] + b.v[3],
+		a.v[4] + b.v[4], a.v[5] + b.v[5]
+	};
+}
+
+static inline mat3x2 mat3x2_compmul(mat3x2 a, mat3x2 b){
+	return (mat3x2){
+		a.v[0] * b.v[0], a.v[1] * b.v[1],
+		a.v[2] * b.v[2], a.v[3] * b.v[3],
+		a.v[4] * b.v[4], a.v[5] * b.v[5]
+	};
+}
+
+static inline float mat3x2_det(mat3x2 a){
+	return a.v[0] * a.v[3] - a.v[2] * a.v[1];
+}
+
+static inline mat3x2 mat3x2_identity(){
+	return (mat3x2){ 1, 0, 0, 1, 0, 0 };
+}
+
+static inline mat3x2 mat3x2_invert(mat3x2 a){
+	float
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		a20 = a.v[4], a21 = a.v[5];
+	float det = a00 * a11 - a01 * a10;
+	if (det == 0.0f)
+		return (mat3x2){ 0, 0, 0, 0, 0, 0 };
+	det = 1.0f / det;
+	return (mat3x2){
+		 a11 * det, -a01 * det,
+		-a10 * det,  a00 * det,
+		( a21 * a10 - a11 * a20) * det,
+		(-a21 * a00 + a01 * a20) * det
+	};
+}
+
+static inline mat3x2 mat3x2_mul(mat3x2 a, mat3x2 b){
+	float
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		a20 = a.v[4], a21 = a.v[5],
+		b00 = b.v[0], b01 = b.v[1],
+		b10 = b.v[2], b11 = b.v[3],
+		b20 = b.v[4], b21 = b.v[5];
+	return (mat3x2){
+		b00 * a00 + b01 * a10      , b00 * a01 + b01 * a11,
+		b10 * a00 + b11 * a10      , b10 * a01 + b11 * a11,
+		b20 * a00 + b21 * a10 + a20, b20 * a01 + b21 * a11 + a21
+	};
+}
+
+static inline mat3x2 mat3x2_rotate(mat3x2 a, float ang){
+	float
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		s = num_sin(ang), c = num_cos(ang);
+	return (mat3x2){
+		c * a00 + s * a10, c * a01 + s * a11,
+		c * a10 - s * a00, c * a11 - s * a01,
+		a.v[4], a.v[5]
+	};
+}
+
+static inline mat3x2 mat3x2_rotation(float ang){
+	float s = num_sin(ang), c = num_cos(ang);
+	return (mat3x2){ c, s, -s, c, 0.0f, 0.0f };
+}
+
+static inline mat3x2 mat3x2_scale(mat3x2 a, vec2 b){
+	float bx = b.v[0], by = b.v[1];
+	return (mat3x2){
+		bx * a.v[0], bx * a.v[1],
+		by * a.v[2], by * a.v[3],
+		a.v[4], a.v[5],
+	};
+}
+
+static inline mat3x2 mat3x2_scaling(vec2 a){
+	return (mat3x2){ a.v[0], 0, 0, a.v[1], 0, 0 };
+}
+
+static inline mat3x2 mat3x2_sub(mat3x2 a, mat3x2 b){
+	return (mat3x2){
+		a.v[0] - b.v[0], a.v[1] - b.v[1],
+		a.v[2] - b.v[2], a.v[3] - b.v[3],
+		a.v[4] - b.v[4], a.v[5] - b.v[5]
+	};
+}
+
+static inline mat3x2 mat3x2_translate(mat3x2 a, vec2 b){
+	float
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		bx = b.v[0], by = b.v[1];
+	return (mat3x2){
+		a00, a01,
+		a10, a11,
+		bx * a00 + by * a10 + a.v[4],
+		bx * a01 + by * a11 + a.v[5]
+	};
+}
+
+static inline mat3x2 mat3x2_translation(vec2 a){
+	return (mat3x2){ 1, 0, 0, 1, a.v[0], a.v[1] };
+}
 
 //
 // mat3
