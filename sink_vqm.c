@@ -441,24 +441,24 @@ static inline bool check_args(sink_ctx ctx, int req, int actual, const char *err
 			fix_ ## T3(ctx, args[2])), args[0]) : SINK_NIL)
 
 #define P4(N, R, F, T1, T2, T3, T4) \
-	FUNC(F, check_args(ctx, 3, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4) ? \
+	FUNC(F, check_args(ctx, 4, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4) ? \
 		return_ ## R(ctx, F(fix_ ## T1(ctx, args[0]), fix_ ## T2(ctx, args[1]), \
 			fix_ ## T3(ctx, args[2]), fix_ ## T4(ctx, args[3])), args[0]) : SINK_NIL)
 
 #define P5(N, R, F, T1, T2, T3, T4, T5) \
-	FUNC(F, check_args(ctx, 3, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5) ? \
+	FUNC(F, check_args(ctx, 5, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5) ? \
 		return_ ## R(ctx, F(fix_ ## T1(ctx, args[0]), fix_ ## T2(ctx, args[1]), \
 			fix_ ## T3(ctx, args[2]), fix_ ## T4(ctx, args[3]), fix_ ## T5(ctx, args[4])), \
 		args[0]) : SINK_NIL)
 
 #define P6(N, R, F, T1, T2, T3, T4, T5, T6) \
-	FUNC(F, check_args(ctx, 3, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5 ", " \
+	FUNC(F, check_args(ctx, 6, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5 ", " \
 		#T6) ? return_ ## R(ctx, F(fix_ ## T1(ctx, args[0]), fix_ ## T2(ctx, args[1]), \
 			fix_ ## T3(ctx, args[2]), fix_ ## T4(ctx, args[3]), fix_ ## T5(ctx, args[4]), \
 			fix_ ## T6(ctx, args[5])), args[0]) : SINK_NIL)
 
 #define P7(N, R, F, T1, T2, T3, T4, T5, T6, T7) \
-	FUNC(F, check_args(ctx, 3, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5 ", " \
+	FUNC(F, check_args(ctx, 7, size, "Expecting " #T1 ", " #T2 ", " #T3 ", " #T4 ", " #T5 ", " \
 		#T6 ", " #T7) ? return_ ## R(ctx, F(fix_ ## T1(ctx, args[0]), fix_ ## T2(ctx, args[1]), \
 			fix_ ## T3(ctx, args[2]), fix_ ## T4(ctx, args[3]), fix_ ## T5(ctx, args[4]), \
 			fix_ ## T6(ctx, args[5]), fix_ ## T7(ctx, args[6])), args[0]) : SINK_NIL)
