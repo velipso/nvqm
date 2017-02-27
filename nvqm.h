@@ -568,7 +568,7 @@ static inline quat quat_euler_zyx(vec3 rot){
 }
 
 static inline quat quat_identity(){
-	return (quat){ 0, 0, 0, 1 };
+	return (quat){ 0.0f, 0.0f, 0.0f, 1.0f };
 }
 
 static inline quat quat_invert(quat a){
@@ -696,14 +696,14 @@ static inline float mat2_det(mat2 a){
 }
 
 static inline mat2 mat2_identity(){
-	return (mat2){ 1, 0, 0, 1 };
+	return (mat2){ 1.0f, 0.0f, 0.0f, 1.0f };
 }
 
 static inline mat2 mat2_invert(mat2 a){
 	float a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3];
 	float det = a0 * a3 - a2 * a1;
 	if (det == 0.0f)
-		return (mat2){ 0, 0, 0, 0 };
+		return (mat2){ 0.0f, 0.0f, 0.0f, 0.0f };
 	det = 1.0f / det;
 	return (mat2){ a3 * det, -a1 * det, -a2 * det, a0 * det };
 }
@@ -733,7 +733,7 @@ static inline mat2 mat2_scale(mat2 a, vec2 b){
 }
 
 static inline mat2 mat2_scaling(vec2 a){
-	return (mat2){ a.v[0], 0, 0, a.v[1] };
+	return (mat2){ a.v[0], 0.0f, 0.0f, a.v[1] };
 }
 
 static inline mat2 mat2_sub(mat2 a, mat2 b){
@@ -769,7 +769,7 @@ static inline float mat3x2_det(mat3x2 a){
 }
 
 static inline mat3x2 mat3x2_identity(){
-	return (mat3x2){ 1, 0, 0, 1, 0, 0 };
+	return (mat3x2){ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f };
 }
 
 static inline mat3x2 mat3x2_invert(mat3x2 a){
@@ -779,7 +779,7 @@ static inline mat3x2 mat3x2_invert(mat3x2 a){
 		a20 = a.v[4], a21 = a.v[5];
 	float det = a00 * a11 - a01 * a10;
 	if (det == 0.0f)
-		return (mat3x2){ 0, 0, 0, 0, 0, 0 };
+		return (mat3x2){ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 	det = 1.0f / det;
 	return (mat3x2){
 		 a11 * det, -a01 * det,
@@ -831,7 +831,7 @@ static inline mat3x2 mat3x2_scale(mat3x2 a, vec2 b){
 }
 
 static inline mat3x2 mat3x2_scaling(vec2 a){
-	return (mat3x2){ a.v[0], 0, 0, a.v[1], 0, 0 };
+	return (mat3x2){ a.v[0], 0.0f, 0.0f, a.v[1], 0.0f, 0.0f };
 }
 
 static inline mat3x2 mat3x2_sub(mat3x2 a, mat3x2 b){
@@ -856,7 +856,7 @@ static inline mat3x2 mat3x2_translate(mat3x2 a, vec2 b){
 }
 
 static inline mat3x2 mat3x2_translation(vec2 a){
-	return (mat3x2){ 1, 0, 0, 1, a.v[0], a.v[1] };
+	return (mat3x2){ 1.0f, 0.0f, 0.0f, 1.0f, a.v[0], a.v[1] };
 }
 
 //
