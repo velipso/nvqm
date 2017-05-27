@@ -483,7 +483,7 @@ void sink_vqm_scr(sink_scr scr){
 	#define P5(N, R, F, T1, T2, T3, T4, T5)         "declare " N " 'sink.vqm." N "';"
 	#define P6(N, R, F, T1, T2, T3, T4, T5, T6)     "declare " N " 'sink.vqm." N "';"
 	#define P7(N, R, F, T1, T2, T3, T4, T5, T6, T7) "declare " N " 'sink.vqm." N "';"
-	sink_scr_inc(scr, "vqm",
+	sink_scr_incbody(scr, "vqm",
 		FUNCS(P0, P1, P2, P3, P4, P5, P6, P7)
 	);
 	#undef P0
