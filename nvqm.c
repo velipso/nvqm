@@ -955,7 +955,7 @@ xang xint_atan2(xint y, xint x){
 
 static inline int64_t x_mul31(int64_t res, int64_t f){
 	// res is Q33.31 and f is Q0.32
-	return (res * f) >> 32;
+	return (int64_t)(((uint64_t)res * (uint64_t)f) >> 32);
 }
 
 static inline int64_t x_exp2f(int64_t f){
