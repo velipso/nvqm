@@ -13,6 +13,7 @@ Implementations
 * C99 (`nvqm.h`+`nvqm.c`)
   * Values stored as structured arrays to facilitate pass-by-value
   * Pass-by-value functions are `static inline`
+  * Q16.16 fixed-point implementation (see notes below)
 * JavaScript (`nvqm.js`)
   * Values stored as a flat array of numbers
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
@@ -23,6 +24,13 @@ Implementations
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
     return the `out` parameter
   * `num.*` functions aren't included due to them being native to sink itself
+
+Fixed-Point
+-----------
+
+The C files also contains a signed Q16.16 fixed-point implementation.  It is deterministic and never
+fails -- but will give incorrect results if numbers overflow.  Angles are not stored in radians, but
+instead as 12 bit number (0 to 4095).
 
 Functions
 ---------
@@ -41,6 +49,7 @@ float num_atan2(float a, float b);
 float num_ceil (float a);
 float num_clamp(float a, float min, float max);
 float num_cos  (float a);
+float num_exp  (float a);
 float num_floor(float a);
 float num_lerp (float a, float b, float t);
 float num_log  (float a);
@@ -229,4 +238,53 @@ mat4 *mat4_sub           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_translate     (mat4 *out, mat4 *a, vec3 b);
 mat4 *mat4_translation   (mat4 *out, vec3 a);
 mat4 *mat4_transpose     (mat4 *out, mat4 *a);
+
+//
+// fixed-point (only in C implementation)
+//
+typedef int32_t xint; // represents the signed Q16.16 fixed-point type
+typedef int32_t xang; // represents a 12-bit angle type
+#define XINT1    INT32_C(0x00010000)   /* the value 1 */
+#define XINT(v)  ((xint)((v) * XINT1)) /* convert constant to xint */
+#define XANG0    0x0000 /*  0 degrees */
+#define XANG45   0x0200 /* 45 degrees */
+#define XANG90   0x0400 /* ...etc     */
+#define XANG135  0x0600
+#define XANG180  0x0800
+#define XANG225  0x0A00
+#define XANG270  0x0C00
+#define XANG315  0x0E00
+#define XANG360  0x1000 /* can be thought of as TAU to some extent */
+
+int    xint_toint     (xint a);
+xint   xint_fromint   (int a);
+float  xint_tofloat   (xint a);
+xint   xint_fromfloat (float a);
+double xint_todouble  (xint a);
+xint   xint_fromdouble(double a);
+
+xint xint_add(xint a, xint b);
+xint xint_sub(xint a, xint b);
+xint xint_mul(xint a, xint b);
+xint xint_div(xint a, xint b);
+
+xint xint_abs  (xint a);
+xang xint_acos (xint a);
+xang xint_asin (xint a);
+xang xint_atan2(xint y, xint x);
+xint xint_ceil (xint a);
+xint xint_clamp(xint a, xint min, xint max);
+xint xint_cos  (xang a);
+xint xint_exp  (xint a);
+xint xint_floor(xint a);
+xint xint_lerp (xint a, xint b, xint t);
+xint xint_log  (xint a);
+xint xint_max  (xint a, xint b);
+xint xint_min  (xint a, xint b);
+xint xint_mod  (xint a, xint b);
+xint xint_pow  (xint a, xint b);
+xint xint_round(xint a);
+xint xint_sin  (xang a);
+xint xint_sqrt (xint a);
+xint xint_tan  (xang a);
 ```

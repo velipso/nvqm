@@ -5,7 +5,15 @@
 #ifndef NVQM__H
 #define NVQM__H
 
+#ifndef NVQM_SKIP_FLOATING_POINT
+// floating point library included by default
+// define NVQM_SKIP_FLOATING_POINT to skip including the implementation
+
 #include <math.h>
+
+//
+// 32-bit floating point
+//
 
 typedef struct { float v[ 2]; } vec2;
 typedef struct { float v[ 3]; } vec3;
@@ -48,6 +56,10 @@ static inline float num_clamp(float a, float min, float max){
 
 static inline float num_cos(float a){
 	return cosf(a);
+}
+
+static inline float num_exp(float a){
+	return expf(a);
 }
 
 static inline float num_floor(float a){
@@ -908,5 +920,172 @@ mat4 *mat4_sub           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_translate     (mat4 *out, mat4 *a, vec3 b);
 mat4 *mat4_translation   (mat4 *out, vec3 a);
 mat4 *mat4_transpose     (mat4 *out, mat4 *a);
+
+#endif // NVQM_SKIP_FLOATING_POINT
+
+#ifndef NVQM_SKIP_FIXED_POINT
+// fixed point library included by default
+// define NVQM_SKIP_FIXED_POINT to skip including the implementation
+
+//
+// 16.16 fixed point library
+//
+
+#include <stdint.h>
+
+// signed 16.16 fixed-point
+typedef int32_t xint;
+typedef struct { xint v[ 2]; } xvec2;
+typedef struct { xint v[ 3]; } xvec3;
+typedef struct { xint v[ 4]; } xvec4;
+typedef struct { xint v[ 4]; } xquat;
+typedef struct { xint v[ 4]; } xmat2;
+typedef struct { xint v[ 6]; } xmat3x2;
+typedef struct { xint v[ 9]; } xmat3;
+typedef struct { xint v[16]; } xmat4;
+
+#define XINT1    INT32_C(0x00010000) /* the value 1 */
+#define XINT(v)  ((xint)((v) * XINT1))
+
+// note: angles for fixed-point operations are stored as 12 bit numbers (0 - 4095)
+// which means 0x000 = 0 degrees, 0x400 = 90 degrees, 0x800 = 180 degrees, etc
+typedef int32_t xang;
+#define XANG0    0x0000
+#define XANG45   0x0200
+#define XANG90   0x0400
+#define XANG135  0x0600
+#define XANG180  0x0800
+#define XANG225  0x0A00
+#define XANG270  0x0C00
+#define XANG315  0x0E00
+#define XANG360  0x1000 /* can be thought of as TAU to some extent */
+
+static inline int xint_toint(xint a){
+	return (int)(a >> 16);
+}
+
+static inline xint xint_fromint(int a){
+	return (xint)(a * (int)XINT1);
+}
+
+static inline float xint_tofloat(xint a){
+	return (float)a / (float)XINT1;
+}
+
+static inline xint xint_fromfloat(float a){
+	return (xint)roundf(a * (float)XINT1);
+}
+
+static inline double xint_todouble(xint a){
+	return (double)a / (double)XINT1;
+}
+
+static inline xint xint_fromdouble(double a){
+	return (xint)round(a * (double)XINT1);
+}
+
+static inline xint xint_add(xint a, xint b){
+	return (xint)(((uint32_t)a) + ((uint32_t)b));
+}
+
+static inline xint xint_sub(xint a, xint b){
+	return (xint)(((uint32_t)a) - ((uint32_t)b));
+}
+
+static inline xint xint_mul(xint a, xint b){
+	int64_t m = (int64_t)a * (int64_t)b;
+	return (xint)(m >> 16);
+}
+
+static inline xint xint_div(xint a, xint b){
+	int64_t m = (int64_t)a * XINT1;
+	return (xint)(m / b);
+}
+
+static inline xint xint_abs(xint a){
+	return a < 0 ? -a : a;
+}
+
+xang xint_atan2(xint y, xint x);
+static inline xint xint_sqrt(xint);
+static inline xang xint_acos(xint a){
+	if (a < -XINT1 || a > XINT1)
+		return 0;
+	if (a == -XINT1)
+		return XANG180;
+	if (a == XINT1)
+		return XANG0;
+	if (a == 0)
+		return XANG90;
+	return xint_atan2(xint_div(xint_sqrt(XINT1 - xint_mul(a, a)), a), XINT1);
+}
+
+static inline xang xint_asin(xint a){
+	if (a < -XINT1 || a > XINT1)
+		return 0;
+	if (a == -XINT1)
+		return XANG270;
+	if (a == XINT1)
+		return XANG90;
+	if (a == 0)
+		return XANG0;
+	return xint_atan2(xint_div(a, xint_sqrt(XINT1 - xint_mul(a, a))), XINT1);
+}
+
+static inline xint xint_ceil(xint a){
+	return (a & INT32_C(0xFFFF0000)) + ((a & INT32_C(0x0000FFFF)) == 0 ? 0 : XINT1);
+}
+
+static inline xint xint_clamp(xint a, xint min, xint max){
+	return a < min ? min : (a > max ? max : a);
+}
+
+static inline xint xint_sin(xang a);
+static inline xint xint_cos(xang a){
+	return xint_sin(a + XANG90);
+}
+
+xint xint_exp(xint a);
+
+static inline xint xint_floor(xint a){
+	return a & INT32_C(0xFFFF0000);
+}
+
+static inline xint xint_lerp(xint a, xint b, xint t){
+	return xint_add(a, xint_mul(xint_sub(b, a), t));
+}
+
+xint xint_log(xint a);
+
+static inline xint xint_max(xint a, xint b){
+	return a > b ? a : b;
+}
+
+static inline xint xint_min(xint a, xint b){
+	return a > b ? b : a;
+}
+
+static inline xint xint_mod(xint a, xint b){
+	return a % b;
+}
+
+xint xint_pow(xint a, xint b);
+
+static inline xint xint_round(xint a){
+	return xint_floor(a + (XINT1 >> 10));
+}
+
+extern const xint xint_sin__lut[XANG360];
+static inline xint xint_sin(xang a){
+	return xint_sin__lut[a < 0 ? (((a % XANG360) + XANG360) % XANG360) : (a % XANG360)];
+}
+
+xint xint_sqrt(xint a);
+
+static inline xint xint_tan(xang a){
+	return xint_div(xint_sin(a), xint_cos(a));
+}
+
+#endif // NVQM_SKIP_FIXED_POINT
 
 #endif // NVQM__H
