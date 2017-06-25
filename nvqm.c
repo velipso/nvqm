@@ -953,14 +953,121 @@ xang xint_atan2(xint y, xint x){
 	return angle;
 }
 
+static inline int64_t x_mul31(int64_t res, int64_t f){
+	// res is Q33.31 and f is Q0.32
+	return (res * f) >> 32;
+}
+
+static inline int64_t x_exp2f(int64_t f){
+	// res is Q33.31 and f is Q0.32
+	static const int64_t
+		c0 = INT64_C(0x80000000),
+		c1 = INT64_C(0x58B45A41),
+		c2 = INT64_C(0x1EEB1ABA),
+		c3 = INT64_C(0x069F8E50),
+		c4 = INT64_C(0x01C0FCB2);
+	int64_t res = c4;
+	res = c3 + x_mul31(res, f);
+	res = c2 + x_mul31(res, f);
+	res = c1 + x_mul31(res, f);
+	return c0 + x_mul31(res, f);
+}
+
+static inline xint x_exp2(int64_t a){
+	// a is Q32.32
+	// 2^(whole+fraction) = 2^whole * 2^fraction
+	int32_t whole = a >> 32;
+	int64_t fract = x_exp2f(a & INT64_C(0xFFFFFFFF));
+	if (whole < 15)
+		return (xint)(fract >> (15 - whole));
+	return (xint)(fract << (whole - 15));
+}
+
 xint xint_exp(xint a){
-	// TODO
-	return 0;
+	// testing shows this is within +-5177/65536, with a higher error the larger `a` is
+	if (a == 0)
+		return XINT1;
+	if (a > 681391)
+		return XINTMAX;
+	if (a < -681391)
+		return 0;
+	int neg = 0;
+	if (a < 0){
+		neg = 1;
+		a = -a;
+	}
+	static const int64_t log2e = INT64_C(0x171547653); // log2(e) at Q32.32
+	xint res = x_exp2((log2e * (int64_t)a) >> 16);
+	if (neg)
+		res = xint_div(XINT1, res);
+	return res;
+}
+
+#if defined(__GNUC__)
+static inline int x_log2w(int w){
+	return (((int)(sizeof(int) * 8)) - __builtin_clz(w));
+}
+#elif defined(_MSC_VER)
+// TODO: actually test this
+#include <intrin.h>
+static inline int x_log2w(int w){
+	return (((int)(sizeof(int) * 8)) - __lzcnt(w));
+}
+#else
+static inline int x_log2w(int w){
+	if (!(w >>  0)) return  0;
+	if (!(w >>  1)) return  1;
+	if (!(w >>  2)) return  2;
+	if (!(w >>  3)) return  3;
+	if (!(w >>  4)) return  4;
+	if (!(w >>  5)) return  5;
+	if (!(w >>  6)) return  6;
+	if (!(w >>  7)) return  7;
+	if (!(w >>  8)) return  8;
+	if (!(w >>  9)) return  9;
+	if (!(w >> 10)) return 10;
+	if (!(w >> 11)) return 11;
+	if (!(w >> 12)) return 12;
+	if (!(w >> 13)) return 13;
+	if (!(w >> 14)) return 14;
+	if (!(w >> 15)) return 15;
+	return 16;
+}
+#endif
+
+static inline xint x_log2f(xint f){ // f ranges from (1, 2]
+	static const xint c1 = 0x16C40, c2 = INT32_C(0xFFFF6AFD), c3 = 0x28C2;
+	f = xint_sub(f, XINT1);
+	xint res = c3;
+	res = xint_add(c2, xint_mul(res, f));
+	res = xint_add(c1, xint_mul(res, f));
+	return xint_mul(res, f);
+}
+
+static inline xint x_log2(xint a){
+	int base = x_log2w(a >> 16) - 1;
+	xint frac = x_log2f(xint_div(a, 1 << (base + 16)));
+	return xint_add(xint_fromint(base), frac);
 }
 
 xint xint_log(xint a){
-	// TODO
-	return 0;
+	// testing shows this is within +-44/65536
+	if (a <= 0)
+		return XINTMIN;
+	else if (a == 1) // must hard code these because it's too small to calculate
+		return INT32_C(0xFFF4E8DF);
+	else if (a == 2)
+		return INT32_C(0xFFF59A51);
+	int small = 0;
+	if (a < XINT1){
+		small = 1;
+		a = xint_div(XINT1, a);
+	}
+	static const xint log2einv = 0xB172; // 1/(log2 e)
+	xint res = xint_mul(x_log2(a), log2einv);
+	if (small)
+		res = -res;
+	return res;
 }
 
 xint xint_pow(xint a, xint b){

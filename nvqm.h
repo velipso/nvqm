@@ -946,6 +946,8 @@ typedef struct { xint v[16]; } xmat4;
 
 #define XINT1    INT32_C(0x00010000) /* the value 1 */
 #define XINT(v)  ((xint)((v) * XINT1))
+#define XINTMAX  INT32_MAX
+#define XINTMIN  INT32_MIN
 
 // note: angles for fixed-point operations are stored as 12 bit numbers (0 - 4095)
 // which means 0x000 = 0 degrees, 0x400 = 90 degrees, 0x800 = 180 degrees, etc
