@@ -240,11 +240,11 @@ mat4 *mat4_translation   (mat4 *out, vec3 a);
 mat4 *mat4_transpose     (mat4 *out, mat4 *a);
 
 //
-// fixed-point (only in C implementation)
+// fixed-point 16.16 (only in C implementation)
 //
 typedef int32_t xint; // represents the signed Q16.16 fixed-point type
 typedef int32_t xang; // represents a 12-bit angle type
-#define XINT1    INT32_C(0x00010000)   /* the value 1 */
+#define XINT1    65536  /* the value 1 */
 #define XINT(v)  ((xint)((v) * XINT1)) /* convert constant to xint */
 #define XANG0    0x0000 /*  0 degrees */
 #define XANG45   0x0200 /* 45 degrees */
@@ -263,6 +263,11 @@ xint   xint_fromfloat (float a);
 double xint_todouble  (xint a);
 xint   xint_fromdouble(double a);
 
+float  xang_tofloat   (xang a);
+xang   xang_fromfloat (float ang);
+double xang_todouble  (xang a);
+xang   xang_fromdouble(double ang);
+
 xint xint_add(xint a, xint b);
 xint xint_sub(xint a, xint b);
 xint xint_mul(xint a, xint b);
@@ -270,10 +275,10 @@ xint xint_div(xint a, xint b);
 
 xint xint_abs  (xint a);
 xang xint_acos (xint a);
-xang xint_asin (xint a);
-xang xint_atan2(xint y, xint x);
+xang xint_atan2(xint a, xint b);
 xint xint_ceil (xint a);
 xint xint_clamp(xint a, xint min, xint max);
+xint xint_sin  (xang a);
 xint xint_cos  (xang a);
 xint xint_exp  (xint a);
 xint xint_floor(xint a);

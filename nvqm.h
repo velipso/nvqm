@@ -945,7 +945,7 @@ typedef struct { xint v[ 6]; } xmat3x2;
 typedef struct { xint v[ 9]; } xmat3;
 typedef struct { xint v[16]; } xmat4;
 
-#define XINT1    INT32_C(0x00010000) /* the value 1 */
+#define XINT1    65536 /* the value 1 */
 #define XINT(v)  ((xint)((v) * XINT1))
 #define XINTMAX  INT32_MAX
 #define XINTMIN  INT32_MIN
@@ -988,20 +988,20 @@ static inline xint xint_fromdouble(double a){
 }
 
 static inline float xang_tofloat(xang a){
-	return (float)a * TAU / 4096.0f;
+	return (float)a * TAU / (float)XANG360;
 }
 
 static inline xang xang_fromfloat(float ang){
-	xang res = (xang)roundf(ang * 4096.0f / TAU);
+	xang res = (xang)roundf(ang * (float)XANG360 / TAU);
 	return res < 0 ? ((res % XANG360) + XANG360) % XANG360 : res % XANG360;
 }
 
 static inline double xang_todouble(xang a){
-	return (double)a * TAUd / 4096.0;
+	return (double)a * TAUd / (double)XANG360;
 }
 
 static inline xang xang_fromdouble(double ang){
-	xang res = (xang)round(fmod(ang, TAUd) * 4096.0 / TAUd);
+	xang res = (xang)round(fmod(ang, TAUd) * (double)XANG360 / TAUd);
 	return res < 0 ? ((res % XANG360) + XANG360) % XANG360 : res % XANG360;
 }
 
@@ -1073,7 +1073,7 @@ xint xint_pow(xint a, xint b);
 static inline xint xint_round(xint a){
 	return xint_floor(a + (XINT1 >> 10));
 }
-#include <stdio.h>
+
 extern const xint xint_sin__lut[XANG360];
 static inline xint xint_sin(xang a){
 	return xint_sin__lut[a < 0 ? (((a % XANG360) + XANG360) % XANG360) : (a % XANG360)];
