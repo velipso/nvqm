@@ -275,10 +275,10 @@ xint xint_div(xint a, xint b);
 
 xint xint_abs  (xint a);
 xang xint_acos (xint a);
+xang xint_asin (xint a);
 xang xint_atan2(xint a, xint b);
 xint xint_ceil (xint a);
 xint xint_clamp(xint a, xint min, xint max);
-xint xint_sin  (xang a);
 xint xint_cos  (xang a);
 xint xint_exp  (xint a);
 xint xint_floor(xint a);
