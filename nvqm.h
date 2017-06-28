@@ -987,13 +987,17 @@ static inline xint xint_fromdouble(double a){
 	return (xint)round(a * (double)XINT1);
 }
 
+static inline xang xang_wrap(xang a){
+	// this works because XANG360 is a power of 2
+	return (uint32_t)a % XANG360;
+}
+
 static inline float xang_tofloat(xang a){
 	return (float)a * TAU / (float)XANG360;
 }
 
 static inline xang xang_fromfloat(float ang){
-	xang res = (xang)roundf(ang * (float)XANG360 / TAU);
-	return res < 0 ? ((res % XANG360) + XANG360) % XANG360 : res % XANG360;
+	return xang_wrap(roundf(ang * (float)XANG360 / TAU));
 }
 
 static inline double xang_todouble(xang a){
@@ -1001,8 +1005,7 @@ static inline double xang_todouble(xang a){
 }
 
 static inline xang xang_fromdouble(double ang){
-	xang res = (xang)round(fmod(ang, TAUd) * (double)XANG360 / TAUd);
-	return res < 0 ? ((res % XANG360) + XANG360) % XANG360 : res % XANG360;
+	return xang_wrap(round(fmod(ang, TAUd) * (double)XANG360 / TAUd));
 }
 
 static inline xint xint_add(xint a, xint b){
@@ -1076,14 +1079,14 @@ static inline xint xint_round(xint a){
 
 extern const xint xint_sin__lut[XANG360];
 static inline xint xint_sin(xang a){
-	return xint_sin__lut[a < 0 ? (((a % XANG360) + XANG360) % XANG360) : (a % XANG360)];
+	return xint_sin__lut[xang_wrap(a)];
 }
 
 xint xint_sqrt(xint a);
 
 extern const xint xint_tan__lut[XANG180];
 static inline xint xint_tan(xang a){
-	return xint_tan__lut[a < 0 ? (((a % XANG180) + XANG180) % XANG180) : (a % XANG180)];
+	return xint_tan__lut[xang_wrap(a) >> 1];
 }
 
 #endif // NVQM_SKIP_FIXED_POINT

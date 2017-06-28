@@ -268,6 +268,7 @@ xint   xint_fromfloat (float a);
 double xint_todouble  (xint a);
 xint   xint_fromdouble(double a);
 
+xang   xang_wrap      (xang a); // wrap `a` between 0-4095
 float  xang_tofloat   (xang a);
 xang   xang_fromfloat (float ang);
 double xang_todouble  (xang a);
