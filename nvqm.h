@@ -1071,7 +1071,7 @@ static inline xint xint_mod(xint a, xint b){
 xint xint_pow(xint a, xint b);
 
 static inline xint xint_round(xint a){
-	return xint_floor(a + (XINT1 >> 10));
+	return xint_floor(xint_add(a, XINT1 >> 1));
 }
 
 extern const xint xint_sin__lut[XANG360];
