@@ -46,8 +46,8 @@ static int err_rang(const char *hint, xang (*est_func)(xint v), float (*ans_func
 	printf("\n\n"
 		"Results\n"
 		"-----------------------------------\n"
-		"Error Test   : %s\n"
-		"Range        : %f to %f\n"
+		"Error Test   : %s(i)\n"
+		"Range `i`    : %f to %f\n"
 		"Maximum Error: +-%f radians\n"
 		"               +-%d / %d units\n",
 		hint, xint_tofloat(min), xint_tofloat(max),
@@ -78,8 +78,8 @@ static int err_aang(const char *hint, xint (*est_func)(xang v), float (*ans_func
 	printf("\n\n"
 		"Results\n"
 		"-----------------------------------\n"
-		"Error Test   : %s\n"
-		"Range        : %f to %f radians\n"
+		"Error Test   : %s(i)\n"
+		"Range `i`    : %f to %f radians\n"
 		"               %d to %d units\n"
 		"Maximum Error: +-%f radians\n"
 		"               +-%d / %d units\n",
@@ -111,11 +111,54 @@ static int err_xint(const char *hint, xint (*est_func)(xint v), float (*ans_func
 	printf("\n\n"
 		"Results\n"
 		"-----------------------------------\n"
-		"Error Test   : %s\n"
-		"Range        : %f to %f\n"
+		"Error Test   : %s(i)\n"
+		"Range `i`    : %f to %f\n"
 		"Maximum Error: +-%f\n"
 		"               +-%d / %d\n",
 		hint, xint_tofloat(min), xint_tofloat(max),
+		xang_todouble(max_err), max_err, XINT1
+	);
+	return 0;
+}
+
+static int err_pow(){
+	int max_err = -1;
+	int64_t a_min = 0;
+	int64_t a_max = 512;
+	int64_t b_min = -XINT1 + 1;
+	int64_t b_max = -XINT1 + 1;
+	int64_t step = 1;
+	int64_t dot = (a_max - a_min) / (75 * step);
+	printf("_________________________________ Progress ________________________________\n");
+	for (int64_t i = a_min; i <= a_max; i += step){
+		if (i % dot == 0){
+			//printf(".");
+			fflush(stdout);
+		}
+		xint x = (xint)i;
+		for (int64_t j = b_min; j <= b_max; j += step){
+			xint y = (xint)j;
+			xint est = xint_pow(i, j);
+			xint ans = xint_fromfloat(num_pow(xint_tofloat(x), xint_tofloat(j)));
+			int diff = est - ans;
+			if (diff < 0)
+				diff = -diff;
+			if (diff > max_err)
+				max_err = diff;
+		}
+	}
+	printf("\n\n"
+		"Results\n"
+		"-----------------------------------\n"
+		"Error Test   : pow(i, j)\n"
+		"Range `i`    : %f to %f\n"
+		"Range `j`    : %f to %f\n"
+		"Step         : %f\n"
+		"Maximum Error: +-%f\n"
+		"               +-%d / %d\n",
+		xint_tofloat(a_min), xint_tofloat(a_max),
+		xint_tofloat(b_min), xint_tofloat(b_max),
+		xint_tofloat(step),
 		xang_todouble(max_err), max_err, XINT1
 	);
 	return 0;
@@ -189,10 +232,6 @@ static void print_help(){
 static const char *testname;
 bool T(const char *test){ return strcmp(testname, test) == 0; }
 int main(int argc, char **argv){
-	if (argc <= 1){
-		print_help();
-		return 0;
-	}
 	testname = argv[1];
 	if (T("err_acos" )) return err_rang("acos" , xint_acos, num_acos,       -XINT1,         XINT1);
 	if (T("err_asin" )) return err_rang("asin" , xint_asin, num_asin,       -XINT1,         XINT1);
@@ -201,9 +240,9 @@ int main(int argc, char **argv){
 	if (T("err_cos"  )) return err_aang("cos"  , xint_cos , num_cos ,            0,       XANG360);
 	if (T("err_exp"  )) return err_xint("exp"  , xint_exp , num_exp ,      XINTMIN,    0x000A65AF);
 	if (T("err_log"  )) return err_xint("log"  , xint_log , num_log ,            0,       XINTMAX);
-	//if (T("err_pow"  )) return err_pow();
+	if (T("err_pow"  )) return err_pow();
 	if (T("err_sin"  )) return err_aang("sin"  , xint_sin , num_sin ,            0,       XANG360);
-	if (T("err_sqrt" )) return err_xint("sqrt" , xint_sqrt, sqrtf   ,            0,       XINTMAX);
+	if (T("err_sqrt" )) return err_xint("sqrt" , xint_sqrt, num_sqrt,            0,       XINTMAX);
 	if (T("err_tan"  )) return err_aang("tan"  , xint_tan , num_tan ,            0,       XANG180);
 	print_help();
 	fprintf(stderr, "Invalid test: %s\n", argv[1]);

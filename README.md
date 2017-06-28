@@ -32,6 +32,10 @@ The C files also contains a signed Q16.16 fixed-point implementation.  It is det
 fails -- but will give incorrect results if numbers overflow.  Angles are not stored in radians, but
 instead as 12 bit number (0 to 4095).
 
+The implementation is okay for most functions, but is pretty terrible for `xint_pow`, and I suspect
+slow for `xint_sqrt`.  I would love help, if anyone knows better.
+
+
 Functions
 ---------
 
@@ -39,7 +43,8 @@ The `num`, `vec2`, `vec3`, `vec4`, `quat`, `mat2`, and `mat3x2` functions operat
 pass-by-value semantics, while `mat3` and `mat4` use pass-by-reference semantics.
 
 ```c
-const float TAU; // 2 * PI
+const float  TAU; // 2 * PI
+const double TAUd;
 
 // num (scalars)
 float num_abs  (float a);

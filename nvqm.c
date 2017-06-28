@@ -956,11 +956,9 @@ xang xint_atan2(xint y, xint x){
 }
 
 xang xint_acos(xint a){
-	if (a < -XINT1 || a > XINT1)
-		return 0;
-	if (a == -XINT1)
+	if (a <= -XINT1)
 		return XANG180;
-	if (a == XINT1)
+	if (a >= XINT1)
 		return XANG0;
 	if (a > -51 && a < 51) // high error rate right around 0, so just do it manually
 		return XANG90;
@@ -971,11 +969,9 @@ xang xint_acos(xint a){
 }
 
 xang xint_asin(xint a){
-	if (a < -XINT1 || a > XINT1)
-		return 0;
-	if (a == -XINT1)
+	if (a <= -XINT1)
 		return XANG270;
-	if (a == XINT1)
+	if (a >= XINT1)
 		return XANG90;
 	if (a > -51 && a < 51) // high error rate right around 0, so just do it manually
 		return XANG0;
@@ -1006,7 +1002,7 @@ static inline xint x_exp2(int64_t a){
 	// a is Q32.32
 	// 2^(whole+fraction) = 2^whole * 2^fraction
 	int32_t whole = a >> 32;
-	int64_t fract = x_exp2f(a & INT64_C(0xFFFFFFFF));
+	int64_t fract = x_exp2f(a & 0xFFFFFFFF);
 	if (whole < 15)
 		return (xint)(fract >> (15 - whole));
 	return (xint)(fract << (whole - 15));
@@ -1098,11 +1094,82 @@ xint xint_log(xint a){
 }
 
 xint xint_pow(xint a, xint b){
-	return xint_fromfloat(num_pow(xint_tofloat(a), xint_tofloat(b))); // TODO: fix
+	if (a < 0)
+		return -xint_pow(-a, b);
+	if (a == 0)
+		return XINTMIN;
+
+	int flip = 0;
+	if (b < 0){
+		b = -b;
+		if (a < XINT1)
+			a = xint_div(XINT1, a); // double flip -> no flip
+		else
+			flip = 1;
+	}
+	else if (a < XINT1){
+		a = xint_div(XINT1, a);
+		flip = 1;
+	}
+
+	// res = a^(integer + fraction)
+	//     = a^(integer) * a^(fraction)
+	//     = a^(integer) * (2^(log2 a))^(fraction)
+	//     = a^(integer) * 2^(fraction * log2 a)
+	xint res = XINT1;
+	xint base = a;
+	int pow_int = xint_toint(b);
+	while (pow_int){
+		if (pow_int & 1)
+			res = xint_mul(res, base);
+		pow_int >>= 1;
+		base = xint_mul(base, base);
+	}
+
+	int64_t pow_frac = b & 0xFFFF;
+	if (pow_frac)
+		res = xint_mul(res, x_exp2(pow_frac * x_log2(a)));
+
+	if (flip)
+		res = xint_div(XINT1, res);
+	return res;
 }
 
 xint xint_sqrt(xint a){
-	return xint_fromfloat(num_sqrt(xint_tofloat(a))); // TODO: fix
+	if (a < 0)
+		return -xint_sqrt(-a);
+	xint res = 0;
+	xint res2, m;
+	#define X(b)                  \
+		res2 = res | b;           \
+		m = xint_mul(res2, res2); \
+		if (m >= 0 && m < a)      \
+			res = res2;
+	X(0x00800000);
+	X(0x00400000);
+	X(0x00200000);
+	X(0x00100000);
+	X(0x00080000);
+	X(0x00040000);
+	X(0x00020000);
+	X(0x00010000);
+	X(0x00008000);
+	X(0x00004000);
+	X(0x00002000);
+	X(0x00001000);
+	X(0x00000800);
+	X(0x00000400);
+	X(0x00000200);
+	X(0x00000100);
+	X(0x00000080);
+	X(0x00000040);
+	X(0x00000010);
+	X(0x00000008);
+	X(0x00000004);
+	X(0x00000002);
+	X(0x00000001);
+	#undef X
+	return res;
 }
 
 // sorry for the mess, but this is the lookup table for sin and tan
