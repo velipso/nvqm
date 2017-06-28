@@ -1093,6 +1093,14 @@ static inline xint xint_tan(xang a){
 // xvec2
 //
 
+static inline vec2 xvec2_tovec2(xvec2 a){
+	return (vec2){ xint_tofloat(a.v[0]), xint_tofloat(a.v[1]) };
+}
+
+static inline xvec2 xvec2_fromvec2(vec2 a){
+	return (xvec2){ xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]) };
+}
+
 static inline xvec2 xvec2_add(xvec2 a, xvec2 b){
 	return (xvec2){ xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]) };
 }
