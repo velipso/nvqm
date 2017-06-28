@@ -323,4 +323,32 @@ xvec2 xvec2_neg        (xvec2 a);
 xvec2 xvec2_normal     (xvec2 a);
 xvec2 xvec2_scale      (xvec2 a, xint s);
 xvec2 xvec2_sub        (xvec2 a, xvec2 b);
+
+// xvec3  fixed-point version of vec3
+vec3  xvec3_tovec3     (xvec3 a);
+xvec3 xvec3_fromvec3   (vec3 a);
+xvec3 xvec3_add        (xvec3 a, xvec3 b);
+xint  xvec3_angle      (xvec3 a, xvec3 b);
+xvec3 xvec3_applymat3x2(xvec3 a, xmat3x2 b);
+xvec3 xvec3_applymat3  (xvec3 a, xmat3 *b);
+xvec3 xvec3_applymat4  (xvec3 a, xmat4 *b);
+xvec3 xvec3_applyquat  (xvec3 a, xquat b);
+xvec3 xvec3_clamp      (xvec3 a, xvec3 min, xvec3 max);
+xvec3 xvec3_cross      (xvec3 a, xvec3 b);
+xint  xvec3_dist       (xvec3 a, xvec3 b);
+xint  xvec3_dist2      (xvec3 a, xvec3 b);
+xvec3 xvec3_div        (xvec3 a, xvec3 b);
+xint  xvec3_dot        (xvec3 a, xvec3 b);
+xvec3 xvec3_inverse    (xvec3 a);
+xint  xvec3_len        (xvec3 a);
+xint  xvec3_len2       (xvec3 a);
+xvec3 xvec3_lerp       (xvec3 a, xvec3 b, xint t);
+xvec3 xvec3_max        (xvec3 a, xvec3 b);
+xvec3 xvec3_min        (xvec3 a, xvec3 b);
+xvec3 xvec3_mul        (xvec3 a, xvec3 b);
+xint  xvec3_nangle     (xvec3 a, xvec3 b); // a and b are normalized
+xvec3 xvec3_neg        (xvec3 a);
+xvec3 xvec3_normal     (xvec3 a);
+xvec3 xvec3_scale      (xvec3 a, xint s);
+xvec3 xvec3_sub        (xvec3 a, xvec3 b);
 ```

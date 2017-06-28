@@ -242,13 +242,15 @@ static inline vec3 vec3_applymat3(vec3 a, mat3 *b){
 
 static inline vec3 vec3_applymat4(vec3 a, mat4 *b){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2];
-	float w = b->v[ 3] * ax + b->v[ 7] * ay + b->v[11] * az + b->v[15];
+	float w = b->v[3] * ax + b->v[7] * ay + b->v[11] * az + b->v[15];
 	if (w == 0.0f)
 		w = 1.0f;
+	else
+		w = 1.0f / w;
 	return (vec3){
-		(b->v[0] * ax + b->v[4] * ay + b->v[ 8] * az + b->v[12]) / w,
-		(b->v[1] * ax + b->v[5] * ay + b->v[ 9] * az + b->v[13]) / w,
-		(b->v[2] * ax + b->v[6] * ay + b->v[10] * az + b->v[14]) / w
+		(b->v[0] * ax + b->v[4] * ay + b->v[ 8] * az + b->v[12]) * w,
+		(b->v[1] * ax + b->v[5] * ay + b->v[ 9] * az + b->v[13]) * w,
+		(b->v[2] * ax + b->v[6] * ay + b->v[10] * az + b->v[14]) * w
 	};
 }
 
@@ -1213,6 +1215,202 @@ static inline xvec2 xvec2_scale(xvec2 a, xint s){
 
 static inline xvec2 xvec2_sub(xvec2 a, xvec2 b){
 	return (xvec2){ xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]) };
+}
+
+//
+// xvec3
+//
+
+#ifndef NVQM_SKIP_FLOATING_POINT
+static inline vec3 xvec3_tovec3(xvec3 a){
+	return (vec3){ xint_tofloat(a.v[0]), xint_tofloat(a.v[1]), xint_tofloat(a.v[2]) };
+}
+
+static inline xvec3 xvec3_fromvec3(vec3 a){
+	return (xvec3){ xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]), xint_fromfloat(a.v[2]) };
+}
+#endif
+
+static inline xvec3 xvec3_add(xvec3 a, xvec3 b){
+	return (xvec3){ xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]), xint_add(a.v[2], b.v[2]) };
+}
+
+static inline xint xvec3_nangle(xvec3 a, xvec3 b);
+static inline xvec3 xvec3_normal(xvec3 a);
+static inline xint xvec3_angle(xvec3 a, xvec3 b){
+	return xvec3_nangle(xvec3_normal(a), xvec3_normal(b));
+}
+
+static inline xvec3 xvec3_applymat3x2(xvec3 a, xmat3x2 b){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
+	return (xvec3){
+		xint_add(xint_add(xint_mul(ax, b.v[0]), xint_mul(ay, b.v[2])), xint_mul(az, b.v[4])),
+		xint_add(xint_add(xint_mul(ax, b.v[1]), xint_mul(ay, b.v[3])), xint_mul(az, b.v[5])),
+		az
+	};
+}
+
+static inline xvec3 xvec3_applymat3(xvec3 a, xmat3 *b){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
+	return (xvec3){
+		xint_add(xint_add(xint_mul(ax, b->v[0]), xint_mul(ay, b->v[3])), xint_mul(az, b->v[6])),
+		xint_add(xint_add(xint_mul(ax, b->v[1]), xint_mul(ay, b->v[4])), xint_mul(az, b->v[7])),
+		xint_add(xint_add(xint_mul(ax, b->v[2]), xint_mul(ay, b->v[5])), xint_mul(az, b->v[8]))
+	};
+}
+
+static inline xvec3 xvec3_applymat4(xvec3 a, xmat4 *b){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
+	xint w = xint_add(
+		xint_add(xint_mul(b->v[3], ax), xint_mul(b->v[7], ay)),
+		xint_add(xint_mul(b->v[11], az), b->v[15])
+	);
+	if (w == 0)
+		w = XINT1;
+	else
+		w = xint_div(XINT1, w);
+	return (xvec3){
+		xint_mul(w,
+			xint_add(xint_add(
+				xint_mul(b->v[ 0], ax),
+				xint_mul(b->v[ 4], ay)), xint_add(
+				xint_mul(b->v[ 8], az),
+				b->v[12]
+			))),
+		xint_mul(w,
+			xint_add(xint_add(
+				xint_mul(b->v[ 1], ax),
+				xint_mul(b->v[ 5], ay)), xint_add(
+				xint_mul(b->v[ 9], az),
+				b->v[13]
+			))),
+		xint_mul(w,
+			xint_add(xint_add(
+				xint_mul(b->v[ 2], ax),
+				xint_mul(b->v[ 6], ay)), xint_add(
+				xint_mul(b->v[10], az),
+				b->v[14]
+			)))
+	};
+}
+
+static inline xvec3 xvec3_applyquat(xvec3 a, xquat b){
+	xint
+		ax = a.v[0], ay = a.v[1], az = a.v[2],
+		bx = b.v[0], by = b.v[1], bz = b.v[2], bw = b.v[3];
+	xint
+		ix = xint_sub(xint_add(xint_mul( bw, ax), xint_mul(by, az)), xint_mul(bz, ay)),
+		iy = xint_sub(xint_add(xint_mul( bw, ay), xint_mul(bz, ax)), xint_mul(bx, az)),
+		iz = xint_sub(xint_add(xint_mul( bw, az), xint_mul(bx, ay)), xint_mul(by, ax)),
+		iw = xint_sub(xint_sub(xint_mul(-bx, ax), xint_mul(by, ay)), xint_mul(bz, az));
+	return (xvec3){
+		xint_sub(xint_add(xint_add(
+			xint_mul(ix, bw), xint_mul(iw, -bx)), xint_mul(iy, -bz)), xint_mul(iz, -by)),
+		xint_sub(xint_add(xint_add(
+			xint_mul(iy, bw), xint_mul(iw, -by)), xint_mul(iz, -bx)), xint_mul(ix, -bz)),
+		xint_sub(xint_add(xint_add(
+			xint_mul(iz, bw), xint_mul(iw, -bz)), xint_mul(ix, -by)), xint_mul(iy, -bx))
+	};
+}
+
+static inline xvec3 xvec3_clamp(xvec3 a, xvec3 min, xvec3 max){
+	return (xvec3){
+		xint_clamp(a.v[0], min.v[0], max.v[0]),
+		xint_clamp(a.v[1], min.v[1], max.v[1]),
+		xint_clamp(a.v[2], min.v[2], max.v[2])
+	};
+}
+
+static inline xvec3 xvec3_cross(xvec3 a, xvec3 b){
+	xint
+		ax = a.v[0], ay = a.v[1], az = a.v[2],
+		bx = b.v[0], by = b.v[1], bz = b.v[2];
+	return (xvec3){
+		xint_sub(xint_mul(ay, bz), xint_mul(az, by)),
+		xint_sub(xint_mul(az, bx), xint_mul(ax, bz)),
+		xint_sub(xint_mul(ax, by), xint_mul(ay, bx))
+	};
+}
+
+static inline xint xvec3_len2(xvec3 a);
+static inline xvec3 xvec3_sub(xvec3 a, xvec3 b);
+static inline xint xvec3_dist(xvec3 a, xvec3 b){
+	return xint_sqrt(xvec3_len2(xvec3_sub(a, b)));
+}
+
+static inline xint xvec3_dist2(xvec3 a, xvec3 b){
+	return xvec3_len2(xvec3_sub(b, a));
+}
+
+static inline xvec3 xvec3_div(xvec3 a, xvec3 b){
+	return (xvec3){ xint_div(a.v[0], b.v[0]), xint_div(a.v[1], b.v[1]), xint_div(a.v[2], b.v[2]) };
+}
+
+static inline xint xvec3_dot(xvec3 a, xvec3 b){
+	return xint_add(xint_add(
+		xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1])), xint_mul(a.v[2], b.v[2]));
+}
+
+static inline xvec3 xvec3_inverse(xvec3 a){
+	return (xvec3){ xint_div(XINT1, a.v[0]), xint_div(XINT1, a.v[1]), xint_div(XINT1, a.v[2]) };
+}
+
+static inline xint xvec3_len(xvec3 a){
+	return xint_sqrt(xvec3_len2(a));
+}
+
+static inline xint xvec3_len2(xvec3 a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
+	return xint_add(xint_add(xint_mul(ax, ax), xint_mul(ay, ay)), xint_mul(az, az));
+}
+
+static inline xvec3 xvec3_lerp(xvec3 a, xvec3 b, xint t){
+	return (xvec3){
+		xint_lerp(a.v[0], b.v[0], t),
+		xint_lerp(a.v[1], b.v[1], t),
+		xint_lerp(a.v[2], b.v[2], t)
+	};
+}
+
+static inline xvec3 xvec3_max(xvec3 a, xvec3 b){
+	return (xvec3){ xint_max(a.v[0], b.v[0]), xint_max(a.v[1], b.v[1]), xint_max(a.v[2], b.v[2]) };
+}
+
+static inline xvec3 xvec3_min(xvec3 a, xvec3 b){
+	return (xvec3){ xint_min(a.v[0], b.v[0]), xint_min(a.v[1], b.v[1]), xint_min(a.v[2], b.v[2]) };
+}
+
+static inline xvec3 xvec3_mul(xvec3 a, xvec3 b){
+	return (xvec3){ xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]), xint_mul(a.v[2], b.v[2]) };
+}
+
+static inline xint xvec3_nangle(xvec3 a, xvec3 b){ // a and b are normalized
+	return xint_acos(xvec3_dot(a, b));
+}
+
+static inline xvec3 xvec3_neg(xvec3 a){
+	return (xvec3){ -a.v[0], -a.v[1], -a.v[2] };
+}
+
+static inline xvec3 xvec3_normal(xvec3 a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
+	xint len = xint_add(xint_add(xint_mul(ax, ax), xint_mul(ay, ay)), xint_mul(az, az));
+	if (len > 0){
+		len = xint_sqrt(len);
+		if (len > 0){
+			len = xint_div(XINT1, len);
+			return (xvec3){ xint_mul(ax, len), xint_mul(ay, len), xint_mul(az, len) };
+		}
+	}
+	return a;
+}
+
+static inline xvec3 xvec3_scale(xvec3 a, xint s){
+	return (xvec3){ xint_mul(a.v[0], s), xint_mul(a.v[1], s), xint_mul(a.v[2], s) };
+}
+
+static inline xvec3 xvec3_sub(xvec3 a, xvec3 b){
+	return (xvec3){ xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]), xint_sub(a.v[2], b.v[2]) };
 }
 
 #endif // NVQM_SKIP_FIXED_POINT
