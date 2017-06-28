@@ -298,4 +298,29 @@ xint xint_round(xint a);
 xint xint_sin  (xang a);
 xint xint_sqrt (xint a);
 xint xint_tan  (xang a);
+
+// xvec2  [x, y]
+vec2  xvec2_tovec2     (xvec2 a);
+xvec2 xvec2_fromvec2   (vec2 a);
+xvec2 xvec2_add        (xvec2 a, xvec2 b);
+xvec2 xvec2_applymat2  (xvec2 a, xmat2 b);
+xvec2 xvec2_applymat3x2(xvec2 a, xmat3x2 b);
+xvec2 xvec2_applymat3  (xvec2 a, xmat3 *b);
+xvec2 xvec2_applymat4  (xvec2 a, xmat4 *b);
+xvec2 xvec2_clamp      (xvec2 a, xvec2 min, xvec2 max);
+xint  xvec2_dist       (xvec2 a, xvec2 b);
+xint  xvec2_dist2      (xvec2 a, xvec2 b);
+xvec2 xvec2_div        (xvec2 a, xvec2 b);
+xint  xvec2_dot        (xvec2 a, xvec2 b);
+xvec2 xvec2_inverse    (xvec2 a);
+xint  xvec2_len        (xvec2 a);
+xint  xvec2_len2       (xvec2 a);
+xvec2 xvec2_lerp       (xvec2 a, xvec2 b, xint t);
+xvec2 xvec2_max        (xvec2 a, xvec2 b);
+xvec2 xvec2_min        (xvec2 a, xvec2 b);
+xvec2 xvec2_mul        (xvec2 a, xvec2 b);
+xvec2 xvec2_neg        (xvec2 a);
+xvec2 xvec2_normal     (xvec2 a);
+xvec2 xvec2_scale      (xvec2 a, xint s);
+xvec2 xvec2_sub        (xvec2 a, xvec2 b);
 ```
