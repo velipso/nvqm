@@ -1093,6 +1093,7 @@ static inline xint xint_tan(xang a){
 // xvec2
 //
 
+#ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec2 xvec2_tovec2(xvec2 a){
 	return (vec2){ xint_tofloat(a.v[0]), xint_tofloat(a.v[1]) };
 }
@@ -1100,6 +1101,7 @@ static inline vec2 xvec2_tovec2(xvec2 a){
 static inline xvec2 xvec2_fromvec2(vec2 a){
 	return (xvec2){ xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]) };
 }
+#endif
 
 static inline xvec2 xvec2_add(xvec2 a, xvec2 b){
 	return (xvec2){ xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]) };
@@ -1121,7 +1123,7 @@ static inline xvec2 xvec2_applymat3x2(xvec2 a, xmat3x2 b){
 	};
 }
 
-static inline xvec2 xvec2_applymat3(xvec2 a, mat3 *b){
+static inline xvec2 xvec2_applymat3(xvec2 a, xmat3 *b){
 	xint ax = a.v[0], ay = a.v[1];
 	return (xvec2){
 		xint_add(xint_add(xint_mul(b->v[0], ax), xint_mul(b->v[3], ay)), b->v[6]),
