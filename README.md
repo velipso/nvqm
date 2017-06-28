@@ -299,7 +299,7 @@ xint xint_sin  (xang a);
 xint xint_sqrt (xint a);
 xint xint_tan  (xang a);
 
-// xvec2  [x, y]
+// xvec2  fixed-point version of vec2
 vec2  xvec2_tovec2     (xvec2 a);
 xvec2 xvec2_fromvec2   (vec2 a);
 xvec2 xvec2_add        (xvec2 a, xvec2 b);
