@@ -351,4 +351,27 @@ xvec3 xvec3_neg        (xvec3 a);
 xvec3 xvec3_normal     (xvec3 a);
 xvec3 xvec3_scale      (xvec3 a, xint s);
 xvec3 xvec3_sub        (xvec3 a, xvec3 b);
+
+// xvec4  fixed-point version of vec4
+vec4  xvec4_tovec4   (xvec4 a);
+xvec4 xvec4_fromvec4 (vec4 a);
+xvec4 xvec4_add      (xvec4 a, xvec4 b);
+xvec4 xvec4_applymat4(xvec4 a, xmat4 *b);
+xvec4 xvec4_applyquat(xvec4 a, xquat b);
+xvec4 xvec4_clamp    (xvec4 a, xvec4 min, xvec4 max);
+xint  xvec4_dist     (xvec4 a, xvec4 b);
+xint  xvec4_dist2    (xvec4 a, xvec4 b);
+xvec4 xvec4_div      (xvec4 a, xvec4 b);
+xint  xvec4_dot      (xvec4 a, xvec4 b);
+xvec4 xvec4_inverse  (xvec4 a);
+xint  xvec4_len      (xvec4 a);
+xint  xvec4_len2     (xvec4 a);
+xvec4 xvec4_lerp     (xvec4 a, xvec4 b, xint t);
+xvec4 xvec4_max      (xvec4 a, xvec4 b);
+xvec4 xvec4_min      (xvec4 a, xvec4 b);
+xvec4 xvec4_mul      (xvec4 a, xvec4 b);
+xvec4 xvec4_neg      (xvec4 a);
+xvec4 xvec4_normal   (xvec4 a);
+xvec4 xvec4_scale    (xvec4 a, xint s);
+xvec4 xvec4_sub      (xvec4 a, xvec4 b);
 ```
