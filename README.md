@@ -374,4 +374,27 @@ xvec4 xvec4_neg      (xvec4 a);
 xvec4 xvec4_normal   (xvec4 a);
 xvec4 xvec4_scale    (xvec4 a, xint s);
 xvec4 xvec4_sub      (xvec4 a, xvec4 b);
+
+// xquat  fixed-point version of quat
+quat  xquat_toquat   (xquat a);
+xquat xquat_fromquat (quat a);
+xquat xquat_axisang  (xvec3 axis, xint ang);
+xquat xquat_between  (xvec3 from, xvec3 to);
+xint  xquat_dot      (xquat a, xquat b);
+xquat xquat_euler_xyz(xvec3 rot);
+xquat xquat_euler_xzy(xvec3 rot);
+xquat xquat_euler_yxz(xvec3 rot);
+xquat xquat_euler_yzx(xvec3 rot);
+xquat xquat_euler_zxy(xvec3 rot);
+xquat xquat_euler_zyx(xvec3 rot);
+xquat xquat_identity ();
+xquat xquat_invert   (xquat a);
+xquat xquat_lerp     (xquat a, xquat b, xint t);
+xquat xquat_mul      (xquat a, xquat b);
+xquat xquat_naxisang (xvec3 axis, xint ang);
+xquat xquat_nbetween (xvec3 from, xvec3 to);
+xquat xquat_neg      (xquat a);
+xquat xquat_nlerp    (xquat a, xquat b, xint t);
+xquat xquat_normal   (xquat a);
+xquat xquat_slerp    (xquat a, xquat b, xint t);
 ```

@@ -1624,6 +1624,243 @@ static inline xvec4 xvec4_sub(xvec4 a, xvec4 b){
 	};
 }
 
+//
+// xquat
+//
+
+#ifndef NVQM_SKIP_FLOATING_POINT
+static inline quat xquat_toquat(xquat a){
+	return (quat){
+		xint_tofloat(a.v[0]),
+		xint_tofloat(a.v[1]),
+		xint_tofloat(a.v[2]),
+		xint_tofloat(a.v[3])
+	};
+}
+
+static inline xquat xquat_fromquat(quat a){
+	return (xquat){
+		xint_fromfloat(a.v[0]),
+		xint_fromfloat(a.v[1]),
+		xint_fromfloat(a.v[2]),
+		xint_fromfloat(a.v[3])
+	};
+}
+#endif
+
+static inline xquat xquat_naxisang(xvec3 axis, xint ang);
+static inline xquat xquat_axisang(xvec3 axis, xint ang){
+	return xquat_naxisang(xvec3_normal(axis), ang);
+}
+
+static inline xquat xquat_nbetween(xvec3 from, xvec3 to);
+static inline xquat xquat_between(xvec3 from, xvec3 to){
+	return xquat_nbetween(xvec3_normal(from), xvec3_normal(to));
+}
+
+static inline xint xquat_dot(xquat a, xquat b){
+	return xint_add(xint_add(xint_add(
+		xint_mul(a.v[0], b.v[0]),
+		xint_mul(a.v[1], b.v[1])),
+		xint_mul(a.v[2], b.v[2])),
+		xint_mul(a.v[3], b.v[3]));
+}
+
+#define NVQM_XQUAT_EULER_ROT     \
+	xint a0 = rot.v[0] >> 1;     \
+	xint a1 = rot.v[1] >> 1;     \
+	xint a2 = rot.v[2] >> 1;     \
+	xint cx = xint_cos(a0);      \
+	xint cy = xint_cos(a1);      \
+	xint cz = xint_cos(a2);      \
+	xint sx = xint_sin(a0);      \
+	xint sy = xint_sin(a1);      \
+	xint sz = xint_sin(a2);
+
+static inline xquat xquat_euler_xyz(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_euler_xzy(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_euler_yxz(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_euler_yzx(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_euler_zxy(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_euler_zyx(xvec3 rot){
+	NVQM_XQUAT_EULER_ROT
+	return (xquat){
+		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
+		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
+		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
+		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
+	};
+}
+
+static inline xquat xquat_identity(){
+	return (xquat){ 0, 0, 0, XINT1 };
+}
+
+static inline xquat xquat_invert(xquat a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
+	xint dot = xint_add(xint_add(xint_add(
+		xint_mul(ax, ax), xint_mul(ay, ay)), xint_mul(az, az)), xint_mul(aw, aw));
+	xint invDot = 0;
+	if (dot != 0)
+		invDot = xint_div(XINT1, dot);
+	return (xquat){
+		xint_mul(-ax, invDot),
+		xint_mul(-ay, invDot),
+		xint_mul(-az, invDot),
+		xint_mul( aw, invDot)
+	};
+}
+
+static inline xquat xquat_lerp(xquat a, xquat b, xint t){
+	return (xquat){
+		xint_lerp(a.v[0], b.v[0], t),
+		xint_lerp(a.v[1], b.v[1], t),
+		xint_lerp(a.v[2], b.v[2], t),
+		xint_lerp(a.v[3], b.v[3], t)
+	};
+}
+
+static inline xquat xquat_mul(xquat a, xquat b){
+	xint
+		ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		bx = b.v[0], by = b.v[1], bz = b.v[2], bw = b.v[3];
+	return (xquat){
+		xint_sub(xint_add(xint_add(
+			xint_mul(ax, bw), xint_mul(aw, bx)), xint_mul(ay, bz)), xint_mul(az, by)),
+		xint_sub(xint_add(xint_add(
+			xint_mul(ay, bw), xint_mul(aw, by)), xint_mul(az, bx)), xint_mul(ax, bz)),
+		xint_sub(xint_add(xint_add(
+			xint_mul(az, bw), xint_mul(aw, bz)), xint_mul(ax, by)), xint_mul(ay, bx)),
+		xint_sub(xint_sub(xint_sub(
+			xint_mul(aw, bw), xint_mul(ax, bx)), xint_mul(ay, by)), xint_mul(az, bz))
+	};
+}
+
+static inline xquat xquat_naxisang(xvec3 axis, xint ang){ // axis is normalized
+	ang >>= 1;
+	xint s = xint_sin(ang);
+	return (xquat){
+		xint_mul(axis.v[0], s), xint_mul(axis.v[1], s), xint_mul(axis.v[2], s), xint_cos(ang) };
+}
+
+static inline xquat xquat_normal(xquat a);
+static inline xquat xquat_nbetween(xvec3 from, xvec3 to){ // from/to are normalized
+	xint r = xint_add(xvec3_dot(from, to), XINT1);
+	xvec3 cross;
+	if (r <= 0){
+		if (xint_abs(from.v[0]) > xint_abs(from.v[2]))
+			cross = (xvec3){ -from.v[1], from.v[0], 0 };
+		else
+			cross = (xvec3){ 0, -from.v[2], from.v[1] };
+	}
+	else
+		cross = xvec3_cross(from, to);
+	return xquat_normal((xquat){ cross.v[0], cross.v[1], cross.v[2], r });
+}
+
+static inline xquat xquat_neg(xquat a){
+	return (xquat){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+}
+
+static inline xquat xquat_nlerp(xquat a, xquat b, xint t){
+	return xquat_normal(xquat_lerp(a, b, t));
+}
+
+static inline xquat xquat_normal(xquat a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
+	xint len = xint_add(xint_add(xint_add(
+		xint_mul(ax, ax), xint_mul(ay, ay)), xint_mul(az, az)), xint_mul(aw, aw));
+	if (len > 0){
+		len = xint_sqrt(len);
+		if (len > 0){
+			len = xint_div(XINT1, len);
+			return (xquat){
+				xint_mul(ax, len),
+				xint_mul(ay, len),
+				xint_mul(az, len),
+				xint_mul(aw, len)
+			};
+		}
+	}
+	return a;
+}
+
+static inline xquat xquat_slerp(xquat a, xquat b, xint t){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
+	xint bx = b.v[0], by = b.v[1], bz = b.v[2], bw = b.v[3];
+	xint scale0, scale1;
+	xint cosom = xint_add(xint_add(xint_add(
+		xint_mul(ax, bx), xint_mul(ay, by)), xint_mul(az, bz)), xint_mul(aw, bw));
+	if (cosom < 0){
+		cosom = -cosom;
+		bx    = -bx   ;
+		by    = -by   ;
+		bz    = -bz   ;
+		bw    = -bw   ;
+	}
+	if (cosom < XINT1){
+		xang omega = xint_acos(cosom);
+		xint sinom = xint_sin(omega);
+		scale0 = xint_div(xint_sin(xint_mul(xint_sub(XINT1, t), omega)), sinom);
+		scale1 = xint_div(xint_sin(xint_mul(t, omega)), sinom);
+	}
+	else {
+		scale0 = xint_sub(XINT1, t);
+		scale1 = t;
+	}
+	return (xquat){
+		xint_add(xint_mul(scale0, ax), xint_mul(scale1, bx)),
+		xint_add(xint_mul(scale0, ay), xint_mul(scale1, by)),
+		xint_add(xint_mul(scale0, az), xint_mul(scale1, bz)),
+		xint_add(xint_mul(scale0, aw), xint_mul(scale1, bw))
+	};
+}
+
 #endif // NVQM_SKIP_FIXED_POINT
 
 #endif // NVQM__H
