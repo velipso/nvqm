@@ -378,7 +378,7 @@ xvec4 xvec4_sub      (xvec4 a, xvec4 b);
 // xquat  fixed-point version of quat
 quat  xquat_toquat   (xquat a);
 xquat xquat_fromquat (quat a);
-xquat xquat_axisang  (xvec3 axis, xint ang);
+xquat xquat_axisang  (xvec3 axis, xang ang);
 xquat xquat_between  (xvec3 from, xvec3 to);
 xint  xquat_dot      (xquat a, xquat b);
 xquat xquat_euler_xyz(xvec3 rot);
@@ -391,10 +391,44 @@ xquat xquat_identity ();
 xquat xquat_invert   (xquat a);
 xquat xquat_lerp     (xquat a, xquat b, xint t);
 xquat xquat_mul      (xquat a, xquat b);
-xquat xquat_naxisang (xvec3 axis, xint ang);
+xquat xquat_naxisang (xvec3 axis, xang ang);
 xquat xquat_nbetween (xvec3 from, xvec3 to);
 xquat xquat_neg      (xquat a);
 xquat xquat_nlerp    (xquat a, xquat b, xint t);
 xquat xquat_normal   (xquat a);
 xquat xquat_slerp    (xquat a, xquat b, xint t);
+
+// xmat2  fixed-point version of mat2
+mat2  xmat2_tomat2   (xmat2 a);
+xmat2 xmat2_frommat2 (mat2 a);
+xmat2 xmat2_add      (xmat2 a, xmat2 b);
+xmat2 xmat2_adjoint  (xmat2 a);
+xmat2 xmat2_compmul  (xmat2 a, xmat2 b);
+xint  xmat2_det      (xmat2 a);
+xmat2 xmat2_identity ();
+xmat2 xmat2_invert   (xmat2 a);
+xmat2 xmat2_mul      (xmat2 a, xmat2 b);
+xmat2 xmat2_rotate   (xmat2 a, xang ang);
+xmat2 xmat2_rotation (xang ang);
+xmat2 xmat2_scale    (xmat2 a, xvec2 b);
+xmat2 xmat2_scaling  (xvec2 a);
+xmat2 xmat2_sub      (xmat2 a, xmat2 b);
+xmat2 xmat2_transpose(xmat2 a);
+
+// xmat3x2  fixed-point version of mat3x2
+mat3x2  xmat3x2_tomat3x2   (xmat3x2 a);
+xmat3x2 xmat3x2_frommat3x2 (mat3x2 a);
+xmat3x2 xmat3x2_add        (xmat3x2 a, xmat3x2 b);
+xmat3x2 xmat3x2_compmul    (xmat3x2 a, xmat3x2 b);
+xint    xmat3x2_det        (xmat3x2 a);
+xmat3x2 xmat3x2_identity   ();
+xmat3x2 xmat3x2_invert     (xmat3x2 a);
+xmat3x2 xmat3x2_mul        (xmat3x2 a, xmat3x2 b);
+xmat3x2 xmat3x2_rotate     (xmat3x2 a, xang ang);
+xmat3x2 xmat3x2_rotation   (xang ang);
+xmat3x2 xmat3x2_scale      (xmat3x2 a, xvec2 b);
+xmat3x2 xmat3x2_scaling    (xvec2 a);
+xmat3x2 xmat3x2_sub        (xmat3x2 a, xmat3x2 b);
+xmat3x2 xmat3x2_translate  (xmat3x2 a, xvec2 b);
+xmat3x2 xmat3x2_translation(xvec2 a);
 ```

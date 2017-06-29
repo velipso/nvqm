@@ -1648,8 +1648,8 @@ static inline xquat xquat_fromquat(quat a){
 }
 #endif
 
-static inline xquat xquat_naxisang(xvec3 axis, xint ang);
-static inline xquat xquat_axisang(xvec3 axis, xint ang){
+static inline xquat xquat_naxisang(xvec3 axis, xang ang);
+static inline xquat xquat_axisang(xvec3 axis, xang ang){
 	return xquat_naxisang(xvec3_normal(axis), ang);
 }
 
@@ -1781,7 +1781,7 @@ static inline xquat xquat_mul(xquat a, xquat b){
 	};
 }
 
-static inline xquat xquat_naxisang(xvec3 axis, xint ang){ // axis is normalized
+static inline xquat xquat_naxisang(xvec3 axis, xang ang){ // axis is normalized
 	ang >>= 1;
 	xint s = xint_sin(ang);
 	return (xquat){
@@ -1859,6 +1859,267 @@ static inline xquat xquat_slerp(xquat a, xquat b, xint t){
 		xint_add(xint_mul(scale0, az), xint_mul(scale1, bz)),
 		xint_add(xint_mul(scale0, aw), xint_mul(scale1, bw))
 	};
+}
+
+//
+// xmat2
+//
+
+#ifndef NVQM_SKIP_FLOATING_POINT
+static inline mat2 xmat2_tomat2(xmat2 a){
+	return (mat2){
+		xint_tofloat(a.v[0]),
+		xint_tofloat(a.v[1]),
+		xint_tofloat(a.v[2]),
+		xint_tofloat(a.v[3])
+	};
+}
+
+static inline xmat2 xmat2_frommat2(mat2 a){
+	return (xmat2){
+		xint_fromfloat(a.v[0]),
+		xint_fromfloat(a.v[1]),
+		xint_fromfloat(a.v[2]),
+		xint_fromfloat(a.v[3])
+	};
+}
+#endif
+
+static inline xmat2 xmat2_add(xmat2 a, xmat2 b){
+	return (xmat2){
+		xint_add(a.v[0], b.v[0]),
+		xint_add(a.v[1], b.v[1]),
+		xint_add(a.v[2], b.v[2]),
+		xint_add(a.v[3], b.v[3])
+	};
+}
+
+static inline xmat2 xmat2_adjoint(xmat2 a){
+	return (xmat2){ a.v[3], -a.v[1], -a.v[2], a.v[0] };
+}
+
+static inline xmat2 xmat2_compmul(xmat2 a, xmat2 b){
+	return (xmat2){
+		xint_mul(a.v[0], b.v[0]),
+		xint_mul(a.v[1], b.v[1]),
+		xint_mul(a.v[2], b.v[2]),
+		xint_mul(a.v[3], b.v[3])
+	};
+}
+
+static inline xint xmat2_det(xmat2 a){
+	return xint_sub(xint_mul(a.v[0], a.v[3]), xint_mul(a.v[2], a.v[1]));
+}
+
+static inline xmat2 xmat2_identity(){
+	return (xmat2){ XINT1, 0, 0, XINT1 };
+}
+
+static inline xmat2 xmat2_invert(xmat2 a){
+	xint a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3];
+	xint det = xint_sub(xint_mul(a0, a3), xint_mul(a2, a1));
+	if (det == 0)
+		return (xmat2){ 0, 0, 0, 0 };
+	det = xint_div(XINT1, det);
+	return (xmat2){
+		 xint_mul(a3, det),
+		-xint_mul(a1, det),
+		-xint_mul(a2, det),
+		 xint_mul(a0, det)
+	};
+}
+
+static inline xmat2 xmat2_mul(xmat2 a, xmat2 b){
+	xint
+		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
+		b0 = b.v[0], b1 = b.v[1], b2 = b.v[2], b3 = b.v[3];
+	return (xmat2){
+		xint_add(xint_mul(a0, b0), xint_mul(a2, b1)),
+		xint_add(xint_mul(a1, b0), xint_mul(a3, b1)),
+		xint_add(xint_mul(a0, b2), xint_mul(a2, b3)),
+		xint_add(xint_mul(a1, b2), xint_mul(a3, b3))
+	};
+}
+
+static inline xmat2 xmat2_rotate(xmat2 a, xang ang){
+	xint a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3], s = xint_sin(ang), c = xint_cos(ang);
+	return (xmat2){
+		xint_add(xint_mul(a0,  c), xint_mul(a2, s)),
+		xint_add(xint_mul(a1,  c), xint_mul(a3, s)),
+		xint_add(xint_mul(a0, -s), xint_mul(a2, c)),
+		xint_add(xint_mul(a1, -s), xint_mul(a3, c))
+	};
+}
+
+static inline xmat2 xmat2_rotation(xang ang){
+	xint s = xint_sin(ang), c = xint_cos(ang);
+	return (xmat2){ c, s, -s, c };
+}
+
+static inline xmat2 xmat2_scale(xmat2 a, xvec2 b){
+	xint
+		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
+		b0 = b.v[0], b1 = b.v[1];
+	return (xmat2){ xint_mul(a0, b0), xint_mul(a1, b0), xint_mul(a2, b1), xint_mul(a3, b1) };
+}
+
+static inline xmat2 xmat2_scaling(xvec2 a){
+	return (xmat2){ a.v[0], 0, 0, a.v[1] };
+}
+
+static inline xmat2 xmat2_sub(xmat2 a, xmat2 b){
+	return (xmat2){
+		xint_sub(a.v[0], b.v[0]),
+		xint_sub(a.v[1], b.v[1]),
+		xint_sub(a.v[2], b.v[2]),
+		xint_sub(a.v[3], b.v[3])
+	};
+}
+
+static inline xmat2 xmat2_transpose(xmat2 a){
+	return (xmat2){ a.v[0], a.v[2], a.v[1], a.v[3] };
+}
+
+//
+// xmat3x2
+//
+
+#ifndef NVQM_SKIP_FLOATING_POINT
+static inline mat3x2 xmat3x2_tomat3x2(xmat3x2 a){
+	return (mat3x2){
+		xint_tofloat(a.v[0]),
+		xint_tofloat(a.v[1]),
+		xint_tofloat(a.v[2]),
+		xint_tofloat(a.v[3]),
+		xint_tofloat(a.v[4]),
+		xint_tofloat(a.v[5])
+	};
+}
+
+static inline xmat3x2 xmat3x2_frommat3x2(mat3x2 a){
+	return (xmat3x2){
+		xint_fromfloat(a.v[0]),
+		xint_fromfloat(a.v[1]),
+		xint_fromfloat(a.v[2]),
+		xint_fromfloat(a.v[3]),
+		xint_fromfloat(a.v[4]),
+		xint_fromfloat(a.v[5])
+	};
+}
+#endif
+
+static inline xmat3x2 xmat3x2_add(xmat3x2 a, xmat3x2 b){
+	return (xmat3x2){
+		xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]),
+		xint_add(a.v[2], b.v[2]), xint_add(a.v[3], b.v[3]),
+		xint_add(a.v[4], b.v[4]), xint_add(a.v[5], b.v[5])
+	};
+}
+
+static inline xmat3x2 xmat3x2_compmul(xmat3x2 a, xmat3x2 b){
+	return (xmat3x2){
+		xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]),
+		xint_mul(a.v[2], b.v[2]), xint_mul(a.v[3], b.v[3]),
+		xint_mul(a.v[4], b.v[4]), xint_mul(a.v[5], b.v[5])
+	};
+}
+
+static inline xint xmat3x2_det(xmat3x2 a){
+	return xint_sub(xint_mul(a.v[0], a.v[3]), xint_mul(a.v[2], a.v[1]));
+}
+
+static inline xmat3x2 xmat3x2_identity(){
+	return (xmat3x2){ XINT1, 0, 0, XINT1, 0, 0 };
+}
+
+static inline xmat3x2 xmat3x2_invert(xmat3x2 a){
+	xint
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		a20 = a.v[4], a21 = a.v[5];
+	xint det = a00 * a11 - a01 * a10;
+	if (det == 0)
+		return (xmat3x2){ 0, 0, 0, 0, 0, 0 };
+	det = xint_div(XINT1, det);
+	return (xmat3x2){
+		xint_mul( a11, det), xint_mul(-a01, det),
+		xint_mul(-a10, det), xint_mul( a00, det),
+		xint_mul(xint_sub(xint_mul( a21, a10), xint_mul(a11, a20)), det),
+		xint_mul(xint_add(xint_mul(-a21, a00), xint_mul(a01, a20)), det)
+	};
+}
+
+static inline xmat3x2 xmat3x2_mul(xmat3x2 a, xmat3x2 b){
+	xint
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		a20 = a.v[4], a21 = a.v[5],
+		b00 = b.v[0], b01 = b.v[1],
+		b10 = b.v[2], b11 = b.v[3],
+		b20 = b.v[4], b21 = b.v[5];
+	return (xmat3x2){
+		xint_add(xint_mul(b00, a00), xint_mul(b01, a10)),
+		xint_add(xint_mul(b00, a01), xint_mul(b01, a11)),
+		xint_add(xint_mul(b10, a00), xint_mul(b11, a10)),
+		xint_add(xint_mul(b10, a01), xint_mul(b11, a11)),
+		xint_add(xint_add(xint_mul(b20, a00), xint_mul(b21, a10)), a20),
+		xint_add(xint_add(xint_mul(b20, a01), xint_mul(b21, a11)), a21)
+	};
+}
+
+static inline xmat3x2 xmat3x2_rotate(xmat3x2 a, xang ang){
+	xint
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		s = xint_sin(ang), c = xint_cos(ang);
+	return (xmat3x2){
+		xint_add(xint_mul(c, a00), xint_mul(s, a10)), xint_add(xint_mul(c, a01), xint_mul(s, a11)),
+		xint_sub(xint_mul(c, a10), xint_mul(s, a00)), xint_sub(xint_mul(c, a11), xint_mul(s, a01)),
+		a.v[4], a.v[5]
+	};
+}
+
+static inline xmat3x2 xmat3x2_rotation(xang ang){
+	xint s = xint_sin(ang), c = xint_cos(ang);
+	return (xmat3x2){ c, s, -s, c, 0, 0 };
+}
+
+static inline xmat3x2 xmat3x2_scale(xmat3x2 a, xvec2 b){
+	xint bx = b.v[0], by = b.v[1];
+	return (xmat3x2){
+		xint_mul(bx, a.v[0]), xint_mul(bx, a.v[1]),
+		xint_mul(by, a.v[2]), xint_mul(by, a.v[3]),
+		a.v[4], a.v[5],
+	};
+}
+
+static inline xmat3x2 xmat3x2_scaling(xvec2 a){
+	return (xmat3x2){ a.v[0], 0, 0, a.v[1], 0, 0 };
+}
+
+static inline xmat3x2 xmat3x2_sub(xmat3x2 a, xmat3x2 b){
+	return (xmat3x2){
+		xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]),
+		xint_sub(a.v[2], b.v[2]), xint_sub(a.v[3], b.v[3]),
+		xint_sub(a.v[4], b.v[4]), xint_sub(a.v[5], b.v[5])
+	};
+}
+
+static inline xmat3x2 xmat3x2_translate(xmat3x2 a, xvec2 b){
+	xint
+		a00 = a.v[0], a01 = a.v[1],
+		a10 = a.v[2], a11 = a.v[3],
+		bx = b.v[0], by = b.v[1];
+	return (xmat3x2){
+		a00, a01,
+		a10, a11,
+		xint_add(xint_add(xint_mul(bx, a00), xint_mul(by, a10)), a.v[4]),
+		xint_add(xint_add(xint_mul(bx, a01), xint_mul(by, a11)), a.v[5])
+	};
+}
+
+static inline xmat3x2 xmat3x2_translation(xvec2 a){
+	return (xmat3x2){ XINT1, 0, 0, XINT1, a.v[0], a.v[1] };
 }
 
 #endif // NVQM_SKIP_FIXED_POINT
