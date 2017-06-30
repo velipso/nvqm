@@ -911,7 +911,7 @@ mat4 *mat4_invert        (mat4 *out, mat4 *a);
 mat4 *mat4_lookat        (mat4 *out, vec3 eye, vec3 position, vec3 up);
 mat4 *mat4_mul           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_orthogonal    (mat4 *out, float W, float H, float N, float F);
-mat4 *mat4_perspective   (mat4 *out, float fov, float width, float height, float N, float F);
+mat4 *mat4_perspective   (mat4 *out, float fov, float W, float H, float N, float F);
 mat4 *mat4_quat          (mat4 *out, quat a);
 mat4 *mat4_rotate        (mat4 *out, mat4 *a, vec3 axis, float ang);
 mat4 *mat4_rotation      (mat4 *out, vec3 axis, float ang);
@@ -2121,6 +2121,56 @@ static inline xmat3x2 xmat3x2_translate(xmat3x2 a, xvec2 b){
 static inline xmat3x2 xmat3x2_translation(xvec2 a){
 	return (xmat3x2){ XINT1, 0, 0, XINT1, a.v[0], a.v[1] };
 }
+
+//
+// xmat3
+//
+
+xmat3 *xmat3_add        (xmat3 *out, xmat3 *a, xmat3 *b);
+xmat3 *xmat3_adjoint    (xmat3 *out, xmat3 *a);
+xmat3 *xmat3_compmul    (xmat3 *out, xmat3 *a, xmat3 *b);
+xmat3 *xmat3_copy       (xmat3 *out, xmat3 *a);
+xint   xmat3_det        (xmat3 *a);
+xmat3 *xmat3_identity   (xmat3 *out);
+xmat3 *xmat3_invert     (xmat3 *out, xmat3 *a);
+xmat3 *xmat3_mul        (xmat3 *out, xmat3 *a, xmat3 *b);
+xmat3 *xmat3_quat       (xmat3 *out, xquat a);
+xmat3 *xmat3_rotate     (xmat3 *out, xmat3 *a, xang ang);
+xmat3 *xmat3_rotation   (xmat3 *out, xang ang);
+xmat3 *xmat3_scale      (xmat3 *out, xmat3 *a, xvec2 b);
+xmat3 *xmat3_scaling    (xmat3 *out, xvec2 a);
+xmat3 *xmat3_sub        (xmat3 *out, xmat3 *a, xmat3 *b);
+xmat3 *xmat3_translate  (xmat3 *out, xmat3 *a, xvec2 b);
+xmat3 *xmat3_translation(xmat3 *out, xvec2 a);
+xmat3 *xmat3_transpose  (xmat3 *out, xmat3 *a);
+
+//
+// xmat4
+//
+
+xmat4 *xmat4_add           (xmat4 *out, xmat4 *a, xmat4 *b);
+xmat4 *xmat4_adjoint       (xmat4 *out, xmat4 *a);
+xmat4 *xmat4_compmul       (xmat4 *out, xmat4 *a, xmat4 *b);
+xmat4 *xmat4_copy          (xmat4 *out, xmat4 *a);
+xint   xmat4_det           (xmat4 *a);
+xmat4 *xmat4_frustum       (xmat4 *out, xint L, xint R, xint B, xint T, xint N, xint F);
+xmat4 *xmat4_identity      (xmat4 *out);
+xmat4 *xmat4_invert        (xmat4 *out, xmat4 *a);
+xmat4 *xmat4_lookat        (xmat4 *out, xvec3 eye, xvec3 position, xvec3 up);
+xmat4 *xmat4_mul           (xmat4 *out, xmat4 *a, xmat4 *b);
+xmat4 *xmat4_orthogonal    (xmat4 *out, xint W, xint H, xint N, xint F);
+xmat4 *xmat4_perspective   (xmat4 *out, xang fov, xint W, xint H, xint N, xint F);
+xmat4 *xmat4_quat          (xmat4 *out, xquat a);
+xmat4 *xmat4_rotate        (xmat4 *out, xmat4 *a, xvec3 axis, xang ang);
+xmat4 *xmat4_rotation      (xmat4 *out, xvec3 axis, xang ang);
+xmat4 *xmat4_rottrans      (xmat4 *out, xquat a, xvec3 b);
+xmat4 *xmat4_rottransorigin(xmat4 *out, xquat a, xvec3 b, xvec3 origin);
+xmat4 *xmat4_scale         (xmat4 *out, xmat4 *a, xvec3 b);
+xmat4 *xmat4_scaling       (xmat4 *out, xvec3 a);
+xmat4 *xmat4_sub           (xmat4 *out, xmat4 *a, xmat4 *b);
+xmat4 *xmat4_translate     (xmat4 *out, xmat4 *a, xvec3 b);
+xmat4 *xmat4_translation   (xmat4 *out, xvec3 a);
+xmat4 *xmat4_transpose     (xmat4 *out, xmat4 *a);
 
 #endif // NVQM_SKIP_FIXED_POINT
 

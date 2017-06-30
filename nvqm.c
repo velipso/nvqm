@@ -626,7 +626,7 @@ mat4 *mat4_orthogonal(mat4 *out, float W, float H, float N, float F){
 	return out;
 }
 
-mat4 *mat4_perspective(mat4 *out, float fov, float width, float height, float N, float F){
+mat4 *mat4_perspective(mat4 *out, float fov, float W, float H, float N, float F){
 	float
 		f  = 1.0f / num_tan(fov * 0.5f),
 		nf = 1.0f / (N - F);
@@ -635,7 +635,7 @@ mat4 *mat4_perspective(mat4 *out, float fov, float width, float height, float N,
 	out->v[ 2] =  0.0f;
 	out->v[ 3] =  0.0f;
 	out->v[ 4] =  0.0f;
-	out->v[ 5] = f * width / height;
+	out->v[ 5] = f * W / H;
 	out->v[ 6] =  0.0f;
 	out->v[ 7] =  0.0f;
 	out->v[ 8] =  0.0f;
@@ -730,7 +730,10 @@ mat4 *mat4_rotation(mat4 *out, vec3 axis, float ang){
 	out->v[ 9] = y * z * t - x * s;
 	out->v[10] = z * z * t + c;
 	out->v[11] = 0.0f;
-	out->v[12] = 0.0f; out->v[13] = 0.0f; out->v[14] = 0.0f; out->v[15] = 1.0f;
+	out->v[12] = 0.0f;
+	out->v[13] = 0.0f;
+	out->v[14] = 0.0f;
+	out->v[15] = 1.0f;
 	return out;
 }
 
@@ -1170,6 +1173,978 @@ xint xint_sqrt(xint a){
 	X(0x00000001);
 	#undef X
 	return res;
+}
+
+//
+// xmat3
+//
+
+xmat3 *xmat3_add(xmat3 *out, xmat3 *a, xmat3 *b){
+	out->v[0] = xint_add(a->v[0], b->v[0]);
+	out->v[1] = xint_add(a->v[1], b->v[1]);
+	out->v[2] = xint_add(a->v[2], b->v[2]);
+	out->v[3] = xint_add(a->v[3], b->v[3]);
+	out->v[4] = xint_add(a->v[4], b->v[4]);
+	out->v[5] = xint_add(a->v[5], b->v[5]);
+	out->v[6] = xint_add(a->v[6], b->v[6]);
+	out->v[7] = xint_add(a->v[7], b->v[7]);
+	out->v[8] = xint_add(a->v[8], b->v[8]);
+	return out;
+}
+
+xmat3 *xmat3_adjoint(xmat3 *out, xmat3 *a){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
+	out->v[0] = xint_sub(xint_mul(a11, a22), xint_mul(a12, a21));
+	out->v[1] = xint_sub(xint_mul(a02, a21), xint_mul(a01, a22));
+	out->v[2] = xint_sub(xint_mul(a01, a12), xint_mul(a02, a11));
+	out->v[3] = xint_sub(xint_mul(a12, a20), xint_mul(a10, a22));
+	out->v[4] = xint_sub(xint_mul(a00, a22), xint_mul(a02, a20));
+	out->v[5] = xint_sub(xint_mul(a02, a10), xint_mul(a00, a12));
+	out->v[6] = xint_sub(xint_mul(a10, a21), xint_mul(a11, a20));
+	out->v[7] = xint_sub(xint_mul(a01, a20), xint_mul(a00, a21));
+	out->v[8] = xint_sub(xint_mul(a00, a11), xint_mul(a01, a10));
+	return out;
+}
+
+xmat3 *xmat3_compmul(xmat3 *out, xmat3 *a, xmat3 *b){
+	out->v[0] = xint_mul(a->v[0], b->v[0]);
+	out->v[1] = xint_mul(a->v[1], b->v[1]);
+	out->v[2] = xint_mul(a->v[2], b->v[2]);
+	out->v[3] = xint_mul(a->v[3], b->v[3]);
+	out->v[4] = xint_mul(a->v[4], b->v[4]);
+	out->v[5] = xint_mul(a->v[5], b->v[5]);
+	out->v[6] = xint_mul(a->v[6], b->v[6]);
+	out->v[7] = xint_mul(a->v[7], b->v[7]);
+	out->v[8] = xint_mul(a->v[8], b->v[8]);
+	return out;
+}
+
+xmat3 *xmat3_copy(xmat3 *out, xmat3 *a){
+	out->v[0] = a->v[0]; out->v[1] = a->v[1]; out->v[2] = a->v[2];
+	out->v[3] = a->v[3]; out->v[4] = a->v[4]; out->v[5] = a->v[5];
+	out->v[6] = a->v[6]; out->v[7] = a->v[7]; out->v[8] = a->v[8];
+	return out;
+}
+
+xint xmat3_det(xmat3 *a){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8];
+	return xint_add(xint_add(
+		xint_mul(a00, xint_sub(xint_mul( a22, a11), xint_mul(a12, a21))),
+		xint_mul(a01, xint_add(xint_mul(-a22, a10), xint_mul(a12, a20)))),
+		xint_mul(a02, xint_sub(xint_mul( a21, a10), xint_mul(a11, a20)))
+	);
+}
+
+xmat3 *xmat3_identity(xmat3 *out){
+	out->v[0] = XINT1; out->v[1] = 0; out->v[2] = 0;
+	out->v[3] = 0; out->v[4] = XINT1; out->v[5] = 0;
+	out->v[6] = 0; out->v[7] = 0; out->v[8] = XINT1;
+	return out;
+}
+
+xmat3 *xmat3_invert(xmat3 *out, xmat3 *a){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8],
+		b01 = xint_sub(xint_mul( a22, a11), xint_mul(a12, a21)),
+		b11 = xint_add(xint_mul(-a22, a10), xint_mul(a12, a20)),
+		b21 = xint_sub(xint_mul( a21, a10), xint_mul(a11, a20));
+	xint det = xint_add(xint_add(xint_mul(a00, b01), xint_mul(a01, b11)), xint_mul(a02, b21));
+	if (det == 0)
+		return (xmat3 *)0;
+	det = xint_div(XINT1, det);
+	out->v[0] = xint_mul(b01                                              , det);
+	out->v[1] = xint_mul(xint_add(xint_mul(-a22, a01), xint_mul(a02, a21)), det);
+	out->v[2] = xint_mul(xint_sub(xint_mul( a12, a01), xint_mul(a02, a11)), det);
+	out->v[3] = xint_mul(b11                                              , det);
+	out->v[4] = xint_mul(xint_sub(xint_mul( a22, a00), xint_mul(a02, a20)), det);
+	out->v[5] = xint_mul(xint_add(xint_mul(-a12, a00), xint_mul(a02, a10)), det);
+	out->v[6] = xint_mul(b21                                              , det);
+	out->v[7] = xint_mul(xint_add(xint_mul(-a21, a00), xint_mul(a01, a20)), det);
+	out->v[8] = xint_mul(xint_sub(xint_mul( a11, a00), xint_mul(a01, a10)), det);
+	return out;
+}
+
+xmat3 *xmat3_mul(xmat3 *out, xmat3 *a, xmat3 *b){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8],
+		b00 = b->v[0], b01 = b->v[1], b02 = b->v[2],
+		b10 = b->v[3], b11 = b->v[4], b12 = b->v[5],
+		b20 = b->v[6], b21 = b->v[7], b22 = b->v[8];
+	out->v[0] = xint_add(xint_add(xint_mul(b00, a00), xint_mul(b01, a10)), xint_mul(b02, a20));
+	out->v[1] = xint_add(xint_add(xint_mul(b00, a01), xint_mul(b01, a11)), xint_mul(b02, a21));
+	out->v[2] = xint_add(xint_add(xint_mul(b00, a02), xint_mul(b01, a12)), xint_mul(b02, a22));
+	out->v[3] = xint_add(xint_add(xint_mul(b10, a00), xint_mul(b11, a10)), xint_mul(b12, a20));
+	out->v[4] = xint_add(xint_add(xint_mul(b10, a01), xint_mul(b11, a11)), xint_mul(b12, a21));
+	out->v[5] = xint_add(xint_add(xint_mul(b10, a02), xint_mul(b11, a12)), xint_mul(b12, a22));
+	out->v[6] = xint_add(xint_add(xint_mul(b20, a00), xint_mul(b21, a10)), xint_mul(b22, a20));
+	out->v[7] = xint_add(xint_add(xint_mul(b20, a01), xint_mul(b21, a11)), xint_mul(b22, a21));
+	out->v[8] = xint_add(xint_add(xint_mul(b20, a02), xint_mul(b21, a12)), xint_mul(b22, a22));
+	return out;
+}
+
+xmat3 *xmat3_quat(xmat3 *out, xquat a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax << 1,
+		ay2 = ay << 1,
+		az2 = az << 1,
+		axx = xint_mul(ax, ax2),
+		ayx = xint_mul(ay, ax2),
+		ayy = xint_mul(ay, ay2),
+		azx = xint_mul(az, ax2),
+		azy = xint_mul(az, ay2),
+		azz = xint_mul(az, az2),
+		awx = xint_mul(aw, ax2),
+		awy = xint_mul(aw, ay2),
+		awz = xint_mul(aw, az2);
+	out->v[0] = xint_sub(XINT1, xint_add(ayy, azz));
+	out->v[1] =                 xint_add(ayx, awz);
+	out->v[2] =                 xint_sub(azx, awy);
+	out->v[3] =                 xint_sub(ayx, awz);
+	out->v[4] = xint_sub(XINT1, xint_add(axx, azz));
+	out->v[5] =                 xint_add(azy, awx);
+	out->v[6] =                 xint_add(azx, awy);
+	out->v[7] =                 xint_sub(azy, awx);
+	out->v[8] = xint_sub(XINT1, xint_add(axx, ayy));
+	return out;
+}
+
+xmat3 *xmat3_rotate(xmat3 *out, xmat3 *a, xang ang){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8],
+		s = xint_sin(ang), c = xint_cos(ang);
+	out->v[0] = xint_add(xint_mul(c, a00), xint_mul(s, a10));
+	out->v[1] = xint_add(xint_mul(c, a01), xint_mul(s, a11));
+	out->v[2] = xint_add(xint_mul(c, a02), xint_mul(s, a12));
+	out->v[3] = xint_sub(xint_mul(c, a10), xint_mul(s, a00));
+	out->v[4] = xint_sub(xint_mul(c, a11), xint_mul(s, a01));
+	out->v[5] = xint_sub(xint_mul(c, a12), xint_mul(s, a02));
+	out->v[6] = a20;
+	out->v[7] = a21;
+	out->v[8] = a22;
+	return out;
+}
+
+xmat3 *xmat3_rotation(xmat3 *out, xang ang){
+	xint s = xint_sin(ang), c = xint_cos(ang);
+	out->v[0] =  c;
+	out->v[1] =  s;
+	out->v[2] =  0;
+	out->v[3] = -s;
+	out->v[4] =  c;
+	out->v[5] =  0;
+	out->v[6] =  0;
+	out->v[7] =  0;
+	out->v[8] = XINT1;
+	return out;
+}
+
+xmat3 *xmat3_scale(xmat3 *out, xmat3 *a, xvec2 b){
+	xint bx = b.v[0], by = b.v[1];
+	out->v[0] = xint_mul(bx, a->v[0]);
+	out->v[1] = xint_mul(bx, a->v[1]);
+	out->v[2] = xint_mul(bx, a->v[2]);
+	out->v[3] = xint_mul(by, a->v[3]);
+	out->v[4] = xint_mul(by, a->v[4]);
+	out->v[5] = xint_mul(by, a->v[5]);
+	out->v[6] = a->v[6];
+	out->v[7] = a->v[7];
+	out->v[8] = a->v[8];
+	return out;
+}
+
+xmat3 *xmat3_scaling(xmat3 *out, xvec2 a){
+	out->v[0] = a.v[0];
+	out->v[1] = 0;
+	out->v[2] = 0;
+	out->v[3] = 0;
+	out->v[4] = a.v[1];
+	out->v[5] = 0;
+	out->v[6] = 0;
+	out->v[7] = 0;
+	out->v[8] = XINT1;
+	return out;
+}
+
+xmat3 *xmat3_sub(xmat3 *out, xmat3 *a, xmat3 *b){
+	out->v[0] = xint_sub(a->v[0], b->v[0]);
+	out->v[1] = xint_sub(a->v[1], b->v[1]);
+	out->v[2] = xint_sub(a->v[2], b->v[2]);
+	out->v[3] = xint_sub(a->v[3], b->v[3]);
+	out->v[4] = xint_sub(a->v[4], b->v[4]);
+	out->v[5] = xint_sub(a->v[5], b->v[5]);
+	out->v[6] = xint_sub(a->v[6], b->v[6]);
+	out->v[7] = xint_sub(a->v[7], b->v[7]);
+	out->v[8] = xint_sub(a->v[8], b->v[8]);
+	return out;
+}
+
+xmat3 *xmat3_translate(xmat3 *out, xmat3 *a, xvec2 b){
+	xint
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[2],
+		a10 = a->v[3], a11 = a->v[4], a12 = a->v[5],
+		a20 = a->v[6], a21 = a->v[7], a22 = a->v[8],
+		bx = b.v[0], by = b.v[1];
+	out->v[0] = a00;
+	out->v[1] = a01;
+	out->v[2] = a02;
+	out->v[3] = a10;
+	out->v[4] = a11;
+	out->v[5] = a12;
+	out->v[6] = xint_add(xint_add(xint_mul(bx, a00), xint_mul(by, a10)), a20);
+	out->v[7] = xint_add(xint_add(xint_mul(bx, a01), xint_mul(by, a11)), a21);
+	out->v[8] = xint_add(xint_add(xint_mul(bx, a02), xint_mul(by, a12)), a22);
+	return out;
+}
+
+xmat3 *xmat3_translation(xmat3 *out, xvec2 a){
+	out->v[0] = XINT1;
+	out->v[1] = 0;
+	out->v[2] = 0;
+	out->v[3] = 0;
+	out->v[4] = XINT1;
+	out->v[5] = 0;
+	out->v[6] = a.v[0];
+	out->v[7] = a.v[1];
+	out->v[8] = XINT1;
+	return out;
+}
+
+xmat3 *xmat3_transpose(xmat3 *out, xmat3 *a){
+	if (out == a) {
+		xint a01 = a->v[1], a02 = a->v[2], a12 = a->v[5];
+		out->v[1] = a->v[3];
+		out->v[2] = a->v[6];
+		out->v[3] = a01;
+		out->v[5] = a->v[7];
+		out->v[6] = a02;
+		out->v[7] = a12;
+	}
+	else{
+		out->v[0] = a->v[0];
+		out->v[1] = a->v[3];
+		out->v[2] = a->v[6];
+		out->v[3] = a->v[1];
+		out->v[4] = a->v[4];
+		out->v[5] = a->v[7];
+		out->v[6] = a->v[2];
+		out->v[7] = a->v[5];
+		out->v[8] = a->v[8];
+	}
+	return out;
+}
+
+//
+// xmat4
+//
+
+xmat4 *xmat4_add(xmat4 *out, xmat4 *a, xmat4 *b){
+	out->v[ 0] = xint_add(a->v[ 0], b->v[ 0]);
+	out->v[ 1] = xint_add(a->v[ 1], b->v[ 1]);
+	out->v[ 2] = xint_add(a->v[ 2], b->v[ 2]);
+	out->v[ 3] = xint_add(a->v[ 3], b->v[ 3]);
+	out->v[ 4] = xint_add(a->v[ 4], b->v[ 4]);
+	out->v[ 5] = xint_add(a->v[ 5], b->v[ 5]);
+	out->v[ 6] = xint_add(a->v[ 6], b->v[ 6]);
+	out->v[ 7] = xint_add(a->v[ 7], b->v[ 7]);
+	out->v[ 8] = xint_add(a->v[ 8], b->v[ 8]);
+	out->v[ 9] = xint_add(a->v[ 9], b->v[ 9]);
+	out->v[10] = xint_add(a->v[10], b->v[10]);
+	out->v[11] = xint_add(a->v[11], b->v[11]);
+	out->v[12] = xint_add(a->v[12], b->v[12]);
+	out->v[13] = xint_add(a->v[13], b->v[13]);
+	out->v[14] = xint_add(a->v[14], b->v[14]);
+	out->v[15] = xint_add(a->v[15], b->v[15]);
+	return out;
+}
+
+xmat4 *xmat4_adjoint(xmat4 *out, xmat4 *a){
+	xint
+		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
+		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15];
+	out->v[ 0] =  xint_add(xint_sub(
+		xint_mul(a11, xint_sub(xint_mul(a22, a33), xint_mul(a23, a32))),
+		xint_mul(a21, xint_sub(xint_mul(a12, a33), xint_mul(a13, a32)))),
+		xint_mul(a31, xint_sub(xint_mul(a12, a23), xint_mul(a13, a22))));
+	out->v[ 1] = -xint_add(xint_sub(
+		xint_mul(a01, xint_sub(xint_mul(a22, a33), xint_mul(a23, a32))),
+		xint_mul(a21, xint_sub(xint_mul(a02, a33), xint_mul(a03, a32)))),
+		xint_mul(a31, xint_sub(xint_mul(a02, a23), xint_mul(a03, a22))));
+	out->v[ 2] =  xint_add(xint_sub(
+		xint_mul(a01, xint_sub(xint_mul(a12, a33), xint_mul(a13, a32))),
+		xint_mul(a11, xint_sub(xint_mul(a02, a33), xint_mul(a03, a32)))),
+		xint_mul(a31, xint_sub(xint_mul(a02, a13), xint_mul(a03, a12))));
+	out->v[ 3] = -xint_add(xint_sub(
+		xint_mul(a01, xint_sub(xint_mul(a12, a23), xint_mul(a13, a22))),
+		xint_mul(a11, xint_sub(xint_mul(a02, a23), xint_mul(a03, a22)))),
+		xint_mul(a21, xint_sub(xint_mul(a02, a13), xint_mul(a03, a12))));
+	out->v[ 4] = -xint_add(xint_sub(
+		xint_mul(a10, xint_sub(xint_mul(a22, a33), xint_mul(a23, a32))),
+		xint_mul(a20, xint_sub(xint_mul(a12, a33), xint_mul(a13, a32)))),
+		xint_mul(a30, xint_sub(xint_mul(a12, a23), xint_mul(a13, a22))));
+	out->v[ 5] =  xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a22, a33), xint_mul(a23, a32))),
+		xint_mul(a20, xint_sub(xint_mul(a02, a33), xint_mul(a03, a32)))),
+		xint_mul(a30, xint_sub(xint_mul(a02, a23), xint_mul(a03, a22))));
+	out->v[ 6] = -xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a12, a33), xint_mul(a13, a32))),
+		xint_mul(a10, xint_sub(xint_mul(a02, a33), xint_mul(a03, a32)))),
+		xint_mul(a30, xint_sub(xint_mul(a02, a13), xint_mul(a03, a12))));
+	out->v[ 7] =  xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a12, a23), xint_mul(a13, a22))),
+		xint_mul(a10, xint_sub(xint_mul(a02, a23), xint_mul(a03, a22)))),
+		xint_mul(a20, xint_sub(xint_mul(a02, a13), xint_mul(a03, a12))));
+	out->v[ 8] =  xint_add(xint_sub(
+		xint_mul(a10, xint_sub(xint_mul(a21, a33), xint_mul(a23, a31))),
+		xint_mul(a20, xint_sub(xint_mul(a11, a33), xint_mul(a13, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a11, a23), xint_mul(a13, a21))));
+	out->v[ 9] = -xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a21, a33), xint_mul(a23, a31))),
+		xint_mul(a20, xint_sub(xint_mul(a01, a33), xint_mul(a03, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a01, a23), xint_mul(a03, a21))));
+	out->v[10] =  xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a11, a33), xint_mul(a13, a31))),
+		xint_mul(a10, xint_sub(xint_mul(a01, a33), xint_mul(a03, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a01, a13), xint_mul(a03, a11))));
+	out->v[11] = -xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a11, a23), xint_mul(a13, a21))),
+		xint_mul(a10, xint_sub(xint_mul(a01, a23), xint_mul(a03, a21)))),
+		xint_mul(a20, xint_sub(xint_mul(a01, a13), xint_mul(a03, a11))));
+	out->v[12] = -xint_add(xint_sub(
+		xint_mul(a10, xint_sub(xint_mul(a21, a32), xint_mul(a22, a31))),
+		xint_mul(a20, xint_sub(xint_mul(a11, a32), xint_mul(a12, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a11, a22), xint_mul(a12, a21))));
+	out->v[13] =  xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a21, a32), xint_mul(a22, a31))),
+		xint_mul(a20, xint_sub(xint_mul(a01, a32), xint_mul(a02, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a01, a22), xint_mul(a02, a21))));
+	out->v[14] = -xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a11, a32), xint_mul(a12, a31))),
+		xint_mul(a10, xint_sub(xint_mul(a01, a32), xint_mul(a02, a31)))),
+		xint_mul(a30, xint_sub(xint_mul(a01, a12), xint_mul(a02, a11))));
+	out->v[15] =  xint_add(xint_sub(
+		xint_mul(a00, xint_sub(xint_mul(a11, a22), xint_mul(a12, a21))),
+		xint_mul(a10, xint_sub(xint_mul(a01, a22), xint_mul(a02, a21)))),
+		xint_mul(a20, xint_sub(xint_mul(a01, a12), xint_mul(a02, a11))));
+	return out;
+}
+
+xmat4 *xmat4_compmul(xmat4 *out, xmat4 *a, xmat4 *b){
+	out->v[ 0] = xint_mul(a->v[ 0], b->v[ 0]);
+	out->v[ 1] = xint_mul(a->v[ 1], b->v[ 1]);
+	out->v[ 2] = xint_mul(a->v[ 2], b->v[ 2]);
+	out->v[ 3] = xint_mul(a->v[ 3], b->v[ 3]);
+	out->v[ 4] = xint_mul(a->v[ 4], b->v[ 4]);
+	out->v[ 5] = xint_mul(a->v[ 5], b->v[ 5]);
+	out->v[ 6] = xint_mul(a->v[ 6], b->v[ 6]);
+	out->v[ 7] = xint_mul(a->v[ 7], b->v[ 7]);
+	out->v[ 8] = xint_mul(a->v[ 8], b->v[ 8]);
+	out->v[ 9] = xint_mul(a->v[ 9], b->v[ 9]);
+	out->v[10] = xint_mul(a->v[10], b->v[10]);
+	out->v[11] = xint_mul(a->v[11], b->v[11]);
+	out->v[12] = xint_mul(a->v[12], b->v[12]);
+	out->v[13] = xint_mul(a->v[13], b->v[13]);
+	out->v[14] = xint_mul(a->v[14], b->v[14]);
+	out->v[15] = xint_mul(a->v[15], b->v[15]);
+	return out;
+}
+
+xmat4 *xmat4_copy(xmat4 *out, xmat4 *a){
+	out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 1]; out->v[ 2] = a->v[ 2]; out->v[ 3] = a->v[ 3];
+	out->v[ 4] = a->v[ 4]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 6]; out->v[ 7] = a->v[ 7];
+	out->v[ 8] = a->v[ 8]; out->v[ 9] = a->v[ 9]; out->v[10] = a->v[10]; out->v[11] = a->v[11];
+	out->v[12] = a->v[12]; out->v[13] = a->v[13]; out->v[14] = a->v[14]; out->v[15] = a->v[15];
+	return out;
+}
+
+xint xmat4_det(xmat4 *a){
+	xint
+		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
+		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15],
+		b00 = xint_sub(xint_mul(a00, a11), xint_mul(a01, a10)),
+		b01 = xint_sub(xint_mul(a00, a12), xint_mul(a02, a10)),
+		b02 = xint_sub(xint_mul(a00, a13), xint_mul(a03, a10)),
+		b03 = xint_sub(xint_mul(a01, a12), xint_mul(a02, a11)),
+		b04 = xint_sub(xint_mul(a01, a13), xint_mul(a03, a11)),
+		b05 = xint_sub(xint_mul(a02, a13), xint_mul(a03, a12)),
+		b06 = xint_sub(xint_mul(a20, a31), xint_mul(a21, a30)),
+		b07 = xint_sub(xint_mul(a20, a32), xint_mul(a22, a30)),
+		b08 = xint_sub(xint_mul(a20, a33), xint_mul(a23, a30)),
+		b09 = xint_sub(xint_mul(a21, a32), xint_mul(a22, a31)),
+		b10 = xint_sub(xint_mul(a21, a33), xint_mul(a23, a31)),
+		b11 = xint_sub(xint_mul(a22, a33), xint_mul(a23, a32));
+	return xint_add(xint_sub(xint_add(xint_add(xint_sub(
+		xint_mul(b00, b11), xint_mul(b01, b10)), xint_mul(b02, b09)), xint_mul(b03, b08)),
+		xint_mul(b04, b07)), xint_mul(b05, b06));
+}
+
+xmat4 *xmat4_frustum(xmat4 *out, xint L, xint R, xint B, xint T, xint N, xint F){
+	xint
+		rl = xint_div(XINT1, xint_sub(R, L)),
+		tb = xint_div(XINT1, xint_sub(T, B)),
+		nf = xint_div(XINT1, xint_sub(N, F));
+	out->v[ 0] = xint_mul(N << 1, rl);
+	out->v[ 1] =  0;
+	out->v[ 2] =  0;
+	out->v[ 3] =  0;
+	out->v[ 4] =  0;
+	out->v[ 5] = xint_mul(N << 1, tb);
+	out->v[ 6] =  0;
+	out->v[ 7] =  0;
+	out->v[ 8] = xint_mul(xint_add(R, L), rl);
+	out->v[ 9] = xint_mul(xint_add(T, B), tb);
+	out->v[10] = xint_mul(xint_add(F, N), nf);
+	out->v[11] = -XINT1;
+	out->v[12] =  0;
+	out->v[13] =  0;
+	out->v[14] = xint_mul(xint_mul(N, F) << 1, nf);
+	out->v[15] =  0;
+	return out;
+}
+
+xmat4 *xmat4_identity(xmat4 *out){
+	out->v[ 0] = XINT1; out->v[ 1] = 0; out->v[ 2] = 0; out->v[ 3] = 0;
+	out->v[ 4] = 0; out->v[ 5] = XINT1; out->v[ 6] = 0; out->v[ 7] = 0;
+	out->v[ 8] = 0; out->v[ 9] = 0; out->v[10] = XINT1; out->v[11] = 0;
+	out->v[12] = 0; out->v[13] = 0; out->v[14] = 0; out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_invert(xmat4 *out, xmat4 *a){
+	xint
+		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
+		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15],
+		b00 = xint_sub(xint_mul(a00, a11), xint_mul(a01, a10)),
+		b01 = xint_sub(xint_mul(a00, a12), xint_mul(a02, a10)),
+		b02 = xint_sub(xint_mul(a00, a13), xint_mul(a03, a10)),
+		b03 = xint_sub(xint_mul(a01, a12), xint_mul(a02, a11)),
+		b04 = xint_sub(xint_mul(a01, a13), xint_mul(a03, a11)),
+		b05 = xint_sub(xint_mul(a02, a13), xint_mul(a03, a12)),
+		b06 = xint_sub(xint_mul(a20, a31), xint_mul(a21, a30)),
+		b07 = xint_sub(xint_mul(a20, a32), xint_mul(a22, a30)),
+		b08 = xint_sub(xint_mul(a20, a33), xint_mul(a23, a30)),
+		b09 = xint_sub(xint_mul(a21, a32), xint_mul(a22, a31)),
+		b10 = xint_sub(xint_mul(a21, a33), xint_mul(a23, a31)),
+		b11 = xint_sub(xint_mul(a22, a33), xint_mul(a23, a32));
+	xint det = xint_add(xint_sub(xint_add(xint_add(xint_sub(
+		xint_mul(b00, b11), xint_mul(b01, b10)), xint_mul(b02, b09)), xint_mul(b03, b08)),
+		xint_mul(b04, b07)), xint_mul(b05, b06));
+	if (det == 0)
+		return (xmat4 *)0;
+	det = xint_div(XINT1, det);
+	out->v[ 0] = xint_mul(
+		xint_add(xint_sub(xint_mul(a11, b11), xint_mul(a12, b10)), xint_mul(a13, b09)), det);
+	out->v[ 1] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a02, b10), xint_mul(a01, b11)), xint_mul(a03, b09)), det);
+	out->v[ 2] = xint_mul(
+		xint_add(xint_sub(xint_mul(a31, b05), xint_mul(a32, b04)), xint_mul(a33, b03)), det);
+	out->v[ 3] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a22, b04), xint_mul(a21, b05)), xint_mul(a23, b03)), det);
+	out->v[ 4] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a12, b08), xint_mul(a10, b11)), xint_mul(a13, b07)), det);
+	out->v[ 5] = xint_mul(
+		xint_add(xint_sub(xint_mul(a00, b11), xint_mul(a02, b08)), xint_mul(a03, b07)), det);
+	out->v[ 6] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a32, b02), xint_mul(a30, b05)), xint_mul(a33, b01)), det);
+	out->v[ 7] = xint_mul(
+		xint_add(xint_sub(xint_mul(a20, b05), xint_mul(a22, b02)), xint_mul(a23, b01)), det);
+	out->v[ 8] = xint_mul(
+		xint_add(xint_sub(xint_mul(a10, b10), xint_mul(a11, b08)), xint_mul(a13, b06)), det);
+	out->v[ 9] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a01, b08), xint_mul(a00, b10)), xint_mul(a03, b06)), det);
+	out->v[10] = xint_mul(
+		xint_add(xint_sub(xint_mul(a30, b04), xint_mul(a31, b02)), xint_mul(a33, b00)), det);
+	out->v[11] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a21, b02), xint_mul(a20, b04)), xint_mul(a23, b00)), det);
+	out->v[12] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a11, b07), xint_mul(a10, b09)), xint_mul(a12, b06)), det);
+	out->v[13] = xint_mul(
+		xint_add(xint_sub(xint_mul(a00, b09), xint_mul(a01, b07)), xint_mul(a02, b06)), det);
+	out->v[14] = xint_mul(
+		xint_sub(xint_sub(xint_mul(a31, b01), xint_mul(a30, b03)), xint_mul(a32, b00)), det);
+	out->v[15] = xint_mul(
+		xint_add(xint_sub(xint_mul(a20, b03), xint_mul(a21, b01)), xint_mul(a22, b00)), det);
+	return out;
+}
+
+xmat4 *xmat4_lookat(xmat4 *out, xvec3 eye, xvec3 position, xvec3 up){
+	xint
+		ex = eye.v[0], ey = eye.v[1], ez = eye.v[2],
+		ux = up.v[0], uy = up.v[1], uz = up.v[2],
+		px = position.v[0], py = position.v[1], pz = position.v[2];
+	xint z0 = xint_sub(ex, px), z1 = xint_sub(ey, py), z2 = xint_sub(ez, pz);
+	if (z0 == 0 && z1 == 0 && z2 == 0)
+		return xmat4_identity(out);
+	xint len = xint_add(xint_add(xint_mul(z0, z0), xint_mul(z1, z1)), xint_mul(z2, z2));
+	if (len == 0)
+		return xmat4_identity(out);
+	len = xint_sqrt(len);
+	if (len == 0)
+		return xmat4_identity(out);
+	len = xint_div(XINT1, len);
+	z0 = xint_mul(z0, len);
+	z1 = xint_mul(z1, len);
+	z2 = xint_mul(z2, len);
+	xint x0 = xint_sub(xint_mul(uy, z2), xint_mul(uz, z1));
+	xint x1 = xint_sub(xint_mul(uz, z0), xint_mul(ux, z2));
+	xint x2 = xint_sub(xint_mul(ux, z1), xint_mul(uy, z0));
+	len = xint_add(xint_add(xint_mul(x0, x0), xint_mul(x1, x1)), xint_mul(x2, x2));
+	if (len == 0)
+		x0 = x1 = x2 = 0;
+	else{
+		len = xint_sqrt(len);
+		if (len == 0)
+			x0 = x1 = x2 = 0;
+		else{
+			len = xint_div(XINT1, len);
+			x0 = xint_mul(x0, len);
+			x1 = xint_mul(x1, len);
+			x2 = xint_mul(x2, len);
+		}
+	}
+	xint y0 = xint_sub(xint_mul(z1, x2), xint_mul(z2, x1));
+	xint y1 = xint_sub(xint_mul(z2, x0), xint_mul(z0, x2));
+	xint y2 = xint_sub(xint_mul(z0, x1), xint_mul(z1, x0));
+	len = xint_add(xint_add(xint_mul(y0, y0), xint_mul(y1, y1)), xint_mul(y2, y2));
+	if (len == 0)
+		y0 = y1 = y2 = 0;
+	else{
+		len = xint_sqrt(len);
+		if (len == 0)
+			y0 = y1 = y2 = 0;
+		else{
+			len = xint_div(XINT1, len);
+			y0 = xint_mul(y0, len);
+			y1 = xint_mul(y1, len);
+			y2 = xint_mul(y2, len);
+		}
+	}
+	out->v[ 0] = x0;
+	out->v[ 1] = y0;
+	out->v[ 2] = z0;
+	out->v[ 3] = 0;
+	out->v[ 4] = x1;
+	out->v[ 5] = y1;
+	out->v[ 6] = z1;
+	out->v[ 7] = 0;
+	out->v[ 8] = x2;
+	out->v[ 9] = y2;
+	out->v[10] = z2;
+	out->v[11] = 0;
+	out->v[12] = -xint_add(xint_add(xint_mul(x0, ex), xint_mul(x1, ey)), xint_mul(x2, ez));
+	out->v[13] = -xint_add(xint_add(xint_mul(y0, ex), xint_mul(y1, ey)), xint_mul(y2, ez));
+	out->v[14] = -xint_add(xint_add(xint_mul(z0, ex), xint_mul(z1, ey)), xint_mul(z2, ez));
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_mul(xmat4 *out, xmat4 *a, xmat4 *b){
+	xint
+		a00 = a->v[ 0], a01 = a->v[ 1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[ 4], a11 = a->v[ 5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[ 8], a21 = a->v[ 9], a22 = a->v[10], a23 = a->v[11],
+		a30 = a->v[12], a31 = a->v[13], a32 = a->v[14], a33 = a->v[15];
+	xint b0, b1, b2, b3;
+	b0 = b->v[ 0];
+	b1 = b->v[ 1];
+	b2 = b->v[ 2];
+	b3 = b->v[ 3];
+	out->v[ 0] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a00), xint_mul(b1, a10)), xint_mul(b2, a20)), xint_mul(b3, a30));
+	out->v[ 1] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a01), xint_mul(b1, a11)), xint_mul(b2, a21)), xint_mul(b3, a31));
+	out->v[ 2] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a02), xint_mul(b1, a12)), xint_mul(b2, a22)), xint_mul(b3, a32));
+	out->v[ 3] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a03), xint_mul(b1, a13)), xint_mul(b2, a23)), xint_mul(b3, a33));
+	b0 = b->v[ 4];
+	b1 = b->v[ 5];
+	b2 = b->v[ 6];
+	b3 = b->v[ 7];
+	out->v[ 4] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a00), xint_mul(b1, a10)), xint_mul(b2, a20)), xint_mul(b3, a30));
+	out->v[ 5] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a01), xint_mul(b1, a11)), xint_mul(b2, a21)), xint_mul(b3, a31));
+	out->v[ 6] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a02), xint_mul(b1, a12)), xint_mul(b2, a22)), xint_mul(b3, a32));
+	out->v[ 7] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a03), xint_mul(b1, a13)), xint_mul(b2, a23)), xint_mul(b3, a33));
+	b0 = b->v[ 8];
+	b1 = b->v[ 9];
+	b2 = b->v[10];
+	b3 = b->v[11];
+	out->v[ 8] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a00), xint_mul(b1, a10)), xint_mul(b2, a20)), xint_mul(b3, a30));
+	out->v[ 9] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a01), xint_mul(b1, a11)), xint_mul(b2, a21)), xint_mul(b3, a31));
+	out->v[10] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a02), xint_mul(b1, a12)), xint_mul(b2, a22)), xint_mul(b3, a32));
+	out->v[11] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a03), xint_mul(b1, a13)), xint_mul(b2, a23)), xint_mul(b3, a33));
+	b0 = b->v[12];
+	b1 = b->v[13];
+	b2 = b->v[14];
+	b3 = b->v[15];
+	out->v[12] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a00), xint_mul(b1, a10)), xint_mul(b2, a20)), xint_mul(b3, a30));
+	out->v[13] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a01), xint_mul(b1, a11)), xint_mul(b2, a21)), xint_mul(b3, a31));
+	out->v[14] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a02), xint_mul(b1, a12)), xint_mul(b2, a22)), xint_mul(b3, a32));
+	out->v[15] = xint_add(xint_add(xint_add(
+		xint_mul(b0, a03), xint_mul(b1, a13)), xint_mul(b2, a23)), xint_mul(b3, a33));
+	return out;
+}
+
+xmat4 *xmat4_orthogonal(xmat4 *out, xint W, xint H, xint N, xint F){
+	xint nf = xint_div(XINT1, xint_sub(N, F));
+	out->v[ 0] = xint_div(XINT(2), W);
+	out->v[ 1] = 0;
+	out->v[ 2] = 0;
+	out->v[ 3] = 0;
+	out->v[ 4] = 0;
+	out->v[ 5] = xint_div(XINT(2), H);
+	out->v[ 6] = 0;
+	out->v[ 7] = 0;
+	out->v[ 8] = 0;
+	out->v[ 9] = 0;
+	out->v[10] = nf << 1;
+	out->v[11] = 0;
+	out->v[12] = 0;
+	out->v[13] = 0;
+	out->v[14] = xint_mul(xint_add(N, F), nf);
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_perspective(xmat4 *out, xang fov, xint W, xint H, xint N, xint F){
+	xint
+		f  = xint_div(XINT1, xint_tan(fov >> 1)),
+		nf = xint_div(XINT1, xint_sub(N, F));
+	out->v[ 0] = f;
+	out->v[ 1] =  0;
+	out->v[ 2] =  0;
+	out->v[ 3] =  0;
+	out->v[ 4] =  0;
+	out->v[ 5] = xint_div(xint_mul(f, W), H);
+	out->v[ 6] =  0;
+	out->v[ 7] =  0;
+	out->v[ 8] =  0;
+	out->v[ 9] =  0;
+	out->v[10] = xint_mul(xint_add(F, N), nf);
+	out->v[11] = -XINT1;
+	out->v[12] =  0;
+	out->v[13] =  0;
+	out->v[14] = xint_mul(xint_mul(F, N) << 1, nf);
+	out->v[15] =  0;
+	return out;
+}
+
+xmat4 *xmat4_quat(xmat4 *out, xquat a){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax << 1,
+		ay2 = ay << 1,
+		az2 = az << 1,
+		axx = xint_mul(ax, ax2),
+		ayx = xint_mul(ay, ax2),
+		ayy = xint_mul(ay, ay2),
+		azx = xint_mul(az, ax2),
+		azy = xint_mul(az, ay2),
+		azz = xint_mul(az, az2),
+		awx = xint_mul(aw, ax2),
+		awy = xint_mul(aw, ay2),
+		awz = xint_mul(aw, az2);
+	out->v[ 0] = xint_sub(XINT1, xint_add(ayy, azz));
+	out->v[ 1] =                 xint_add(ayx, awz);
+	out->v[ 2] =                 xint_sub(azx, awy);
+	out->v[ 3] = 0;
+	out->v[ 4] =                 xint_sub(ayx, awz);
+	out->v[ 5] = xint_sub(XINT1, xint_add(axx, azz));
+	out->v[ 6] =                 xint_add(azy, awx);
+	out->v[ 7] = 0;
+	out->v[ 8] =                 xint_add(azx, awy);
+	out->v[ 9] =                 xint_sub(azy, awx);
+	out->v[10] = xint_sub(XINT1, xint_add(axx, ayy));
+	out->v[11] = 0;
+	out->v[12] = 0;
+	out->v[13] = 0;
+	out->v[14] = 0;
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_rotate(xmat4 *out, xmat4 *a, xvec3 axis, xang ang){
+	xint
+		x = axis.v[0], y = axis.v[1], z = axis.v[2],
+		a00 = a->v[0], a01 = a->v[1], a02 = a->v[ 2], a03 = a->v[ 3],
+		a10 = a->v[4], a11 = a->v[5], a12 = a->v[ 6], a13 = a->v[ 7],
+		a20 = a->v[8], a21 = a->v[9], a22 = a->v[10], a23 = a->v[11],
+		s = xint_sin(ang), c = xint_cos(ang),
+		t = xint_sub(XINT1, c),
+		b00 = xint_add(xint_mul(xint_mul(x, x), t), c             ),
+		b01 = xint_add(xint_mul(xint_mul(y, x), t), xint_mul(z, s)),
+		b02 = xint_sub(xint_mul(xint_mul(z, x), t), xint_mul(y, s)),
+		b10 = xint_sub(xint_mul(xint_mul(x, y), t), xint_mul(z, s)),
+		b11 = xint_add(xint_mul(xint_mul(y, y), t), c             ),
+		b12 = xint_add(xint_mul(xint_mul(z, y), t), xint_mul(x, s)),
+		b20 = xint_add(xint_mul(xint_mul(x, z), t), xint_mul(y, s)),
+		b21 = xint_sub(xint_mul(xint_mul(y, z), t), xint_mul(x, s)),
+		b22 = xint_add(xint_mul(xint_mul(z, z), t), c             );
+	out->v[ 0] = xint_add(xint_add(xint_mul(a00, b00), xint_mul(a10, b01)), xint_mul(a20, b02));
+	out->v[ 1] = xint_add(xint_add(xint_mul(a01, b00), xint_mul(a11, b01)), xint_mul(a21, b02));
+	out->v[ 2] = xint_add(xint_add(xint_mul(a02, b00), xint_mul(a12, b01)), xint_mul(a22, b02));
+	out->v[ 3] = xint_add(xint_add(xint_mul(a03, b00), xint_mul(a13, b01)), xint_mul(a23, b02));
+	out->v[ 4] = xint_add(xint_add(xint_mul(a00, b10), xint_mul(a10, b11)), xint_mul(a20, b12));
+	out->v[ 5] = xint_add(xint_add(xint_mul(a01, b10), xint_mul(a11, b11)), xint_mul(a21, b12));
+	out->v[ 6] = xint_add(xint_add(xint_mul(a02, b10), xint_mul(a12, b11)), xint_mul(a22, b12));
+	out->v[ 7] = xint_add(xint_add(xint_mul(a03, b10), xint_mul(a13, b11)), xint_mul(a23, b12));
+	out->v[ 8] = xint_add(xint_add(xint_mul(a00, b20), xint_mul(a10, b21)), xint_mul(a20, b22));
+	out->v[ 9] = xint_add(xint_add(xint_mul(a01, b20), xint_mul(a11, b21)), xint_mul(a21, b22));
+	out->v[10] = xint_add(xint_add(xint_mul(a02, b20), xint_mul(a12, b21)), xint_mul(a22, b22));
+	out->v[11] = xint_add(xint_add(xint_mul(a03, b20), xint_mul(a13, b21)), xint_mul(a23, b22));
+	if (out != a){
+		out->v[12] = a->v[12];
+		out->v[13] = a->v[13];
+		out->v[14] = a->v[14];
+		out->v[15] = a->v[15];
+	}
+	return out;
+}
+
+xmat4 *xmat4_rotation(xmat4 *out, xvec3 axis, xang ang){
+	xint x = axis.v[0], y = axis.v[1], z = axis.v[2],
+		s = xint_sin(ang), c = xint_cos(ang),
+		t = xint_sub(XINT1, c);
+	out->v[ 0] = xint_add(xint_mul(xint_mul(x, x), t), c);
+	out->v[ 1] = xint_add(xint_mul(xint_mul(y, x), t), xint_mul(z, s));
+	out->v[ 2] = xint_sub(xint_mul(xint_mul(z, x), t), xint_mul(y, s));
+	out->v[ 3] = 0;
+	out->v[ 4] = xint_sub(xint_mul(xint_mul(x, y), t), xint_mul(z, s));
+	out->v[ 5] = xint_add(xint_mul(xint_mul(y, y), t), c);
+	out->v[ 6] = xint_add(xint_mul(xint_mul(z, y), t), xint_mul(x, s));
+	out->v[ 7] = 0;
+	out->v[ 8] = xint_add(xint_mul(xint_mul(x, z), t), xint_mul(y, s));
+	out->v[ 9] = xint_sub(xint_mul(xint_mul(y, z), t), xint_mul(x, s));
+	out->v[10] = xint_add(xint_mul(xint_mul(z, z), t), c);
+	out->v[11] = 0;
+	out->v[12] = 0;
+	out->v[13] = 0;
+	out->v[14] = 0;
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_rottrans(xmat4 *out, xquat a, xvec3 b){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax << 1,
+		ay2 = ay << 1,
+		az2 = az << 1,
+		axx = xint_mul(ax, ax2),
+		axy = xint_mul(ax, ay2),
+		axz = xint_mul(ax, az2),
+		ayy = xint_mul(ay, ay2),
+		ayz = xint_mul(ay, az2),
+		azz = xint_mul(az, az2),
+		awx = xint_mul(aw, ax2),
+		awy = xint_mul(aw, ay2),
+		awz = xint_mul(aw, az2);
+	out->v[ 0] = xint_sub(XINT1, xint_add(ayy, azz));
+	out->v[ 1] =                 xint_add(axy, awz);
+	out->v[ 2] =                 xint_sub(axz, awy);
+	out->v[ 3] = 0;
+	out->v[ 4] =                 xint_sub(axy, awz);
+	out->v[ 5] = xint_sub(XINT1, xint_add(axx, azz));
+	out->v[ 6] =                 xint_add(ayz, awx);
+	out->v[ 7] = 0;
+	out->v[ 8] =                 xint_add(axz, awy);
+	out->v[ 9] =                 xint_sub(ayz, awx);
+	out->v[10] = xint_sub(XINT1, xint_add(axx, ayy));
+	out->v[11] = 0;
+	out->v[12] = b.v[0];
+	out->v[13] = b.v[1];
+	out->v[14] = b.v[2];
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_rottransorigin(xmat4 *out, xquat a, xvec3 b, xvec3 origin){
+	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
+		ax2 = ax << 1,
+		ay2 = ay << 1,
+		az2 = az << 1,
+		axx = xint_mul(ax, ax2),
+		axy = xint_mul(ax, ay2),
+		axz = xint_mul(ax, az2),
+		ayy = xint_mul(ay, ay2),
+		ayz = xint_mul(ay, az2),
+		azz = xint_mul(az, az2),
+		awx = xint_mul(aw, ax2),
+		awy = xint_mul(aw, ay2),
+		awz = xint_mul(aw, az2),
+		ox = origin.v[0], oy = origin.v[1], oz = origin.v[2];
+	out->v[ 0] = xint_sub(XINT1, xint_add(ayy, azz));
+	out->v[ 1] =                 xint_add(axy, awz);
+	out->v[ 2] =                 xint_sub(axz, awy);
+	out->v[ 3] = 0;
+	out->v[ 4] =                 xint_sub(axy, awz);
+	out->v[ 5] = xint_sub(XINT1, xint_add(axx, azz));
+	out->v[ 6] =                 xint_add(ayz, awx);
+	out->v[ 7] = 0;
+	out->v[ 8] =                 xint_add(axz, awy);
+	out->v[ 9] =                 xint_sub(ayz, awx);
+	out->v[10] = xint_sub(XINT1, xint_add(axx, ayy));
+	out->v[11] = 0;
+	out->v[12] = xint_sub(xint_add(b.v[0], ox), xint_add(xint_add(
+		xint_mul(out->v[0], ox), xint_mul(out->v[4], oy)), xint_mul(out->v[ 8], oz)));
+	out->v[13] = xint_sub(xint_add(b.v[1], oy), xint_add(xint_add(
+		xint_mul(out->v[1], ox), xint_mul(out->v[5], oy)), xint_mul(out->v[ 9], oz)));
+	out->v[14] = xint_sub(xint_add(b.v[2], oz), xint_add(xint_add(
+		xint_mul(out->v[2], ox), xint_mul(out->v[6], oy)), xint_mul(out->v[10], oz)));
+	out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_scale(xmat4 *out, xmat4 *a, xvec3 b){
+	xint bx = b.v[0], by = b.v[1], bz = b.v[2];
+	out->v[ 0] = xint_mul(a->v[ 0], bx);
+	out->v[ 1] = xint_mul(a->v[ 1], bx);
+	out->v[ 2] = xint_mul(a->v[ 2], bx);
+	out->v[ 3] = xint_mul(a->v[ 3], bx);
+	out->v[ 4] = xint_mul(a->v[ 4], by);
+	out->v[ 5] = xint_mul(a->v[ 5], by);
+	out->v[ 6] = xint_mul(a->v[ 6], by);
+	out->v[ 7] = xint_mul(a->v[ 7], by);
+	out->v[ 8] = xint_mul(a->v[ 8], bz);
+	out->v[ 9] = xint_mul(a->v[ 9], bz);
+	out->v[10] = xint_mul(a->v[10], bz);
+	out->v[11] = xint_mul(a->v[11], bz);
+	out->v[12] =          a->v[12]     ;
+	out->v[13] =          a->v[13]     ;
+	out->v[14] =          a->v[14]     ;
+	out->v[15] =          a->v[15]     ;
+	return out;
+}
+
+xmat4 *xmat4_scaling(xmat4 *out, xvec3 a){
+	out->v[ 0] = a.v[0]; out->v[ 1] =      0; out->v[ 2] =      0; out->v[ 3] =     0;
+	out->v[ 4] =      0; out->v[ 5] = a.v[1]; out->v[ 6] =      0; out->v[ 7] =     0;
+	out->v[ 8] =      0; out->v[ 9] =      0; out->v[10] = a.v[2]; out->v[11] =     0;
+	out->v[12] =      0; out->v[13] =      0; out->v[14] =      0; out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_sub(xmat4 *out, xmat4 *a, xmat4 *b){
+	out->v[ 0] = xint_sub(a->v[ 0], b->v[ 0]);
+	out->v[ 1] = xint_sub(a->v[ 1], b->v[ 1]);
+	out->v[ 2] = xint_sub(a->v[ 2], b->v[ 2]);
+	out->v[ 3] = xint_sub(a->v[ 3], b->v[ 3]);
+	out->v[ 4] = xint_sub(a->v[ 4], b->v[ 4]);
+	out->v[ 5] = xint_sub(a->v[ 5], b->v[ 5]);
+	out->v[ 6] = xint_sub(a->v[ 6], b->v[ 6]);
+	out->v[ 7] = xint_sub(a->v[ 7], b->v[ 7]);
+	out->v[ 8] = xint_sub(a->v[ 8], b->v[ 8]);
+	out->v[ 9] = xint_sub(a->v[ 9], b->v[ 9]);
+	out->v[10] = xint_sub(a->v[10], b->v[10]);
+	out->v[11] = xint_sub(a->v[11], b->v[11]);
+	out->v[12] = xint_sub(a->v[12], b->v[12]);
+	out->v[13] = xint_sub(a->v[13], b->v[13]);
+	out->v[14] = xint_sub(a->v[14], b->v[14]);
+	out->v[15] = xint_sub(a->v[15], b->v[15]);
+	return out;
+}
+
+xmat4 *xmat4_translate(xmat4 *out, xmat4 *a, xvec3 b){
+	xint bx = b.v[0], by = b.v[1], bz = b.v[2];
+	if (out == a){
+		out->v[12] = xint_add(xint_add(xint_add(
+			xint_mul(a->v[0], bx), xint_mul(a->v[4], by)), xint_mul(a->v[ 8], bz)), a->v[12]);
+		out->v[13] = xint_add(xint_add(xint_add(
+			xint_mul(a->v[1], bx), xint_mul(a->v[5], by)), xint_mul(a->v[ 9], bz)), a->v[13]);
+		out->v[14] = xint_add(xint_add(xint_add(
+			xint_mul(a->v[2], bx), xint_mul(a->v[6], by)), xint_mul(a->v[10], bz)), a->v[14]);
+		out->v[15] = xint_add(xint_add(xint_add(
+			xint_mul(a->v[3], bx), xint_mul(a->v[7], by)), xint_mul(a->v[11], bz)), a->v[15]);
+	}
+	else{
+		xint
+			a00 = a->v[0], a01 = a->v[1], a02 = a->v[ 2], a03 = a->v[ 3],
+			a10 = a->v[4], a11 = a->v[5], a12 = a->v[ 6], a13 = a->v[ 7],
+			a20 = a->v[8], a21 = a->v[9], a22 = a->v[10], a23 = a->v[11];
+		out->v[ 0] = a00;
+		out->v[ 1] = a01;
+		out->v[ 2] = a02;
+		out->v[ 3] = a03;
+		out->v[ 4] = a10;
+		out->v[ 5] = a11;
+		out->v[ 6] = a12;
+		out->v[ 7] = a13;
+		out->v[ 8] = a20;
+		out->v[ 9] = a21;
+		out->v[10] = a22;
+		out->v[11] = a23;
+		out->v[12] = xint_add(xint_add(xint_add(
+			xint_mul(a00, bx), xint_mul(a10, by)), xint_mul(a20, bz)), a->v[12]);
+		out->v[13] = xint_add(xint_add(xint_add(
+			xint_mul(a01, bx), xint_mul(a11, by)), xint_mul(a21, bz)), a->v[13]);
+		out->v[14] = xint_add(xint_add(xint_add(
+			xint_mul(a02, bx), xint_mul(a12, by)), xint_mul(a22, bz)), a->v[14]);
+		out->v[15] = xint_add(xint_add(xint_add(
+			xint_mul(a03, bx), xint_mul(a13, by)), xint_mul(a23, bz)), a->v[15]);
+	}
+	return out;
+}
+
+xmat4 *xmat4_translation(xmat4 *out, xvec3 a){
+	out->v[ 0] = XINT1; out->v[ 1] =     0; out->v[ 2] =     0; out->v[ 3] =    0;
+	out->v[ 4] =     0; out->v[ 5] = XINT1; out->v[ 6] =     0; out->v[ 7] =    0;
+	out->v[ 8] =     0; out->v[ 9] =     0; out->v[10] = XINT1; out->v[11] =    0;
+	out->v[12] = a.v[0]; out->v[13] = a.v[1]; out->v[14] = a.v[2]; out->v[15] = XINT1;
+	return out;
+}
+
+xmat4 *xmat4_transpose(xmat4 *out, xmat4 *a){
+	if (out == a){
+		xint
+			a01 = a->v[1], a02 = a->v[2], a03 = a->v[ 3],
+			/*          */ a12 = a->v[6], a13 = a->v[ 7],
+			/*                         */ a23 = a->v[11];
+		out->v[ 1] = a->v[ 4];
+		out->v[ 2] = a->v[ 8];
+		out->v[ 3] = a->v[12];
+		out->v[ 4] = a01;
+		out->v[ 6] = a->v[ 9];
+		out->v[ 7] = a->v[13];
+		out->v[ 8] = a02;
+		out->v[ 9] = a12;
+		out->v[11] = a->v[14];
+		out->v[12] = a03;
+		out->v[13] = a13;
+		out->v[14] = a23;
+	}
+	else{
+		out->v[ 0] = a->v[ 0]; out->v[ 1] = a->v[ 4]; out->v[ 2] = a->v[ 8]; out->v[ 3] = a->v[12];
+		out->v[ 4] = a->v[ 1]; out->v[ 5] = a->v[ 5]; out->v[ 6] = a->v[ 9]; out->v[ 7] = a->v[13];
+		out->v[ 8] = a->v[ 2]; out->v[ 9] = a->v[ 6]; out->v[10] = a->v[10]; out->v[11] = a->v[14];
+		out->v[12] = a->v[ 3]; out->v[13] = a->v[ 7]; out->v[14] = a->v[11]; out->v[15] = a->v[15];
+	}
+	return out;
 }
 
 // sorry for the mess, but this is the lookup table for sin and tan
