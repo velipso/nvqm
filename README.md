@@ -350,7 +350,7 @@ xvec3 xvec3_mul        (xvec3 a, xvec3 b);
 xint  xvec3_nangle     (xvec3 a, xvec3 b); // a and b are normalized
 xvec3 xvec3_neg        (xvec3 a);
 xvec3 xvec3_normal     (xvec3 a);
-xvec3 xvec3_orthogonal (xvec3 a, xvec3 b); // cross(normal(a), normal(b))
+xvec3 xvec3_orthogonal (xvec3 a, xvec3 b); // normal(cross(normal(a), normal(b)))
 xvec3 xvec3_scale      (xvec3 a, xint s);
 xvec3 xvec3_sub        (xvec3 a, xvec3 b);
 

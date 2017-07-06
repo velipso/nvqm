@@ -1411,7 +1411,7 @@ static inline xvec3 xvec3_normal(xvec3 a){
 
 static inline xvec3 xvec3_orthogonal(xvec3 a, xvec3 b){
 	// normal the vectors before crossing them to prevent overflows
-	return xvec3_cross(xvec3_normal(a), xvec3_normal(b));
+	return xvec3_normal(xvec3_cross(xvec3_normal(a), xvec3_normal(b)));
 }
 
 static inline xvec3 xvec3_scale(xvec3 a, xint s){
