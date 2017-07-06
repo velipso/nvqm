@@ -100,6 +100,7 @@ function SinkVqm(){
 		'vec3.nangle'     : function(a, b       ){ return vec3_nangle     (v3(a), v3(b)           ); },
 		'vec3.neg'        : function(a          ){ return vec3_neg        (v3(a)                  ); },
 		'vec3.normal'     : function(a          ){ return vec3_normal     (v3(a)                  ); },
+		'vec3.orthogonal' : function(a, b       ){ return vec3_orthogonal (v3(a), v3(b)           ); },
 		'vec3.scale'      : function(a, s       ){ return vec3_scale      (v3(a), nm(s)           ); },
 		'vec3.sub'        : function(a, b       ){ return vec3_sub        (v3(a), v3(b)           ); },
 

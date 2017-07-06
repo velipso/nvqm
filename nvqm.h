@@ -357,6 +357,10 @@ static inline vec3 vec3_normal(vec3 a){
 	return a;
 }
 
+static inline vec3 vec3_orthogonal(vec3 a, vec3 b){
+	return vec3_normal(vec3_cross(a, b));
+}
+
 static inline vec3 vec3_scale(vec3 a, float s){
 	return (vec3){ a.v[0] * s, a.v[1] * s, a.v[2] * s };
 }
@@ -1403,6 +1407,11 @@ static inline xvec3 xvec3_normal(xvec3 a){
 		}
 	}
 	return a;
+}
+
+static inline xvec3 xvec3_orthogonal(xvec3 a, xvec3 b){
+	// normal the vectors before crossing them to prevent overflows
+	return xvec3_cross(xvec3_normal(a), xvec3_normal(b));
 }
 
 static inline xvec3 xvec3_scale(xvec3 a, xint s){

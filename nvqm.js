@@ -322,6 +322,10 @@ function vec3_normal(a){
 	return a;
 }
 
+function vec3_orthogonal(a, b){
+	return vec3_normal(vec3_cross(a, b));
+}
+
 function vec3_scale(a, s){
 	return [a[0] * s, a[1] * s, a[2] * s];
 }

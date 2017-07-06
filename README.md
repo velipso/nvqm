@@ -113,6 +113,7 @@ vec3  vec3_mul        (vec3 a, vec3 b);
 float vec3_nangle     (vec3 a, vec3 b); // a and b are normalized
 vec3  vec3_neg        (vec3 a);
 vec3  vec3_normal     (vec3 a);
+vec3  vec3_orthogonal (vec3 a, vec3 b); // normal(cross(a, b))
 vec3  vec3_scale      (vec3 a, float s);
 vec3  vec3_sub        (vec3 a, vec3 b);
 
@@ -349,6 +350,7 @@ xvec3 xvec3_mul        (xvec3 a, xvec3 b);
 xint  xvec3_nangle     (xvec3 a, xvec3 b); // a and b are normalized
 xvec3 xvec3_neg        (xvec3 a);
 xvec3 xvec3_normal     (xvec3 a);
+xvec3 xvec3_orthogonal (xvec3 a, xvec3 b); // cross(normal(a), normal(b))
 xvec3 xvec3_scale      (xvec3 a, xint s);
 xvec3 xvec3_sub        (xvec3 a, xvec3 b);
 

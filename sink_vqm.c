@@ -47,6 +47,7 @@
 	P2("vec3.nangle"        , num   , vec3_nangle        , vec3, vec3                        ) \
 	P1("vec3.neg"           , vec3  , vec3_neg           , vec3                              ) \
 	P1("vec3.normal"        , vec3  , vec3_normal        , vec3                              ) \
+	P2("vec3.orthogonal"    , vec3  , vec3_orthogonal    , vec3, vec3                        ) \
 	P2("vec3.scale"         , vec3  , vec3_scale         , vec3, num                         ) \
 	P2("vec3.sub"           , vec3  , vec3_sub           , vec3, vec3                        ) \
 	P2("vec4.add"           , vec4  , vec4_add           , vec4, vec4                        ) \
