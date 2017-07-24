@@ -2,135 +2,149 @@
 // MIT License
 // Project Home: https://github.com/voidqk/nvqm
 
-var TAU = 6.28318530717958647692528676655900576839433879875021164195;
+export let TAU = 6.28318530717958647692528676655900576839433879875021164195;
+
+export type vec2   = [number, number];
+export type vec3   = [number, number, number];
+export type vec4   = [number, number, number, number];
+export type quat   = [number, number, number, number];
+export type mat2   = [number, number, number, number];
+export type mat3x2 = [number, number, number, number, number, number];
+export type mat3   = [number, number, number, number, number, number, number, number, number];
+export type mat4   = [
+	number, number, number, number,
+	number, number, number, number,
+	number, number, number, number,
+	number, number, number, number
+];
 
 //
 // num (scalars)
 //
 
-function num_abs(n){
+export function num_abs(n: number): number {
 	return n < 0 ? -n : n;
 }
 
-var num_acos  = Math.acos;
-var num_asin  = Math.asin;
-var num_atan2 = Math.atan2;
-var num_ceil  = Math.ceil;
+export let num_acos  = Math.acos;
+export let num_asin  = Math.asin;
+export let num_atan2 = Math.atan2;
+export let num_ceil  = Math.ceil;
 
-function num_clamp(n, min, max){
+export function num_clamp(n: number, min: number, max: number): number {
 	return n < min ? min : (n > max ? max : n);
 }
 
-var num_cos   = Math.cos;
-var num_floor = Math.floor;
+export let num_cos   = Math.cos;
+export let num_floor = Math.floor;
 
-function num_lerp(a, b, t){
+export function num_lerp(a: number, b: number, t: number): number {
 	return a + (b - a) * t;
 }
 
-var num_log = Math.log;
+export let num_log = Math.log;
 
-function num_max(a, b){
+export function num_max(a: number, b: number): number {
 	return a > b ? a : b;
 }
 
-function num_min(a, b){
+export function num_min(a: number, b: number): number {
 	return a > b ? b : a;
 }
 
-function num_mod(a, b){
+export function num_mod(a: number, b: number): number {
 	return a % b;
 }
 
-var num_pow   = Math.pow;
-var num_round = Math.round;
-var num_sin   = Math.sin;
-var num_sqrt  = Math.sqrt;
-var num_tan   = Math.tan;
+export let num_pow   = Math.pow;
+export let num_round = Math.round;
+export let num_sin   = Math.sin;
+export let num_sqrt  = Math.sqrt;
+export let num_tan   = Math.tan;
 
 //
 // vec2
 //
 
-function vec2_add(a, b){
+export function vec2_add(a: vec2, b: vec2): vec2 {
 	return [a[0] + b[0], a[1] + b[1]];
 }
 
-function vec2_applymat2(a, b){
-	var ax = a[0], ay = a[1];
+export function vec2_applymat2(a: vec2, b: mat2): vec2 {
+	let ax = a[0], ay = a[1];
 	return [b[0] * ax + b[2] * ay, b[1] * ax + b[3] * ay];
 }
 
-function vec2_applymat3x2(a, b){
-	var ax = a[0], ay = a[1];
+export function vec2_applymat3x2(a: vec2, b: mat3x2): vec2 {
+	let ax = a[0], ay = a[1];
 	return [b[0] * ax + b[2] * ay + b[4], b[1] * ax + b[3] * ay + b[5]];
 }
 
-function vec2_applymat3(a, b){
-	var ax = a[0], ay = a[1];
+export function vec2_applymat3(a: vec2, b: mat3): vec2 {
+	let ax = a[0], ay = a[1];
 	return [b[0] * ax + b[3] * ay + b[6], b[1] * ax + b[4] * ay + b[7]];
 }
 
-function vec2_applymat4(a, b){
-	var ax = a[0], ay = a[1];
+export function vec2_applymat4(a: vec2, b: vec2): vec2 {
+	let ax = a[0], ay = a[1];
 	return [b[0] * ax + b[4] * ay + b[12], b[1] * ax + b[5] * ay + b[13]];
 }
 
-function vec2_clamp(a, min, max){
+export function vec2_clamp(a: vec2, min: vec2, max: vec2): vec2 {
 	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
 }
 
-function vec2_dist(a, b){
+export function vec2_dist(a: vec2, b: vec2): number {
 	return num_sqrt(vec2_len2(vec2_sub(a, b)));
 }
 
-function vec2_dist2(a, b){
+export function vec2_dist2(a: vec2, b: vec2): number {
 	return vec2_len2(vec2_sub(b, a));
 }
 
-function vec2_div(a, b){
+export function vec2_div(a: vec2, b: vec2): vec2 {
 	return [a[0] / b[0], a[1] / b[1]];
 }
 
-function vec2_dot(a, b){
+export function vec2_dot(a: vec2, b: vec2): number {
 	return a[0] * b[0] + a[1] * b[1];
 }
 
-function vec2_inverse(a){
+export function vec2_inverse(a: vec2): vec2 {
 	return [1 / a[0], 1 / a[1]];
 }
 
-function vec2_len(a){
+export function vec2_len(a: vec2): number {
 	return num_sqrt(vec2_len2(a));
 }
 
-function vec2_len2(a){
-	var ax = a[0], ay = a[1];
+export function vec2_len2(a: vec2): number {
+	let ax = a[0], ay = a[1];
 	return ax * ax + ay * ay;
 }
 
-function vec2_lerp(a, b, t){
+export function vec2_lerp(a: vec2, b: vec2, t: number): vec2 {
 	return [num_lerp(a[0], b[0], t), num_lerp(a[1], b[1], t)];
 }
 
-function vec2_max(a, b){
+export function vec2_max(a: vec2, b: vec2): vec2 {
 	return [num_max(a[0], b[0]), num_max(a[1], b[1])];
 }
 
-function vec2_min(a, b){
+export function vec2_min(a: vec2, b: vec2): vec2 {
 	return [num_min(a[0], b[0]), num_min(a[1], b[1])];
 }
 
-function vec2_mul(a, b){
+export function vec2_mul(a: vec2, b: vec2): vec2 {
 	return [a[0] * b[0], a[1] * b[1]];
 }
 
-function vec2_neg(a){
+export function vec2_neg(a: vec2): vec2 {
 	return [-a[0], -a[1]];
 }
 
-function vec2_normal(a){
-	var ax = a[0], ay = a[1],
+export function vec2_normal(a: vec2): vec2 {
+	let ax = a[0], ay = a[1],
 		len = ax * ax + ay * ay;
 	if (len > 0){
 		len = 1 / num_sqrt(len);
@@ -139,11 +153,11 @@ function vec2_normal(a){
 	return a;
 }
 
-function vec2_scale(a, s){
+export function vec2_scale(a: vec2, s: number): vec2 {
 	return [a[0] * s, a[1] * s];
 }
 
-function vec2_sub(a, b){
+export function vec2_sub(a: vec2, b: vec2): vec2 {
 	return [a[0] - b[0], a[1] - b[1]];
 }
 
@@ -151,16 +165,16 @@ function vec2_sub(a, b){
 // vec3
 //
 
-function vec3_add(a, b){
+export function vec3_add(a: vec3, b: vec3): vec3 {
 	return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
 
-function vec3_angle(a, b){
+export function vec3_angle(a: vec3, b: vec3): number {
 	return vec3_nangle(vec3_normal(a), vec3_normal(b));
 }
 
-function vec3_applymat3x2(a, b){
-	var ax = a[0], ay = a[1], az = a[2];
+export function vec3_applymat3x2(a: vec3, b: mat3x2): vec3 {
+	let ax = a[0], ay = a[1], az = a[2];
 	return [
 		ax * b[0] + ay * b[2] + az * b[4],
 		ax * b[1] + ay * b[3] + az * b[5],
@@ -168,8 +182,8 @@ function vec3_applymat3x2(a, b){
 	];
 }
 
-function vec3_applymat3(a, b){
-	var ax = a[0], ay = a[1], az = a[2];
+export function vec3_applymat3(a: vec3, b: mat3): vec3 {
+	let ax = a[0], ay = a[1], az = a[2];
 	return [
 		ax * b[0] + ay * b[3] + az * b[6],
 		ax * b[1] + ay * b[4] + az * b[7],
@@ -177,9 +191,9 @@ function vec3_applymat3(a, b){
 	];
 }
 
-function vec3_applymat4(a, b){
-	var ax = a[0], ay = a[1], az = a[2];
-	var w = b[ 3] * ax + b[ 7] * ay + b[11] * az + b[15];
+export function vec3_applymat4(a: vec3, b: mat4){
+	let ax = a[0], ay = a[1], az = a[2];
+	let w = b[ 3] * ax + b[ 7] * ay + b[11] * az + b[15];
 	if (w == 0)
 		w = 1;
 	return [
@@ -189,11 +203,11 @@ function vec3_applymat4(a, b){
 	];
 }
 
-function vec3_applyquat(a, b){
-	var
+export function vec3_applyquat(a: vec3, b: quat){
+	let
 		ax = a[0], ay = a[1], az = a[2],
 		bx = b[0], by = b[1], bz = b[2], bw = b[3];
-	var
+	let
 		ix =  bw * ax + by * az - bz * ay,
 		iy =  bw * ay + bz * ax - bx * az,
 		iz =  bw * az + bx * ay - by * ax,
@@ -205,7 +219,7 @@ function vec3_applyquat(a, b){
 	];
 }
 
-function vec3_clamp(a, min, max){
+export function vec3_clamp(a: vec3, min: vec3, max: vec3): vec3 {
 	return [
 		num_clamp(a[0], min[0], max[0]),
 		num_clamp(a[1], min[1], max[1]),
@@ -213,43 +227,43 @@ function vec3_clamp(a, min, max){
 	];
 }
 
-function vec3_cross(a, b){
-	var
+export function vec3_cross(a: vec3, b: vec3): vec3 {
+	let
 		ax = a[0], ay = a[1], az = a[2],
 		bx = b[0], by = b[1], bz = b[2];
 	return [ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx];
 }
 
-function vec3_dist(a, b){
+export function vec3_dist(a: vec3, b: vec3): number {
 	return num_sqrt(vec3_len2(vec3_sub(a, b)));
 }
 
-function vec3_dist2(a, b){
+export function vec3_dist2(a: vec3, b: vec3): number {
 	return vec3_len2(vec3_sub(b, a));
 }
 
-function vec3_div(a, b){
+export function vec3_div(a: vec3, b: vec3): vec3 {
 	return [a[0] / b[0], a[1] / b[1], a[2] / b[2]];
 }
 
-function vec3_dot(a, b){
+export function vec3_dot(a: vec3, b: vec3): number {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-function vec3_inverse(a){
+export function vec3_inverse(a: vec3): vec3 {
 	return [1 / a[0], 1 / a[1], 1 / a[2]];
 }
 
-function vec3_len(a){
+export function vec3_len(a: vec3): number {
 	return num_sqrt(vec3_len2(a));
 }
 
-function vec3_len2(a){
-	var ax = a[0], ay = a[1], az = a[2];
+export function vec3_len2(a: vec3): number {
+	let ax = a[0], ay = a[1], az = a[2];
 	return ax * ax + ay * ay + az * az;
 }
 
-function vec3_lerp(a, b, t){
+export function vec3_lerp(a: vec3, b: vec3, t: number): vec3 {
 	return [
 		num_lerp(a[0], b[0], t),
 		num_lerp(a[1], b[1], t),
@@ -257,32 +271,32 @@ function vec3_lerp(a, b, t){
 	];
 }
 
-function vec3_max(a, b){
+export function vec3_max(a: vec3, b: vec3): vec3 {
 	return [num_max(a[0], b[0]), num_max(a[1], b[1]), num_max(a[2], b[2])];
 }
 
-function vec3_min(a, b){
+export function vec3_min(a: vec3, b: vec3): vec3 {
 	return [num_min(a[0], b[0]), num_min(a[1], b[1]), num_min(a[2], b[2])];
 }
 
-function vec3_mul(a, b){
+export function vec3_mul(a: vec3, b: vec3): vec3 {
 	return [a[0] * b[0], a[1] * b[1], a[2] * b[2]];
 }
 
-function vec3_nangle(a, b){ // a and b are normalized
-	var c = vec3_dot(a, b);
+export function vec3_nangle(a: vec3, b: vec3): number { // a and b are normalized
+	let c = vec3_dot(a, b);
 	if (c < -1 || c > 1)
 		return 0;
 	return num_acos(c);
 }
 
-function vec3_neg(a){
+export function vec3_neg(a: vec3): vec3 {
 	return [-a[0], -a[1], -a[2]];
 }
 
-function vec3_normal(a){
-	var ax = a[0], ay = a[1], az = a[2];
-	var len = ax * ax + ay * ay + az * az;
+export function vec3_normal(a: vec3): vec3 {
+	let ax = a[0], ay = a[1], az = a[2];
+	let len = ax * ax + ay * ay + az * az;
 	if (len > 0){
 		len = 1 / num_sqrt(len);
 		return [ax * len, ay * len, az * len];
@@ -290,15 +304,15 @@ function vec3_normal(a){
 	return a;
 }
 
-function vec3_orthogonal(a, b){
+export function vec3_orthogonal(a: vec3, b: vec3): vec3 {
 	return vec3_normal(vec3_cross(a, b));
 }
 
-function vec3_scale(a, s){
+export function vec3_scale(a: vec3, s: number): vec3 {
 	return [a[0] * s, a[1] * s, a[2] * s];
 }
 
-function vec3_sub(a, b){
+export function vec3_sub(a: vec3, b: vec3): vec3 {
 	return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 }
 
@@ -306,12 +320,12 @@ function vec3_sub(a, b){
 // vec4
 //
 
-function vec4_add(a, b){
+export function vec4_add(a: vec4, b: vec4){
 	return [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]];
 }
 
-function vec4_applymat4(a, b){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+export function vec4_applymat4(a: vec4, b: mat4): vec4 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
 	return [
 		b[0] * ax + b[4] * ay + b[ 8] * az + b[12] * aw,
 		b[1] * ax + b[5] * ay + b[ 9] * az + b[13] * aw,
@@ -320,11 +334,11 @@ function vec4_applymat4(a, b){
 	];
 }
 
-function vec4_applyquat(a, b){
-	var
+export function vec4_applyquat(a: vec4, b: quat): vec4 {
+	let
 		ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		bx = b[0], by = b[1], bz = b[2], bw = b[3];
-	var
+	let
 		ix =  bw * ax + by * az - bz * ay,
 		iy =  bw * ay + bz * ax - bx * az,
 		iz =  bw * az + bx * ay - by * ax,
@@ -337,7 +351,7 @@ function vec4_applyquat(a, b){
 	];
 }
 
-function vec4_clamp(a, min, max){
+export function vec4_clamp(a: vec4, min: vec4, max: vec4): vec4 {
 	return [
 		num_clamp(a[0], min[0], max[0]),
 		num_clamp(a[1], min[1], max[1]),
@@ -346,36 +360,36 @@ function vec4_clamp(a, min, max){
 	];
 }
 
-function vec4_dist(a, b){
+export function vec4_dist(a: vec4, b: vec4): number {
 	return num_sqrt(vec4_len2(vec4_sub(a, b)));
 }
 
-function vec4_dist2(a, b){
+export function vec4_dist2(a: vec4, b: vec4): number {
 	return vec4_len2(vec4_sub(b, a));
 }
 
-function vec4_div(a, b){
+export function vec4_div(a: vec4, b: vec4): vec4 {
 	return [a[0] / b[0], a[1] / b[1], a[2] / b[2], a[3] / b[3]];
 }
 
-function vec4_dot(a, b){
+export function vec4_dot(a: vec4, b: vec4): number {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
 }
 
-function vec4_inverse(a){
+export function vec4_inverse(a: vec4): vec4 {
 	return [1 / a[0], 1 / a[1], 1 / a[2], 1 / a[3]];
 }
 
-function vec4_len(a){
+export function vec4_len(a: vec4): number {
 	return num_sqrt(vec4_len2(a));
 }
 
-function vec4_len2(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
+export function vec4_len2(a: vec4): number {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
 	return ax * ax + ay * ay + az * az + aw * aw;
 }
 
-function vec4_lerp(a, b, t){
+export function vec4_lerp(a: vec4, b: vec4, t: number): vec4 {
 	return [
 		num_lerp(a[0], b[0], t),
 		num_lerp(a[1], b[1], t),
@@ -384,7 +398,7 @@ function vec4_lerp(a, b, t){
 	];
 }
 
-function vec4_max(a, b){
+export function vec4_max(a: vec4, b: vec4): vec4 {
 	return [
 		num_max(a[0], b[0]),
 		num_max(a[1], b[1]),
@@ -393,7 +407,7 @@ function vec4_max(a, b){
 	];
 }
 
-function vec4_min(a, b){
+export function vec4_min(a: vec4, b: vec4): vec4 {
 	return [
 		num_min(a[0], b[0]),
 		num_min(a[1], b[1]),
@@ -402,17 +416,17 @@ function vec4_min(a, b){
 	];
 }
 
-function vec4_mul(a, b){
+export function vec4_mul(a: vec4, b: vec4): vec4 {
 	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
 }
 
-function vec4_neg(a){
+export function vec4_neg(a: vec4): vec4 {
 	return [-a[0], -a[1], -a[2], -a[3]];
 }
 
-function vec4_normal(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var len = ax * ax + ay * ay + az * az + aw * aw;
+export function vec4_normal(a: vec4): vec4 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	let len = ax * ax + ay * ay + az * az + aw * aw;
 	if (len > 0){
 		len = 1 / num_sqrt(len);
 		return [ax * len, ay * len, az * len, aw * len];
@@ -420,12 +434,12 @@ function vec4_normal(a){
 	return a;
 }
 
-function vec4_scale(a, s){
+export function vec4_scale(a: vec4, s: number): vec4 {
 	return [a[0] * s, a[1] * s, a[2] * s, a[3] * s];
 }
 
 
-function vec4_sub(a, b){
+export function vec4_sub(a: vec4, b: vec4): vec4 {
 	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
 }
 
@@ -433,28 +447,28 @@ function vec4_sub(a, b){
 // quat
 //
 
-function quat_axisang(axis, ang){
+export function quat_axisang(axis: vec3, ang: number): quat {
 	return quat_naxisang(vec3_normal(axis), ang);
 }
 
-function quat_between(from, to){
+export function quat_between(from: vec3, to: vec3): quat {
 	return quat_nbetween(vec3_normal(from), vec3_normal(to));
 }
 
-function quat_dot(a, b){
+export function quat_dot(a: quat, b: quat): number {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
 }
 
-function quat_euler_xyz(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_xyz(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
@@ -463,16 +477,16 @@ function quat_euler_xyz(rot){
 	];
 }
 
-function quat_euler_xzy(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_xzy(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
@@ -481,16 +495,16 @@ function quat_euler_xzy(rot){
 	];
 }
 
-function quat_euler_yxz(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_yxz(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
@@ -499,16 +513,16 @@ function quat_euler_yxz(rot){
 	];
 }
 
-function quat_euler_yzx(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_yzx(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
@@ -517,16 +531,16 @@ function quat_euler_yzx(rot){
 	];
 }
 
-function quat_euler_zxy(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_zxy(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
@@ -535,16 +549,16 @@ function quat_euler_zxy(rot){
 	];
 }
 
-function quat_euler_zyx(rot){
-	var a0 = rot[0] * 0.5;
-	var a1 = rot[1] * 0.5;
-	var a2 = rot[2] * 0.5;
-	var cx = num_cos(a0);
-	var cy = num_cos(a1);
-	var cz = num_cos(a2);
-	var sx = num_sin(a0);
-	var sy = num_sin(a1);
-	var sz = num_sin(a2);
+export function quat_euler_zyx(rot: vec3): quat {
+	let a0 = rot[0] * 0.5;
+	let a1 = rot[1] * 0.5;
+	let a2 = rot[2] * 0.5;
+	let cx = num_cos(a0);
+	let cy = num_cos(a1);
+	let cz = num_cos(a2);
+	let sx = num_sin(a0);
+	let sy = num_sin(a1);
+	let sz = num_sin(a2);
 	return [
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
@@ -553,14 +567,14 @@ function quat_euler_zyx(rot){
 	];
 }
 
-function quat_identity(){
+export function quat_identity(): quat {
 	return [0, 0, 0, 1];
 }
 
-function quat_invert(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var dot = ax * ax + ay * ay + az * az + aw * aw;
-	var invDot = 0;
+export function quat_invert(a: quat): quat {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	let dot = ax * ax + ay * ay + az * az + aw * aw;
+	let invDot = 0;
 	if (dot != 0)
 		invDot = 1 / dot;
 	return [
@@ -571,7 +585,7 @@ function quat_invert(a){
 	];
 }
 
-function quat_lerp(a, b, t){
+export function quat_lerp(a: quat, b: quat, t: number): quat {
 	return [
 		num_lerp(a[0], b[0], t),
 		num_lerp(a[1], b[1], t),
@@ -580,8 +594,8 @@ function quat_lerp(a, b, t){
 	];
 }
 
-function quat_mul(a, b){
-	var
+export function quat_mul(a: quat, b: quat): quat {
+	let
 		ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		bx = b[0], by = b[1], bz = b[2], bw = b[3];
 	return [
@@ -592,15 +606,15 @@ function quat_mul(a, b){
 	];
 }
 
-function quat_naxisang(axis, ang){ // axis is normalized
+export function quat_naxisang(axis: vec3, ang: number): quat { // axis is normalized
 	ang *= 0.5;
-	var s = num_sin(ang);
+	let s = num_sin(ang);
 	return [axis[0] * s, axis[1] * s, axis[2] * s, num_cos(ang)];
 }
 
-function quat_nbetween(from, to){ // from/to are normalized
-	var r = vec3_dot(from, to) + 1;
-	var cross;
+export function quat_nbetween(from: vec3, to: vec3): quat { // from/to are normalized
+	let r = vec3_dot(from, to) + 1;
+	let cross;
 	if (r < 0.000001){
 		if (num_abs(from[0]) > num_abs(from[2]))
 			cross = [-from[1], from[0], 0];
@@ -612,17 +626,17 @@ function quat_nbetween(from, to){ // from/to are normalized
 	return quat_normal([cross[0], cross[1], cross[2], r]);
 }
 
-function quat_neg(a){
+export function quat_neg(a: quat): quat {
 	return [-a[0], -a[1], -a[2], -a[3]];
 }
 
-function quat_nlerp(a, b, t){
+export function quat_nlerp(a: quat, b: quat, t: number): quat {
 	return quat_normal(quat_lerp(a, b, t));
 }
 
-function quat_normal(a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var len = ax * ax + ay * ay + az * az + aw * aw;
+export function quat_normal(a: quat): quat {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	let len = ax * ax + ay * ay + az * az + aw * aw;
 	if (len > 0){
 		len = 1 / num_sqrt(len);
 		return [ax * len, ay * len, az * len, aw * len];
@@ -630,10 +644,10 @@ function quat_normal(a){
 	return a;
 }
 
-function quat_slerp(a, b, t){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-	var bx = b[0], by = b[1], bz = b[2], bw = b[3];
-	var omega, cosom, sinom, scale0, scale1;
+export function quat_slerp(a: quat, b: quat, t: number): quat {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3];
+	let bx = b[0], by = b[1], bz = b[2], bw = b[3];
+	let omega, cosom, sinom, scale0, scale1;
 	cosom = ax * bx + ay * by + az * bz + aw * bw;
 	if (cosom < 0){
 		cosom = -cosom;
@@ -664,68 +678,68 @@ function quat_slerp(a, b, t){
 // mat2
 //
 
-function mat2_add(a, b){
+export function mat2_add(a: mat2, b: mat2): mat2 {
 	return [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]];
 }
 
-function mat2_adjoint(a){
+export function mat2_adjoint(a: mat2): mat2 {
 	return [a[3], -a[1], -a[2], a[0]];
 }
 
-function mat2_compmul(a, b){
+export function mat2_compmul(a: mat2, b: mat2): mat2 {
 	return [a[0] * b[0], a[1] * b[1], a[2] * b[2], a[3] * b[3]];
 }
 
-function mat2_det(a){
+export function mat2_det(a: mat2): number {
 	return a[0] * a[3] - a[2] * a[1];
 }
 
-function mat2_identity(){
+export function mat2_identity(): mat2 {
 	return [1, 0, 0, 1];
 }
 
-function mat2_invert(a){
-	var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-	var det = a0 * a3 - a2 * a1;
+export function mat2_invert(a: mat2): mat2 {
+	let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
+	let det = a0 * a3 - a2 * a1;
 	if (det == 0)
 		return [0, 0, 0, 0];
 	det = 1 / det;
 	return [a3 * det, -a1 * det, -a2 * det, a0 * det];
 }
 
-function mat2_mul(a, b){
-	var
+export function mat2_mul(a: mat2, b: mat2): mat2 {
+	let
 		a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 		b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
 	return [a0 * b0 + a2 * b1, a1 * b0 + a3 * b1, a0 * b2 + a2 * b3, a1 * b2 + a3 * b3];
 }
 
-function mat2_rotate(a, ang){
-	var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], s = num_sin(ang), c = num_cos(ang);
+export function mat2_rotate(a: mat2, ang: number): mat2 {
+	let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], s = num_sin(ang), c = num_cos(ang);
 	return [a0 * c + a2 * s, a1 * c + a3 * s, a0 * -s + a2 * c, a1 * -s + a3 * c];
 }
 
-function mat2_rotation(ang){
-	var s = num_sin(ang), c = num_cos(ang);
+export function mat2_rotation(ang: number): mat2 {
+	let s = num_sin(ang), c = num_cos(ang);
 	return [c, s, -s, c];
 }
 
-function mat2_scale(a, b){
-	var
+export function mat2_scale(a: mat2, b: vec2): mat2 {
+	let
 		a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 		b0 = b[0], b1 = b[1];
 	return [a0 * b0, a1 * b0, a2 * b1, a3 * b1];
 }
 
-function mat2_scaling(a){
+export function mat2_scaling(a: vec2): mat2 {
 	return [a[0], 0, 0, a[1]];
 }
 
-function mat2_sub(a, b){
+export function mat2_sub(a: mat2, b: mat2): mat2 {
 	return [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]];
 }
 
-function mat2_transpose(a){
+export function mat2_transpose(a: mat2): mat2 {
 	return [a[0], a[2], a[1], a[3]];
 }
 
@@ -733,7 +747,7 @@ function mat2_transpose(a){
 // mat3x2
 //
 
-function mat3x2_add(a, b){
+export function mat3x2_add(a: mat3x2, b: mat3x2): mat3x2 {
 	return [
 		a[0] + b[0], a[1] + b[1],
 		a[2] + b[2], a[3] + b[3],
@@ -741,7 +755,7 @@ function mat3x2_add(a, b){
 	];
 }
 
-function mat3x2_compmul(a, b){
+export function mat3x2_compmul(a: mat3x2, b: mat3x2): mat3x2 {
 	return [
 		a[0] * b[0], a[1] * b[1],
 		a[2] * b[2], a[3] * b[3],
@@ -749,20 +763,20 @@ function mat3x2_compmul(a, b){
 	];
 }
 
-function mat3x2_det(a){
+export function mat3x2_det(a: mat3x2): number {
 	return a[0] * a[3] - a[2] * a[1];
 }
 
-function mat3x2_identity(){
+export function mat3x2_identity(): mat3x2 {
 	return [1, 0, 0, 1, 0, 0];
 }
 
-function mat3x2_invert(a){
-	var
+export function mat3x2_invert(a: mat3x2): mat3x2 {
+	let
 		a00 = a[0], a01 = a[1],
 		a10 = a[2], a11 = a[3],
 		a20 = a[4], a21 = a[5];
-	var det = a00 * a11 - a01 * a10;
+	let det = a00 * a11 - a01 * a10;
 	if (det == 0)
 		return [0, 0, 0, 0, 0, 0];
 	det = 1 / det;
@@ -774,8 +788,8 @@ function mat3x2_invert(a){
 	];
 }
 
-function mat3x2_mul(a, b){
-	var
+export function mat3x2_mul(a: mat3x2, b: mat3x2): mat3x2 {
+	let
 		a00 = a[0], a01 = a[1],
 		a10 = a[2], a11 = a[3],
 		a20 = a[4], a21 = a[5],
@@ -789,8 +803,8 @@ function mat3x2_mul(a, b){
 	];
 }
 
-function mat3x2_rotate(a, ang){
-	var
+export function mat3x2_rotate(a: mat3x2, ang: number): mat3x2 {
+	let
 		a00 = a[0], a01 = a[1],
 		a10 = a[2], a11 = a[3],
 		s = num_sin(ang), c = num_cos(ang);
@@ -801,13 +815,13 @@ function mat3x2_rotate(a, ang){
 	];
 }
 
-function mat3x2_rotation(ang){
-	var s = num_sin(ang), c = num_cos(ang);
+export function mat3x2_rotation(ang: number): mat3x2 {
+	let s = num_sin(ang), c = num_cos(ang);
 	return [c, s, -s, c, 0, 0];
 }
 
-function mat3x2_scale(a, b){
-	var bx = b[0], by = b[1];
+export function mat3x2_scale(a: mat3x2, b: vec2): mat3x2 {
+	let bx = b[0], by = b[1];
 	return [
 		bx * a[0], bx * a[1],
 		by * a[2], by * a[3],
@@ -815,11 +829,11 @@ function mat3x2_scale(a, b){
 	];
 }
 
-function mat3x2_scaling(a){
+export function mat3x2_scaling(a: vec2): mat3x2 {
 	return [a[0], 0, 0, a[1], 0, 0];
 }
 
-function mat3x2_sub(a, b){
+export function mat3x2_sub(a: mat3x2, b: mat3x2): mat3x2 {
 	return [
 		a[0] - b[0], a[1] - b[1],
 		a[2] - b[2], a[3] - b[3],
@@ -827,8 +841,8 @@ function mat3x2_sub(a, b){
 	];
 }
 
-function mat3x2_translate(a, b){
-	var
+export function mat3x2_translate(a: mat3x2, b: vec2): mat3x2 {
+	let
 		a00 = a[0], a01 = a[1],
 		a10 = a[2], a11 = a[3],
 		bx = b[0], by = b[1];
@@ -840,7 +854,7 @@ function mat3x2_translate(a, b){
 	];
 }
 
-function mat3x2_translation(a){
+export function mat3x2_translation(a: vec2): mat3x2 {
 	return [1, 0, 0, 1, a[0], a[1]];
 }
 
@@ -848,7 +862,7 @@ function mat3x2_translation(a){
 // mat3
 //
 
-function mat3_add(out, a, b){
+export function mat3_add(out: mat3, a: mat3, b: mat3): mat3 {
 	out[0] = a[0] + b[0];
 	out[1] = a[1] + b[1];
 	out[2] = a[2] + b[2];
@@ -861,8 +875,8 @@ function mat3_add(out, a, b){
 	return out;
 }
 
-function mat3_adjoint(out, a){
-	var
+export function mat3_adjoint(out: mat3, a: mat3): mat3 {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8];
@@ -878,7 +892,7 @@ function mat3_adjoint(out, a){
 	return out;
 }
 
-function mat3_compmul(out, a, b){
+export function mat3_compmul(out: mat3, a: mat3, b: mat3): mat3 {
 	out[0] = a[0] * b[0];
 	out[1] = a[1] * b[1];
 	out[2] = a[2] * b[2];
@@ -891,44 +905,43 @@ function mat3_compmul(out, a, b){
 	return out;
 }
 
-function mat3_copy(out, a){
+export function mat3_copy(out: mat3, a: mat3): mat3 {
 	out[0] = a[0]; out[1] = a[1]; out[2] = a[2];
 	out[3] = a[3]; out[4] = a[4]; out[5] = a[5];
 	out[6] = a[6]; out[7] = a[7]; out[8] = a[8];
 	return out;
 }
 
-function mat3_det(a){
-	var
+export function mat3_det(a: mat3): number {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8];
-	return
-		a00 * ( a22 * a11 - a12 * a21) +
+	return a00 * ( a22 * a11 - a12 * a21) +
 		a01 * (-a22 * a10 + a12 * a20) +
 		a02 * ( a21 * a10 - a11 * a20);
 }
 
-function mat3_identity(out){
+export function mat3_identity(out: mat3 | undefined): mat3 {
 	if (typeof out === 'undefined')
-		out = [];
+		return [1, 0, 0, 0, 1, 0, 0, 0, 1];
 	out[0] = 1; out[1] = 0; out[2] = 0;
 	out[3] = 0; out[4] = 1; out[5] = 0;
 	out[6] = 0; out[7] = 0; out[8] = 1;
 	return out;
 }
 
-function mat3_invert(out, a){
-	var
+export function mat3_invert(out: mat3, a: mat3): mat3 {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8],
 		b01 =  a22 * a11 - a12 * a21,
 		b11 = -a22 * a10 + a12 * a20,
 		b21 =  a21 * a10 - a11 * a20;
-	var det = a00 * b01 + a01 * b11 + a02 * b21;
+	let det = a00 * b01 + a01 * b11 + a02 * b21;
 	if (det == 0)
-		return null;
+		throw new Error('Cannot invert mat3');
 	det = 1 / det;
 	out[0] =   b01                    * det;
 	out[1] = (-a22 * a01 + a02 * a21) * det;
@@ -942,8 +955,8 @@ function mat3_invert(out, a){
 	return out;
 }
 
-function mat3_mul(out, a, b){
-	var
+export function mat3_mul(out: mat3, a: mat3, b: mat3): mat3 {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8],
@@ -962,8 +975,8 @@ function mat3_mul(out, a, b){
 	return out;
 }
 
-function mat3_quat(out, a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+export function mat3_quat(out: mat3, a: quat): mat3 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		ax2 = ax + ax,
 		ay2 = ay + ay,
 		az2 = az + az,
@@ -988,8 +1001,8 @@ function mat3_quat(out, a){
 	return out;
 }
 
-function mat3_rotate(out, a, ang){
-	var
+export function mat3_rotate(out: mat3, a: mat3, ang: number): mat3 {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8],
@@ -1006,8 +1019,8 @@ function mat3_rotate(out, a, ang){
 	return out;
 }
 
-function mat3_rotation(out, ang){
-	var s = num_sin(ang), c = num_cos(ang);
+export function mat3_rotation(out: mat3, ang: number): mat3 {
+	let s = num_sin(ang), c = num_cos(ang);
 	out[0] =  c;
 	out[1] =  s;
 	out[2] =  0;
@@ -1020,8 +1033,8 @@ function mat3_rotation(out, ang){
 	return out;
 }
 
-function mat3_scale(out, a, b){
-	var bx = b[0], by = b[1];
+export function mat3_scale(out: mat3, a: mat3, b: vec2): mat3 {
+	let bx = b[0], by = b[1];
 	out[0] = bx * a[0];
 	out[1] = bx * a[1];
 	out[2] = bx * a[2];
@@ -1034,7 +1047,7 @@ function mat3_scale(out, a, b){
 	return out;
 }
 
-function mat3_scaling(out, a){
+export function mat3_scaling(out: mat3, a: vec2): mat3 {
 	out[0] = a[0];
 	out[1] = 0;
 	out[2] = 0;
@@ -1047,7 +1060,7 @@ function mat3_scaling(out, a){
 	return out;
 }
 
-function mat3_sub(out, a, b){
+export function mat3_sub(out: mat3, a: mat3, b: mat3): mat3 {
 	out[0] = a[0] - b[0];
 	out[1] = a[1] - b[1];
 	out[2] = a[2] - b[2];
@@ -1060,8 +1073,8 @@ function mat3_sub(out, a, b){
 	return out;
 }
 
-function mat3_translate(out, a, b){
-	var
+export function mat3_translate(out: mat3, a: mat3, b: vec2): mat3 {
+	let
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8],
@@ -1078,7 +1091,7 @@ function mat3_translate(out, a, b){
 	return out;
 }
 
-function mat3_translation(out, a){
+export function mat3_translation(out: mat3, a: vec2): mat3 {
 	out[0] = 1;
 	out[1] = 0;
 	out[2] = 0;
@@ -1091,9 +1104,9 @@ function mat3_translation(out, a){
 	return out;
 }
 
-function mat3_transpose(out, a){
+export function mat3_transpose(out: mat3, a: mat3): mat3 {
 	if (out === a) {
-		var a01 = a[1], a02 = a[2], a12 = a[5];
+		let a01 = a[1], a02 = a[2], a12 = a[5];
 		out[1] = a[3];
 		out[2] = a[6];
 		out[3] = a01;
@@ -1119,7 +1132,7 @@ function mat3_transpose(out, a){
 // mat4
 //
 
-function mat4_add(out, a, b){
+export function mat4_add(out: mat4, a: mat4, b: mat4): mat4 {
 	out[ 0] = a[ 0] + b[ 0];
 	out[ 1] = a[ 1] + b[ 1];
 	out[ 2] = a[ 2] + b[ 2];
@@ -1139,8 +1152,8 @@ function mat4_add(out, a, b){
 	return out;
 }
 
-function mat4_adjoint(out, a){
-	var
+export function mat4_adjoint(out: mat4, a: mat4){
+	let
 		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
 		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
 		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
@@ -1212,7 +1225,7 @@ function mat4_adjoint(out, a){
 	return out;
 }
 
-function mat4_compmul(out, a, b){
+export function mat4_compmul(out: mat4, a: mat4, b: mat4): mat4 {
 	out[ 0] = a[ 0] * b[ 0];
 	out[ 1] = a[ 1] * b[ 1];
 	out[ 2] = a[ 2] * b[ 2];
@@ -1232,7 +1245,7 @@ function mat4_compmul(out, a, b){
 	return out;
 }
 
-function mat4_copy(out, a){
+export function mat4_copy(out: mat4, a: mat4): mat4 {
 	out[ 0] = a[ 0]; out[ 1] = a[ 1]; out[ 2] = a[ 2]; out[ 3] = a[ 3];
 	out[ 4] = a[ 4]; out[ 5] = a[ 5]; out[ 6] = a[ 6]; out[ 7] = a[ 7];
 	out[ 8] = a[ 8]; out[ 9] = a[ 9]; out[10] = a[10]; out[11] = a[11];
@@ -1240,8 +1253,8 @@ function mat4_copy(out, a){
 	return out;
 }
 
-function mat4_det(a){
-	var
+export function mat4_det(a: mat4): number {
+	let
 		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
 		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
 		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
@@ -1261,8 +1274,9 @@ function mat4_det(a){
 	return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 }
 
-function mat4_frustum(out, L, R, B, T, N, F){
-	var
+export function mat4_frustum(
+	out: mat4, L: number, R: number, B: number, T: number, N: number, F: number): mat4 {
+	let
 		rl = 1 / (R - L),
 		tb = 1 / (T - B),
 		nf = 1 / (N - F);
@@ -1285,9 +1299,9 @@ function mat4_frustum(out, L, R, B, T, N, F){
 	return out;
 }
 
-function mat4_identity(out){
+export function mat4_identity(out: mat4 | undefined): mat4 {
 	if (typeof out === 'undefined')
-		out = [];
+		return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
 	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
 	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
@@ -1295,8 +1309,8 @@ function mat4_identity(out){
 	return out;
 }
 
-function mat4_invert(out, a){
-	var
+export function mat4_invert(out: mat4, a: mat4): mat4 {
+	let
 		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
 		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
 		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
@@ -1313,9 +1327,9 @@ function mat4_invert(out, a){
 		b09 = a21 * a32 - a22 * a31,
 		b10 = a21 * a33 - a23 * a31,
 		b11 = a22 * a33 - a23 * a32;
-	var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+	let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 	if (det == 0)
-		return null;
+		throw new Error('Cannot invert mat4');
 	det = 1 / det;
 	out[ 0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
 	out[ 1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
@@ -1336,21 +1350,21 @@ function mat4_invert(out, a){
 	return out;
 }
 
-function mat4_lookat(out, eye, position, up){
-	var
+export function mat4_lookat(out: mat4, eye: vec3, position: vec3, up: vec3): mat4 {
+	let
 		ex = eye[0], ey = eye[1], ez = eye[2],
 		ux = up[0], uy = up[1], uz = up[2],
 		px = position[0], py = position[1], pz = position[2];
-	var z0 = ex - px, z1 = ey - py, z2 = ez - pz;
+	let z0 = ex - px, z1 = ey - py, z2 = ez - pz;
 	if (z0 == 0 && z1 == 0 && z2 == 0)
 		return mat4_identity(out);
-	var len = 1 / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+	let len = 1 / num_sqrt(z0 * z0 + z1 * z1 + z2 * z2);
 	z0 *= len;
 	z1 *= len;
 	z2 *= len;
-	var x0 = uy * z2 - uz * z1;
-	var x1 = uz * z0 - ux * z2;
-	var x2 = ux * z1 - uy * z0;
+	let x0 = uy * z2 - uz * z1;
+	let x1 = uz * z0 - ux * z2;
+	let x2 = ux * z1 - uy * z0;
 	len = num_sqrt(
 		x0 * x0 +
 		x1 * x1 +
@@ -1367,9 +1381,9 @@ function mat4_lookat(out, eye, position, up){
 		x1 *= len;
 		x2 *= len;
 	}
-	var y0 = z1 * x2 - z2 * x1;
-	var y1 = z2 * x0 - z0 * x2;
-	var y2 = z0 * x1 - z1 * x0;
+	let y0 = z1 * x2 - z2 * x1;
+	let y1 = z2 * x0 - z0 * x2;
+	let y2 = z0 * x1 - z1 * x0;
 	len = num_sqrt(
 		y0 * y0 +
 		y1 * y1 +
@@ -1405,13 +1419,13 @@ function mat4_lookat(out, eye, position, up){
 	return out;
 }
 
-function mat4_mul(out, a, b){
-	var
+export function mat4_mul(out: mat4, a: mat4, b: mat4): mat4 {
+	let
 		a00 = a[ 0], a01 = a[ 1], a02 = a[ 2], a03 = a[ 3],
 		a10 = a[ 4], a11 = a[ 5], a12 = a[ 6], a13 = a[ 7],
 		a20 = a[ 8], a21 = a[ 9], a22 = a[10], a23 = a[11],
 		a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
-	var b0, b1, b2, b3;
+	let b0, b1, b2, b3;
 	b0 = b[ 0];
 	b1 = b[ 1];
 	b2 = b[ 2];
@@ -1447,8 +1461,8 @@ function mat4_mul(out, a, b){
 	return out;
 }
 
-function mat4_orthogonal(out, W, H, N, F){
-	var nf = 1 / (N - F);
+export function mat4_orthogonal(out: mat4, W: number, H: number, N: number, F: number): mat4 {
+	let nf = 1 / (N - F);
 	out[ 0] = 2 / W;
 	out[ 1] = 0;
 	out[ 2] = 0;
@@ -1468,8 +1482,9 @@ function mat4_orthogonal(out, W, H, N, F){
 	return out;
 }
 
-function mat4_perspective(out, fov, width, height, N, F){
-	var
+export function mat4_perspective(
+	out: mat4, fov: number, W: number, H: number, N: number, F: number): mat4 {
+	let
 		f  = 1 / num_tan(fov * 0.5),
 		nf = 1 / (N - F);
 	out[ 0] = f;
@@ -1477,7 +1492,7 @@ function mat4_perspective(out, fov, width, height, N, F){
 	out[ 2] = 0;
 	out[ 3] = 0;
 	out[ 4] = 0;
-	out[ 5] = f * width / height;
+	out[ 5] = f * W / H;
 	out[ 6] = 0;
 	out[ 7] = 0;
 	out[ 8] = 0;
@@ -1491,8 +1506,8 @@ function mat4_perspective(out, fov, width, height, N, F){
 	return out;
 }
 
-function mat4_quat(out, a){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+export function mat4_quat(out: mat4, a: quat): mat4 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		ax2 = ax + ax,
 		ay2 = ay + ay,
 		az2 = az + az,
@@ -1524,8 +1539,8 @@ function mat4_quat(out, a){
 	return out;
 }
 
-function mat4_rotate(out, a, axis, ang){
-	var
+export function mat4_rotate(out: mat4, a: mat4, axis: vec3, ang: number): mat4 {
+	let
 		x = axis[0], y = axis[1], z = axis[2],
 		a00 = a[0], a01 = a[1], a02 = a[ 2], a03 = a[ 3],
 		a10 = a[4], a11 = a[5], a12 = a[ 6], a13 = a[ 7],
@@ -1556,8 +1571,8 @@ function mat4_rotate(out, a, axis, ang){
 	return out;
 }
 
-function mat4_rotation(out, axis, ang){
-	var x = axis[0], y = axis[1], z = axis[2],
+export function mat4_rotation(out: mat4, axis: vec3, ang: number): mat4 {
+	let x = axis[0], y = axis[1], z = axis[2],
 		s = num_sin(ang), c = num_cos(ang),
 		t = 1 - c;
 	out[ 0] = x * x * t + c;
@@ -1576,8 +1591,8 @@ function mat4_rotation(out, axis, ang){
 	return out;
 }
 
-function mat4_rottrans(out, a, b){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+export function mat4_rottrans(out: mat4, a: quat, b: vec3): mat4 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		ax2 = ax + ax,
 		ay2 = ay + ay,
 		az2 = az + az,
@@ -1609,8 +1624,8 @@ function mat4_rottrans(out, a, b){
 	return out;
 }
 
-function mat4_rottransorigin(out, a, b, origin){
-	var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+export function mat4_rottransorigin(out: mat4, a: quat, b: vec3, origin: vec3): mat4 {
+	let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 		ax2 = ax + ax,
 		ay2 = ay + ay,
 		az2 = az + az,
@@ -1643,8 +1658,8 @@ function mat4_rottransorigin(out, a, b, origin){
 	return out;
 }
 
-function mat4_scale(out, a, b){
-	var bx = b[0], by = b[1], bz = b[2];
+export function mat4_scale(out: mat4, a: mat4, b: vec3): mat4 {
+	let bx = b[0], by = b[1], bz = b[2];
 	out[ 0] = a[ 0] * bx;
 	out[ 1] = a[ 1] * bx;
 	out[ 2] = a[ 2] * bx;
@@ -1664,7 +1679,7 @@ function mat4_scale(out, a, b){
 	return out;
 }
 
-function mat4_scaling(out, a){
+export function mat4_scaling(out: mat4, a: vec3): mat4 {
 	out[ 0] = a[0]; out[ 1] =    0; out[ 2] =    0; out[ 3] = 0;
 	out[ 4] =    0; out[ 5] = a[1]; out[ 6] =    0; out[ 7] = 0;
 	out[ 8] =    0; out[ 9] =    0; out[10] = a[2]; out[11] = 0;
@@ -1672,7 +1687,7 @@ function mat4_scaling(out, a){
 	return out;
 }
 
-function mat4_sub(out, a, b){
+export function mat4_sub(out: mat4, a: mat4, b: mat4): mat4 {
 	out[ 0] = a[ 0] - b[ 0];
 	out[ 1] = a[ 1] - b[ 1];
 	out[ 2] = a[ 2] - b[ 2];
@@ -1692,8 +1707,8 @@ function mat4_sub(out, a, b){
 	return out;
 }
 
-function mat4_translate(out, a, b){
-	var bx = b[0], by = b[1], bz = b[2];
+export function mat4_translate(out: mat4, a: mat4, b: vec3): mat4 {
+	let bx = b[0], by = b[1], bz = b[2];
 	if (out === a){
 		out[12] = a[0] * bx + a[4] * by + a[ 8] * bz + a[12];
 		out[13] = a[1] * bx + a[5] * by + a[ 9] * bz + a[13];
@@ -1701,7 +1716,7 @@ function mat4_translate(out, a, b){
 		out[15] = a[3] * bx + a[7] * by + a[11] * bz + a[15];
 	}
 	else{
-		var
+		let
 			a00 = a[0], a01 = a[1], a02 = a[ 2], a03 = a[ 3],
 			a10 = a[4], a11 = a[5], a12 = a[ 6], a13 = a[ 7],
 			a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
@@ -1725,7 +1740,7 @@ function mat4_translate(out, a, b){
 	return out;
 }
 
-function mat4_translation(out, a){
+export function mat4_translation(out: mat4, a: vec3): mat4 {
 	out[ 0] = 1; out[ 1] = 0; out[ 2] = 0; out[ 3] = 0;
 	out[ 4] = 0; out[ 5] = 1; out[ 6] = 0; out[ 7] = 0;
 	out[ 8] = 0; out[ 9] = 0; out[10] = 1; out[11] = 0;
@@ -1733,9 +1748,9 @@ function mat4_translation(out, a){
 	return out;
 }
 
-function mat4_transpose(out, a){
+export function mat4_transpose(out: mat4, a: mat4): mat4 {
 	if (out === a){
-		var
+		let
 			a01 = a[1], a02 = a[2], a03 = a[ 3],
 			/*       */ a12 = a[6], a13 = a[ 7],
 			/*                   */ a23 = a[11];
@@ -1759,194 +1774,4 @@ function mat4_transpose(out, a){
 		out[12] = a[ 3]; out[13] = a[ 7]; out[14] = a[11]; out[15] = a[15];
 	}
 	return out;
-}
-
-if (typeof module !== 'undefined' && module.exports){
-	// inside node.js, so export functions into global namespace
-	global.TAU = TAU;
-
-	// num (scalars)
-	global.num_abs   = num_abs  ;
-	global.num_acos  = num_acos ;
-	global.num_asin  = num_asin ;
-	global.num_atan2 = num_atan2;
-	global.num_ceil  = num_ceil ;
-	global.num_clamp = num_clamp;
-	global.num_cos   = num_cos  ;
-	global.num_floor = num_floor;
-	global.num_lerp  = num_lerp ;
-	global.num_log   = num_log  ;
-	global.num_max   = num_max  ;
-	global.num_min   = num_min  ;
-	global.num_mod   = num_mod  ;
-	global.num_pow   = num_pow  ;
-	global.num_round = num_round;
-	global.num_sin   = num_sin  ;
-	global.num_sqrt  = num_sqrt ;
-	global.num_tan   = num_tan  ;
-
-	// vec2
-	global.vec2_add         = vec2_add      ;
-	global.vec2_applymat2   = vec2_applymat2;
-	global.vec2_applymat3x2 = vec2_applymat3x2;
-	global.vec2_applymat3   = vec2_applymat3;
-	global.vec2_applymat4   = vec2_applymat4;
-	global.vec2_clamp       = vec2_clamp    ;
-	global.vec2_dist        = vec2_dist     ;
-	global.vec2_dist2       = vec2_dist2    ;
-	global.vec2_div         = vec2_div      ;
-	global.vec2_dot         = vec2_dot      ;
-	global.vec2_inverse     = vec2_inverse  ;
-	global.vec2_len         = vec2_len      ;
-	global.vec2_len2        = vec2_len2     ;
-	global.vec2_lerp        = vec2_lerp     ;
-	global.vec2_max         = vec2_max      ;
-	global.vec2_min         = vec2_min      ;
-	global.vec2_mul         = vec2_mul      ;
-	global.vec2_neg         = vec2_neg      ;
-	global.vec2_normal      = vec2_normal   ;
-	global.vec2_scale       = vec2_scale    ;
-	global.vec2_sub         = vec2_sub      ;
-
-	// vec3
-	global.vec3_add         = vec3_add      ;
-	global.vec3_angle       = vec3_angle    ;
-	global.vec3_applymat3x2 = vec3_applymat3x2;
-	global.vec3_applymat3   = vec3_applymat3;
-	global.vec3_applymat4   = vec3_applymat4;
-	global.vec3_applyquat   = vec3_applyquat;
-	global.vec3_clamp       = vec3_clamp    ;
-	global.vec3_cross       = vec3_cross    ;
-	global.vec3_div         = vec3_div      ;
-	global.vec3_dist        = vec3_dist     ;
-	global.vec3_dist2       = vec3_dist2    ;
-	global.vec3_dot         = vec3_dot      ;
-	global.vec3_inverse     = vec3_inverse  ;
-	global.vec3_len         = vec3_len      ;
-	global.vec3_len2        = vec3_len2     ;
-	global.vec3_lerp        = vec3_lerp     ;
-	global.vec3_max         = vec3_max      ;
-	global.vec3_min         = vec3_min      ;
-	global.vec3_mul         = vec3_mul      ;
-	global.vec3_nangle      = vec3_nangle   ;
-	global.vec3_neg         = vec3_neg      ;
-	global.vec3_normal      = vec3_normal   ;
-	global.vec3_scale       = vec3_scale    ;
-	global.vec3_sub         = vec3_sub      ;
-
-	// vec4
-	global.vec4_add       = vec4_add      ;
-	global.vec4_applymat4 = vec4_applymat4;
-	global.vec4_applyquat = vec4_applyquat;
-	global.vec4_clamp     = vec4_clamp    ;
-	global.vec4_dist      = vec4_dist     ;
-	global.vec4_dist2     = vec4_dist2    ;
-	global.vec4_div       = vec4_div      ;
-	global.vec4_dot       = vec4_dot      ;
-	global.vec4_inverse   = vec4_inverse  ;
-	global.vec4_len       = vec4_len      ;
-	global.vec4_len2      = vec4_len2     ;
-	global.vec4_lerp      = vec4_lerp     ;
-	global.vec4_max       = vec4_max      ;
-	global.vec4_min       = vec4_min      ;
-	global.vec4_mul       = vec4_mul      ;
-	global.vec4_neg       = vec4_neg      ;
-	global.vec4_normal    = vec4_normal   ;
-	global.vec4_scale     = vec4_scale    ;
-	global.vec4_sub       = vec4_sub      ;
-
-	// quat
-	global.quat_axisang   = quat_axisang  ;
-	global.quat_between   = quat_between  ;
-	global.quat_dot       = quat_dot      ;
-	global.quat_euler_xyz = quat_euler_xyz;
-	global.quat_euler_xzy = quat_euler_xzy;
-	global.quat_euler_yxz = quat_euler_yxz;
-	global.quat_euler_yzx = quat_euler_yzx;
-	global.quat_euler_zxy = quat_euler_zxy;
-	global.quat_euler_zyx = quat_euler_zyx;
-	global.quat_identity  = quat_identity ;
-	global.quat_invert    = quat_invert   ;
-	global.quat_lerp      = quat_lerp     ;
-	global.quat_mul       = quat_mul      ;
-	global.quat_naxisang  = quat_naxisang ;
-	global.quat_nbetween  = quat_nbetween ;
-	global.quat_neg       = quat_neg      ;
-	global.quat_nlerp     = quat_nlerp    ;
-	global.quat_normal    = quat_normal   ;
-	global.quat_slerp     = quat_slerp    ;
-
-	// mat2
-	global.mat2_add       = mat2_add      ;
-	global.mat2_adjoint   = mat2_adjoint  ;
-	global.mat2_compmul   = mat2_compmul  ;
-	global.mat2_det       = mat2_det      ;
-	global.mat2_identity  = mat2_identity ;
-	global.mat2_invert    = mat2_invert   ;
-	global.mat2_mul       = mat2_mul      ;
-	global.mat2_rotate    = mat2_rotate   ;
-	global.mat2_rotation  = mat2_rotation ;
-	global.mat2_scale     = mat2_scale    ;
-	global.mat2_scaling   = mat2_scaling  ;
-	global.mat2_sub       = mat2_sub      ;
-	global.mat2_transpose = mat2_transpose;
-
-	// mat3x2
-	global.mat3x2_add         = mat3x2_add        ;
-	global.mat3x2_compmul     = mat3x2_compmul    ;
-	global.mat3x2_det         = mat3x2_det        ;
-	global.mat3x2_identity    = mat3x2_identity   ;
-	global.mat3x2_invert      = mat3x2_invert     ;
-	global.mat3x2_mul         = mat3x2_mul        ;
-	global.mat3x2_rotate      = mat3x2_rotate     ;
-	global.mat3x2_rotation    = mat3x2_rotation   ;
-	global.mat3x2_scale       = mat3x2_scale      ;
-	global.mat3x2_scaling     = mat3x2_scaling    ;
-	global.mat3x2_sub         = mat3x2_sub        ;
-	global.mat3x2_translate   = mat3x2_translate  ;
-	global.mat3x2_translation = mat3x2_translation;
-
-	// mat3
-	global.mat3_add         = mat3_add        ;
-	global.mat3_adjoint     = mat3_adjoint    ;
-	global.mat3_compmul     = mat3_compmul    ;
-	global.mat3_copy        = mat3_copy       ;
-	global.mat3_det         = mat3_det        ;
-	global.mat3_identity    = mat3_identity   ;
-	global.mat3_invert      = mat3_invert     ;
-	global.mat3_mul         = mat3_mul        ;
-	global.mat3_quat        = mat3_quat       ;
-	global.mat3_rotate      = mat3_rotate     ;
-	global.mat3_rotation    = mat3_rotation   ;
-	global.mat3_scale       = mat3_scale      ;
-	global.mat3_scaling     = mat3_scaling    ;
-	global.mat3_sub         = mat3_sub        ;
-	global.mat3_translate   = mat3_translate  ;
-	global.mat3_translation = mat3_translation;
-	global.mat3_transpose   = mat3_transpose  ;
-
-	// mat4
-	global.mat4_add            = mat4_add           ;
-	global.mat4_adjoint        = mat4_adjoint       ;
-	global.mat4_compmul        = mat4_compmul       ;
-	global.mat4_copy           = mat4_copy          ;
-	global.mat4_det            = mat4_det           ;
-	global.mat4_frustum        = mat4_frustum       ;
-	global.mat4_identity       = mat4_identity      ;
-	global.mat4_invert         = mat4_invert        ;
-	global.mat4_lookat         = mat4_lookat        ;
-	global.mat4_mul            = mat4_mul           ;
-	global.mat4_orthogonal     = mat4_orthogonal    ;
-	global.mat4_perspective    = mat4_perspective   ;
-	global.mat4_quat           = mat4_quat          ;
-	global.mat4_rotate         = mat4_rotate        ;
-	global.mat4_rotation       = mat4_rotation      ;
-	global.mat4_rottrans       = mat4_rottrans      ;
-	global.mat4_rottransorigin = mat4_rottransorigin;
-	global.mat4_scale          = mat4_scale         ;
-	global.mat4_scaling        = mat4_scaling       ;
-	global.mat4_sub            = mat4_sub           ;
-	global.mat4_translate      = mat4_translate     ;
-	global.mat4_translation    = mat4_translation   ;
-	global.mat4_transpose      = mat4_transpose     ;
 }

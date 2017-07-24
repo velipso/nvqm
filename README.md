@@ -19,6 +19,8 @@ Implementations
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
     return the `out` parameter
   * When `require`d in node.js, functions are exported into global namespace
+* [TypeScript](http://www.typescriptlang.org/) (`nvqm.ts`)
+  * Typed version of JavaScript using tuples
 * [Sink](https://github.com/voidqk/sink) (`sink_vqm.js`, `sink_vqm.h`+`sink_vqm.c`)
   * Values are stored as a flat array of numbers
   * Pass-by-value functions return new arrays, vs. pass-by-reference functions which modify and
