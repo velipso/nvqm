@@ -833,8 +833,14 @@ export namespace mat3x2 {
 		return [c, s, -s, c, 0, 0];
 	}
 
-	export function scale(a: mat3x2, b: vec2): mat3x2 {
-		let bx = b[0], by = b[1];
+	export function scale(a: mat3x2, b: vec2 | number): mat3x2 {
+		let bx, by;
+		if (typeof b === 'number')
+			bx = by = b;
+		else{
+			bx = b[0];
+			by = b[1];
+		}
 		return [
 			bx * a[0], bx * a[1],
 			by * a[2], by * a[3],
@@ -842,7 +848,9 @@ export namespace mat3x2 {
 		];
 	}
 
-	export function scaling(a: vec2): mat3x2 {
+	export function scaling(a: vec2 | number): mat3x2 {
+		if (typeof a === 'number')
+			return [a, 0, 0, a, 0, 0];
 		return [a[0], 0, 0, a[1], 0, 0];
 	}
 
