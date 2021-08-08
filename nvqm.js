@@ -80,6 +80,10 @@ function vec2_clamp(a, min, max){
 	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
 }
 
+function vec2_cross(a, b){
+	return a[0] * b[1] - a[1] * b[0];
+}
+
 function vec2_dist(a, b){
 	return num_sqrt(vec2_len2(vec2_sub(a, b)));
 }
@@ -1792,6 +1796,7 @@ if (typeof module !== 'undefined' && module.exports){
 	global.vec2_applymat3   = vec2_applymat3;
 	global.vec2_applymat4   = vec2_applymat4;
 	global.vec2_clamp       = vec2_clamp    ;
+	global.vec2_cross       = vec2_cross    ;
 	global.vec2_dist        = vec2_dist     ;
 	global.vec2_dist2       = vec2_dist2    ;
 	global.vec2_div         = vec2_div      ;

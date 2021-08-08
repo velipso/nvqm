@@ -139,6 +139,10 @@ static inline vec2 vec2_clamp(vec2 a, vec2 min, vec2 max){
 	return (vec2){ num_clamp(a.v[0], min.v[0], max.v[0]), num_clamp(a.v[1], min.v[1], max.v[1]) };
 }
 
+static inline float vec2_cross(vec2 a, vec2 b){
+	return a.v[0] * b.v[1] - a.v[1] * b.v[0];
+}
+
 static inline float vec2_len2(vec2 a);
 static inline vec2 vec2_sub(vec2 a, vec2 b);
 static inline float vec2_dist(vec2 a, vec2 b){
@@ -1150,6 +1154,10 @@ static inline xvec2 xvec2_clamp(xvec2 a, xvec2 min, xvec2 max){
 		xint_clamp(a.v[0], min.v[0], max.v[0]),
 		xint_clamp(a.v[1], min.v[1], max.v[1])
 	};
+}
+
+static inline xint xvec2_cross(xvec2 a, xvec2 b){
+	return a.v[0] * b.v[1] - a.v[1] * b.v[0];
 }
 
 static inline xint xvec2_len2(xvec2 a);

@@ -11,6 +11,7 @@
 	P2("vec2.applymat3"     , vec2  , vec2_applymat3     , vec2, mat3                        ) \
 	P2("vec2.applymat4"     , vec2  , vec2_applymat4     , vec2, mat4                        ) \
 	P3("vec2.clamp"         , vec2  , vec2_clamp         , vec2, vec2, vec2                  ) \
+	P2("vec2.cross"         , num   , vec2_cross         , vec2, vec2                        ) \
 	P2("vec2.dist"          , num   , vec2_dist          , vec2, vec2                        ) \
 	P2("vec2.dist2"         , num   , vec2_dist2         , vec2, vec2                        ) \
 	P2("vec2.div"           , vec2  , vec2_div           , vec2, vec2                        ) \

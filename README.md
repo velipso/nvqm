@@ -76,6 +76,7 @@ vec2  vec2_applymat3x2(vec2 a, mat3x2 b);
 vec2  vec2_applymat3  (vec2 a, mat3 *b);
 vec2  vec2_applymat4  (vec2 a, mat4 *b);
 vec2  vec2_clamp      (vec2 a, vec2 min, vec2 max);
+vec2  vec2_cross      (vec2 a, vec2 b);
 float vec2_dist       (vec2 a, vec2 b);
 float vec2_dist2      (vec2 a, vec2 b); // distance squared
 vec2  vec2_div        (vec2 a, vec2 b);
