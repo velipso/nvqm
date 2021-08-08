@@ -959,7 +959,7 @@ xang xint_atan2(xint y, xint x){
 }
 
 xang xint_atan(xint a){
-	return xint_atan2(a, 1);
+	return xint_atan2(a, XINT1);
 }
 
 xang xint_acos(xint a){
