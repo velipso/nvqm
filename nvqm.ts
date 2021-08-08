@@ -30,6 +30,7 @@ export namespace num {
 	export let acos  = Math.acos;
 	export let asin  = Math.asin;
 	export let atan2 = Math.atan2;
+	export let atan  = Math.atan;
 	export let ceil  = Math.ceil;
 
 	export function clamp(n: number, min: number, max: number): number {

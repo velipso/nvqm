@@ -958,6 +958,10 @@ xang xint_atan2(xint y, xint x){
 	return angle;
 }
 
+xang xint_atan(xint a){
+	return xint_atan2(a, 1);
+}
+
 xang xint_acos(xint a){
 	if (a <= -XINT1)
 		return XANG180;

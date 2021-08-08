@@ -15,6 +15,7 @@ function num_abs(n){
 var num_acos  = Math.acos;
 var num_asin  = Math.asin;
 var num_atan2 = Math.atan2;
+var num_atan  = Math.atan;
 var num_ceil  = Math.ceil;
 
 function num_clamp(n, min, max){

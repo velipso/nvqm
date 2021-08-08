@@ -47,6 +47,10 @@ static inline float num_atan2(float a, float b){
 	return atan2f(a, b);
 }
 
+static inline float num_atan(float a){
+	return atanf(a);
+}
+
 static inline float num_ceil(float a){
 	return ceilf(a);
 }
@@ -1043,6 +1047,7 @@ static inline xint xint_abs(xint a){
 xang xint_acos(xint a);
 xang xint_asin(xint a);
 xang xint_atan2(xint a, xint b);
+xang xint_atan(xint a);
 
 static inline xint xint_ceil(xint a){
 	return (a & INT32_C(0xFFFF0000)) + ((a & INT32_C(0x0000FFFF)) == 0 ? 0 : XINT1);
