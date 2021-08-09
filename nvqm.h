@@ -47,6 +47,10 @@ static inline float num_atan2(float a, float b){
 	return atan2f(a, b);
 }
 
+static inline float num_atan(float a){
+	return atanf(a);
+}
+
 static inline float num_ceil(float a){
 	return ceilf(a);
 }
@@ -137,6 +141,10 @@ static inline vec2 vec2_applymat4(vec2 a, mat4 *b){
 
 static inline vec2 vec2_clamp(vec2 a, vec2 min, vec2 max){
 	return (vec2){ num_clamp(a.v[0], min.v[0], max.v[0]), num_clamp(a.v[1], min.v[1], max.v[1]) };
+}
+
+static inline float vec2_cross(vec2 a, vec2 b){
+	return a.v[0] * b.v[1] - a.v[1] * b.v[0];
 }
 
 static inline float vec2_len2(vec2 a);
@@ -1039,6 +1047,7 @@ static inline xint xint_abs(xint a){
 xang xint_acos(xint a);
 xang xint_asin(xint a);
 xang xint_atan2(xint a, xint b);
+xang xint_atan(xint a);
 
 static inline xint xint_ceil(xint a){
 	return (a & INT32_C(0xFFFF0000)) + ((a & INT32_C(0x0000FFFF)) == 0 ? 0 : XINT1);
@@ -1150,6 +1159,10 @@ static inline xvec2 xvec2_clamp(xvec2 a, xvec2 min, xvec2 max){
 		xint_clamp(a.v[0], min.v[0], max.v[0]),
 		xint_clamp(a.v[1], min.v[1], max.v[1])
 	};
+}
+
+static inline xint xvec2_cross(xvec2 a, xvec2 b){
+	return xint_sub(xint_mul(a.v[0], b.v[1]), xint_mul(a.v[1], b.v[0]));
 }
 
 static inline xint xvec2_len2(xvec2 a);

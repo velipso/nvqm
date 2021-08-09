@@ -15,6 +15,7 @@ function num_abs(n){
 var num_acos  = Math.acos;
 var num_asin  = Math.asin;
 var num_atan2 = Math.atan2;
+var num_atan  = Math.atan;
 var num_ceil  = Math.ceil;
 
 function num_clamp(n, min, max){
@@ -78,6 +79,10 @@ function vec2_applymat4(a, b){
 
 function vec2_clamp(a, min, max){
 	return [num_clamp(a[0], min[0], max[0]), num_clamp(a[1], min[1], max[1])];
+}
+
+function vec2_cross(a, b){
+	return a[0] * b[1] - a[1] * b[0];
 }
 
 function vec2_dist(a, b){
@@ -903,10 +908,11 @@ function mat3_det(a){
 		a00 = a[0], a01 = a[1], a02 = a[2],
 		a10 = a[3], a11 = a[4], a12 = a[5],
 		a20 = a[6], a21 = a[7], a22 = a[8];
-	return
+	return (
 		a00 * ( a22 * a11 - a12 * a21) +
 		a01 * (-a22 * a10 + a12 * a20) +
-		a02 * ( a21 * a10 - a11 * a20);
+		a02 * ( a21 * a10 - a11 * a20)
+	);
 }
 
 function mat3_identity(out){
@@ -1792,6 +1798,7 @@ if (typeof module !== 'undefined' && module.exports){
 	global.vec2_applymat3   = vec2_applymat3;
 	global.vec2_applymat4   = vec2_applymat4;
 	global.vec2_clamp       = vec2_clamp    ;
+	global.vec2_cross       = vec2_cross    ;
 	global.vec2_dist        = vec2_dist     ;
 	global.vec2_dist2       = vec2_dist2    ;
 	global.vec2_div         = vec2_div      ;

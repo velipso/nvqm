@@ -164,9 +164,6 @@ static int err_pow(){
 	return 0;
 }
 
-static float num_atan(float a){ return num_atan2(a, 1); }
-static xint xint_atan(xint a){ return xint_atan2(a, XINT1); }
-
 static int gen_sin_lut(){
 	// generate the sin lookup table
 	char buf[100];

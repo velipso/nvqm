@@ -61,6 +61,7 @@ function SinkVqm(){
 		'vec2.applymat3'  : function(a, b       ){ return vec2_applymat3  (v2(a), m3(b)           ); },
 		'vec2.applymat4'  : function(a, b       ){ return vec2_applymat4  (v2(a), m4(b)           ); },
 		'vec2.clamp'      : function(a, min, max){ return vec2_clamp      (v2(a), v2(min), v2(max)); },
+		'vec2.cross'      : function(a, b       ){ return vec2_cross      (v2(a), v2(b)           ); },
 		'vec2.dist'       : function(a, b       ){ return vec2_dist       (v2(a), v2(b)           ); },
 		'vec2.dist2'      : function(a, b       ){ return vec2_dist2      (v2(a), v2(b)           ); },
 		'vec2.div'        : function(a, b       ){ return vec2_div        (v2(a), v2(b)           ); },

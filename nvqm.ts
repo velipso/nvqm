@@ -30,6 +30,7 @@ export namespace num {
 	export let acos  = Math.acos;
 	export let asin  = Math.asin;
 	export let atan2 = Math.atan2;
+	export let atan  = Math.atan;
 	export let ceil  = Math.ceil;
 
 	export function clamp(n: number, min: number, max: number): number {
@@ -95,6 +96,10 @@ export namespace vec2 {
 
 	export function clamp(a: vec2, min: vec2, max: vec2): vec2 {
 		return [num.clamp(a[0], min[0], max[0]), num.clamp(a[1], min[1], max[1])];
+	}
+
+	export function cross(a: vec2, b: vec2) {
+		return a[0] * b[1] - a[1] * b[0];
 	}
 
 	export function dist(a: vec2, b: vec2): number {
