@@ -1162,7 +1162,7 @@ static inline xvec2 xvec2_clamp(xvec2 a, xvec2 min, xvec2 max){
 }
 
 static inline xint xvec2_cross(xvec2 a, xvec2 b){
-	return a.v[0] * b.v[1] - a.v[1] * b.v[0];
+	return xint_sub(xint_mul(a.v[0], b.v[1]), xint_mul(a.v[1], b.v[0]));
 }
 
 static inline xint xvec2_len2(xvec2 a);
