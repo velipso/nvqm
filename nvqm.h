@@ -24,6 +24,88 @@ typedef struct { float v[ 6]; } mat3x2;
 typedef struct { float v[ 9]; } mat3;
 typedef struct { float v[16]; } mat4;
 
+static inline vec2 vec2_new(float x, float y){
+	vec2 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	return res;
+}
+static inline vec3 vec3_new(float x, float y, float z){
+	vec3 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	res.v[2] = z;
+	return res;
+}
+static inline vec4 vec4_new(float x, float y, float z, float w){
+	vec4 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	res.v[2] = z;
+	res.v[3] = w;
+	return res;
+}
+static inline quat quat_new(float s, float i, float j, float k){
+	quat res;
+	res.v[0] = s;
+	res.v[1] = i;
+	res.v[2] = j;
+	res.v[3] = k;
+	return res;
+}
+
+static inline mat2 mat2_new(float v00, float v01, float v10, float v11){
+	mat2 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v10;
+	res.v[3] = v11;
+	return res;
+}
+static inline mat3x2 mat3x2_new(float v00, float v01, float v10, float v11, float v20, float v21){
+	mat3x2 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v10;
+	res.v[3] = v11;
+	res.v[4] = v20;
+	res.v[5] = v21;
+	return res;
+}
+static inline mat3 mat3_new(float v00, float v01, float v02, float v10, float v11, float v12, float v20, float v21, float v22){
+	mat3 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v02;
+	res.v[3] = v10;
+	res.v[4] = v11;
+	res.v[5] = v12;
+	res.v[6] = v20;
+	res.v[7] = v21;
+	res.v[8] = v22;
+	return res;
+}
+static inline mat4 mat4_new(float v00, float v01, float v02, float v03, float v10, float v11, float v12, float v13, float v20, float v21, float v22, float v23, float v30, float v31, float v32, float v33){
+	mat4 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v02;
+	res.v[3] = v03;
+	res.v[4] = v10;
+	res.v[5] = v11;
+	res.v[6] = v12;
+	res.v[7] = v13;
+	res.v[8] = v20;
+	res.v[9] = v21;
+	res.v[10] = v22;
+	res.v[11] = v23;
+	res.v[12] = v30;
+	res.v[13] = v31;
+	res.v[14] = v32;
+	res.v[15] = v33;
+	return res;
+}
+
 static const float  TAU  = 6.28318530717958647692528676655900576839433879875021164195f;
 static const double TAUd = 6.28318530717958647692528676655900576839433879875021164195;
 
@@ -116,31 +198,31 @@ static inline float num_tan(float a){
 //
 
 static inline vec2 vec2_add(vec2 a, vec2 b){
-	return (vec2){ a.v[0] + b.v[0], a.v[1] + b.v[1] };
+	return vec2_new(a.v[0] + b.v[0], a.v[1] + b.v[1]);
 }
 
 static inline vec2 vec2_applymat2(vec2 a, mat2 b){
 	float ax = a.v[0], ay = a.v[1];
-	return (vec2){ b.v[0] * ax + b.v[2] * ay, b.v[1] * ax + b.v[3] * ay };
+	return vec2_new(b.v[0] * ax + b.v[2] * ay, b.v[1] * ax + b.v[3] * ay);
 }
 
 static inline vec2 vec2_applymat3x2(vec2 a, mat3x2 b){
 	float ax = a.v[0], ay = a.v[1];
-	return (vec2){ b.v[0] * ax + b.v[2] * ay + b.v[4], b.v[1] * ax + b.v[3] * ay + b.v[5] };
+	return vec2_new(b.v[0] * ax + b.v[2] * ay + b.v[4], b.v[1] * ax + b.v[3] * ay + b.v[5]);
 }
 
 static inline vec2 vec2_applymat3(vec2 a, mat3 *b){
 	float ax = a.v[0], ay = a.v[1];
-	return (vec2){ b->v[0] * ax + b->v[3] * ay + b->v[6], b->v[1] * ax + b->v[4] * ay + b->v[7] };
+	return vec2_new(b->v[0] * ax + b->v[3] * ay + b->v[6], b->v[1] * ax + b->v[4] * ay + b->v[7]);
 }
 
 static inline vec2 vec2_applymat4(vec2 a, mat4 *b){
 	float ax = a.v[0], ay = a.v[1];
-	return (vec2){ b->v[0] * ax + b->v[4] * ay + b->v[12], b->v[1] * ax + b->v[5] * ay + b->v[13] };
+	return vec2_new(b->v[0] * ax + b->v[4] * ay + b->v[12], b->v[1] * ax + b->v[5] * ay + b->v[13]);
 }
 
 static inline vec2 vec2_clamp(vec2 a, vec2 min, vec2 max){
-	return (vec2){ num_clamp(a.v[0], min.v[0], max.v[0]), num_clamp(a.v[1], min.v[1], max.v[1]) };
+	return vec2_new(num_clamp(a.v[0], min.v[0], max.v[0]), num_clamp(a.v[1], min.v[1], max.v[1]));
 }
 
 static inline float vec2_cross(vec2 a, vec2 b){
@@ -158,7 +240,7 @@ static inline float vec2_dist2(vec2 a, vec2 b){
 }
 
 static inline vec2 vec2_div(vec2 a, vec2 b){
-	return (vec2){ a.v[0] / b.v[0], a.v[1] / b.v[1] };
+	return vec2_new(a.v[0] / b.v[0], a.v[1] / b.v[1]);
 }
 
 static inline float vec2_dot(vec2 a, vec2 b){
@@ -166,7 +248,7 @@ static inline float vec2_dot(vec2 a, vec2 b){
 }
 
 static inline vec2 vec2_inverse(vec2 a){
-	return (vec2){ 1.0f / a.v[0], 1.0f / a.v[1] };
+	return vec2_new(1.0f / a.v[0], 1.0f / a.v[1]);
 }
 
 static inline float vec2_len(vec2 a){
@@ -179,23 +261,23 @@ static inline float vec2_len2(vec2 a){
 }
 
 static inline vec2 vec2_lerp(vec2 a, vec2 b, float t){
-	return (vec2){ num_lerp(a.v[0], b.v[0], t), num_lerp(a.v[1], b.v[1], t) };
+	return vec2_new(num_lerp(a.v[0], b.v[0], t), num_lerp(a.v[1], b.v[1], t));
 }
 
 static inline vec2 vec2_max(vec2 a, vec2 b){
-	return (vec2){ num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]) };
+	return vec2_new(num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]));
 }
 
 static inline vec2 vec2_min(vec2 a, vec2 b){
-	return (vec2){ num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]) };
+	return vec2_new(num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]));
 }
 
 static inline vec2 vec2_mul(vec2 a, vec2 b){
-	return (vec2){ a.v[0] * b.v[0], a.v[1] * b.v[1] };
+	return vec2_new(a.v[0] * b.v[0], a.v[1] * b.v[1]);
 }
 
 static inline vec2 vec2_neg(vec2 a){
-	return (vec2){ -a.v[0], -a.v[1] };
+	return vec2_new(-a.v[0], -a.v[1]);
 }
 
 static inline vec2 vec2_normal(vec2 a){
@@ -203,17 +285,17 @@ static inline vec2 vec2_normal(vec2 a){
 		len = ax * ax + ay * ay;
 	if (len > 0.0f){
 		len = 1.0f / num_sqrt(len);
-		return (vec2){ ax * len, ay * len };
+		return vec2_new(ax * len, ay * len);
 	}
 	return a;
 }
 
 static inline vec2 vec2_scale(vec2 a, float s){
-	return (vec2){ a.v[0] * s, a.v[1] * s };
+	return vec2_new(a.v[0] * s, a.v[1] * s);
 }
 
 static inline vec2 vec2_sub(vec2 a, vec2 b){
-	return (vec2){ a.v[0] - b.v[0], a.v[1] - b.v[1] };
+	return vec2_new(a.v[0] - b.v[0], a.v[1] - b.v[1]);
 }
 
 //
@@ -221,7 +303,7 @@ static inline vec2 vec2_sub(vec2 a, vec2 b){
 //
 
 static inline vec3 vec3_add(vec3 a, vec3 b){
-	return (vec3){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2] };
+	return vec3_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2]);
 }
 
 static inline float vec3_nangle(vec3 a, vec3 b);
@@ -232,20 +314,20 @@ static inline float vec3_angle(vec3 a, vec3 b){
 
 static inline vec3 vec3_applymat3x2(vec3 a, mat3x2 b){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2];
-	return (vec3){
+	return vec3_new(
 		ax * b.v[0] + ay * b.v[2] + az * b.v[4],
 		ax * b.v[1] + ay * b.v[3] + az * b.v[5],
 		az
-	};
+	);
 }
 
 static inline vec3 vec3_applymat3(vec3 a, mat3 *b){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2];
-	return (vec3){
+	return vec3_new(
 		ax * b->v[0] + ay * b->v[3] + az * b->v[6],
 		ax * b->v[1] + ay * b->v[4] + az * b->v[7],
 		ax * b->v[2] + ay * b->v[5] + az * b->v[8]
-	};
+	);
 }
 
 static inline vec3 vec3_applymat4(vec3 a, mat4 *b){
@@ -255,11 +337,11 @@ static inline vec3 vec3_applymat4(vec3 a, mat4 *b){
 		w = 1.0f;
 	else
 		w = 1.0f / w;
-	return (vec3){
+	return vec3_new(
 		(b->v[0] * ax + b->v[4] * ay + b->v[ 8] * az + b->v[12]) * w,
 		(b->v[1] * ax + b->v[5] * ay + b->v[ 9] * az + b->v[13]) * w,
 		(b->v[2] * ax + b->v[6] * ay + b->v[10] * az + b->v[14]) * w
-	};
+	);
 }
 
 static inline vec3 vec3_applyquat(vec3 a, quat b){
@@ -271,26 +353,26 @@ static inline vec3 vec3_applyquat(vec3 a, quat b){
 		iy =  bw * ay + bz * ax - bx * az,
 		iz =  bw * az + bx * ay - by * ax,
 		iw = -bx * ax - by * ay - bz * az;
-	return (vec3){
+	return vec3_new(
 		ix * bw + iw * -bx + iy * -bz - iz * -by,
 		iy * bw + iw * -by + iz * -bx - ix * -bz,
 		iz * bw + iw * -bz + ix * -by - iy * -bx
-	};
+	);
 }
 
 static inline vec3 vec3_clamp(vec3 a, vec3 min, vec3 max){
-	return (vec3){
+	return vec3_new(
 		num_clamp(a.v[0], min.v[0], max.v[0]),
 		num_clamp(a.v[1], min.v[1], max.v[1]),
 		num_clamp(a.v[2], min.v[2], max.v[2])
-	};
+	);
 }
 
 static inline vec3 vec3_cross(vec3 a, vec3 b){
 	float
 		ax = a.v[0], ay = a.v[1], az = a.v[2],
 		bx = b.v[0], by = b.v[1], bz = b.v[2];
-	return (vec3){ ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx };
+	return vec3_new(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx);
 }
 
 static inline float vec3_len2(vec3 a);
@@ -304,7 +386,7 @@ static inline float vec3_dist2(vec3 a, vec3 b){
 }
 
 static inline vec3 vec3_div(vec3 a, vec3 b){
-	return (vec3){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2] };
+	return vec3_new(a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2]);
 }
 
 static inline float vec3_dot(vec3 a, vec3 b){
@@ -312,7 +394,7 @@ static inline float vec3_dot(vec3 a, vec3 b){
 }
 
 static inline vec3 vec3_inverse(vec3 a){
-	return (vec3){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2] };
+	return vec3_new(1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2]);
 }
 
 static inline float vec3_len(vec3 a){
@@ -325,23 +407,23 @@ static inline float vec3_len2(vec3 a){
 }
 
 static inline vec3 vec3_lerp(vec3 a, vec3 b, float t){
-	return (vec3){
+	return vec3_new(
 		num_lerp(a.v[0], b.v[0], t),
 		num_lerp(a.v[1], b.v[1], t),
 		num_lerp(a.v[2], b.v[2], t)
-	};
+	);
 }
 
 static inline vec3 vec3_max(vec3 a, vec3 b){
-	return (vec3){ num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]), num_max(a.v[2], b.v[2]) };
+	return vec3_new(num_max(a.v[0], b.v[0]), num_max(a.v[1], b.v[1]), num_max(a.v[2], b.v[2]));
 }
 
 static inline vec3 vec3_min(vec3 a, vec3 b){
-	return (vec3){ num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]), num_min(a.v[2], b.v[2]) };
+	return vec3_new(num_min(a.v[0], b.v[0]), num_min(a.v[1], b.v[1]), num_min(a.v[2], b.v[2]));
 }
 
 static inline vec3 vec3_mul(vec3 a, vec3 b){
-	return (vec3){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2] };
+	return vec3_new(a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2]);
 }
 
 static inline float vec3_nangle(vec3 a, vec3 b){ // a and b are normalized
@@ -352,7 +434,7 @@ static inline float vec3_nangle(vec3 a, vec3 b){ // a and b are normalized
 }
 
 static inline vec3 vec3_neg(vec3 a){
-	return (vec3){ -a.v[0], -a.v[1], -a.v[2] };
+	return vec3_new(-a.v[0], -a.v[1], -a.v[2]);
 }
 
 static inline vec3 vec3_normal(vec3 a){
@@ -360,7 +442,7 @@ static inline vec3 vec3_normal(vec3 a){
 	float len = ax * ax + ay * ay + az * az;
 	if (len > 0.0f){
 		len = 1.0f / num_sqrt(len);
-		return (vec3){ ax * len, ay * len, az * len };
+		return vec3_new(ax * len, ay * len, az * len);
 	}
 	return a;
 }
@@ -370,11 +452,11 @@ static inline vec3 vec3_orthogonal(vec3 a, vec3 b){
 }
 
 static inline vec3 vec3_scale(vec3 a, float s){
-	return (vec3){ a.v[0] * s, a.v[1] * s, a.v[2] * s };
+	return vec3_new(a.v[0] * s, a.v[1] * s, a.v[2] * s);
 }
 
 static inline vec3 vec3_sub(vec3 a, vec3 b){
-	return (vec3){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2] };
+	return vec3_new(a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2]);
 }
 
 //
@@ -382,17 +464,17 @@ static inline vec3 vec3_sub(vec3 a, vec3 b){
 //
 
 static inline vec4 vec4_add(vec4 a, vec4 b){
-	return (vec4){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3] };
+	return vec4_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3]);
 }
 
 static inline vec4 vec4_applymat4(vec4 a, mat4 *b){
 	float ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
-	return (vec4){
+	return vec4_new(
 		b->v[0] * ax + b->v[4] * ay + b->v[ 8] * az + b->v[12] * aw,
 		b->v[1] * ax + b->v[5] * ay + b->v[ 9] * az + b->v[13] * aw,
 		b->v[2] * ax + b->v[6] * ay + b->v[10] * az + b->v[14] * aw,
 		b->v[3] * ax + b->v[7] * ay + b->v[11] * az + b->v[15] * aw
-	};
+	);
 }
 
 static inline vec4 vec4_applyquat(vec4 a, quat b){
@@ -404,21 +486,21 @@ static inline vec4 vec4_applyquat(vec4 a, quat b){
 		iy =  bw * ay + bz * ax - bx * az,
 		iz =  bw * az + bx * ay - by * ax,
 		iw = -bx * ax - by * ay - bz * az;
-	return (vec4){
+	return vec4_new(
 		ix * bw + iw * -bx + iy * -bz - iz * -by,
 		iy * bw + iw * -by + iz * -bx - ix * -bz,
 		iz * bw + iw * -bz + ix * -by - iy * -bx,
 		aw
-	};
+	);
 }
 
 static inline vec4 vec4_clamp(vec4 a, vec4 min, vec4 max){
-	return (vec4){
+	return vec4_new(
 		num_clamp(a.v[0], min.v[0], max.v[0]),
 		num_clamp(a.v[1], min.v[1], max.v[1]),
 		num_clamp(a.v[2], min.v[2], max.v[2]),
 		num_clamp(a.v[3], min.v[3], max.v[3])
-	};
+	);
 }
 
 static inline float vec4_len2(vec4 a);
@@ -432,7 +514,7 @@ static inline float vec4_dist2(vec4 a, vec4 b){
 }
 
 static inline vec4 vec4_div(vec4 a, vec4 b){
-	return (vec4){ a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2], a.v[3] / b.v[3] };
+	return vec4_new(a.v[0] / b.v[0], a.v[1] / b.v[1], a.v[2] / b.v[2], a.v[3] / b.v[3]);
 }
 
 static inline float vec4_dot(vec4 a, vec4 b){
@@ -440,7 +522,7 @@ static inline float vec4_dot(vec4 a, vec4 b){
 }
 
 static inline vec4 vec4_inverse(vec4 a){
-	return (vec4){ 1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2], 1.0f / a.v[3] };
+	return vec4_new(1.0f / a.v[0], 1.0f / a.v[1], 1.0f / a.v[2], 1.0f / a.v[3]);
 }
 
 static inline float vec4_len(vec4 a){
@@ -453,38 +535,38 @@ static inline float vec4_len2(vec4 a){
 }
 
 static inline vec4 vec4_lerp(vec4 a, vec4 b, float t){
-	return (vec4){
+	return vec4_new(
 		num_lerp(a.v[0], b.v[0], t),
 		num_lerp(a.v[1], b.v[1], t),
 		num_lerp(a.v[2], b.v[2], t),
 		num_lerp(a.v[3], b.v[3], t)
-	};
+	);
 }
 
 static inline vec4 vec4_max(vec4 a, vec4 b){
-	return (vec4){
+	return vec4_new(
 		num_max(a.v[0], b.v[0]),
 		num_max(a.v[1], b.v[1]),
 		num_max(a.v[2], b.v[2]),
 		num_max(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline vec4 vec4_min(vec4 a, vec4 b){
-	return (vec4){
+	return vec4_new(
 		num_min(a.v[0], b.v[0]),
 		num_min(a.v[1], b.v[1]),
 		num_min(a.v[2], b.v[2]),
 		num_min(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline vec4 vec4_mul(vec4 a, vec4 b){
-	return (vec4){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
+	return vec4_new(a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3]);
 }
 
 static inline vec4 vec4_neg(vec4 a){
-	return (vec4){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+	return vec4_new(-a.v[0], -a.v[1], -a.v[2], -a.v[3]);
 }
 
 static inline vec4 vec4_normal(vec4 a){
@@ -492,17 +574,17 @@ static inline vec4 vec4_normal(vec4 a){
 	float len = ax * ax + ay * ay + az * az + aw * aw;
 	if (len > 0.0f){
 		len = 1.0f / num_sqrt(len);
-		return (vec4){ ax * len, ay * len, az * len, aw * len };
+		return vec4_new(ax * len, ay * len, az * len, aw * len);
 	}
 	return a;
 }
 
 static inline vec4 vec4_scale(vec4 a, float s){
-	return (vec4){ a.v[0] * s, a.v[1] * s, a.v[2] * s, a.v[3] * s };
+	return vec4_new(a.v[0] * s, a.v[1] * s, a.v[2] * s, a.v[3] * s);
 }
 
 static inline vec4 vec4_sub(vec4 a, vec4 b){
-	return (vec4){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
+	return vec4_new(a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3]);
 }
 
 //
@@ -536,66 +618,66 @@ static inline float quat_dot(quat a, quat b){
 
 static inline quat quat_euler_xyz(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
 		cx * cy * cz - sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_euler_xzy(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
 		cx * cy * cz + sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_euler_yxz(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz - sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
 		cx * cy * cz + sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_euler_yzx(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz + cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
 		cx * cy * cz - sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_euler_zxy(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz + sx * sy * cz,
 		cx * cy * cz - sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_euler_zyx(vec3 rot){
 	NVQM_QUAT_EULER_ROT
-	return (quat){
+	return quat_new(
 		sx * cy * cz - cx * sy * sz,
 		cx * sy * cz + sx * cy * sz,
 		cx * cy * sz - sx * sy * cz,
 		cx * cy * cz + sx * sy * sz
-	};
+	);
 }
 
 static inline quat quat_identity(){
-	return (quat){ 0.0f, 0.0f, 0.0f, 1.0f };
+	return quat_new(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 static inline quat quat_invert(quat a){
@@ -604,39 +686,39 @@ static inline quat quat_invert(quat a){
 	float invDot = 0;
 	if (dot != 0.0f)
 		invDot = 1.0f / dot;
-	return (quat){
+	return quat_new(
 		-ax * invDot,
 		-ay * invDot,
 		-az * invDot,
 		 aw * invDot
-	};
+	);
 }
 
 static inline quat quat_lerp(quat a, quat b, float t){
-	return (quat){
+	return quat_new(
 		num_lerp(a.v[0], b.v[0], t),
 		num_lerp(a.v[1], b.v[1], t),
 		num_lerp(a.v[2], b.v[2], t),
 		num_lerp(a.v[3], b.v[3], t)
-	};
+	);
 }
 
 static inline quat quat_mul(quat a, quat b){
 	float
 		ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
 		bx = b.v[0], by = b.v[1], bz = b.v[2], bw = b.v[3];
-	return (quat){
+	return quat_new(
 		ax * bw + aw * bx + ay * bz - az * by,
 		ay * bw + aw * by + az * bx - ax * bz,
 		az * bw + aw * bz + ax * by - ay * bx,
 		aw * bw - ax * bx - ay * by - az * bz
-	};
+	);
 }
 
 static inline quat quat_naxisang(vec3 axis, float ang){ // axis is normalized
 	ang *= 0.5f;
 	float s = num_sin(ang);
-	return (quat){ axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang) };
+	return quat_new(axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang));
 }
 
 static inline quat quat_normal(quat a);
@@ -645,17 +727,17 @@ static inline quat quat_nbetween(vec3 from, vec3 to){ // from/to are normalized
 	vec3 cross;
 	if (r < 0.000001f){
 		if (num_abs(from.v[0]) > num_abs(from.v[2]))
-			cross = (vec3){ -from.v[1], from.v[0], 0.0f };
+			cross = vec3_new(-from.v[1], from.v[0], 0.0f);
 		else
-			cross = (vec3){ 0.0f, -from.v[2], from.v[1] };
+			cross = vec3_new(0.0f, -from.v[2], from.v[1]);
 	}
 	else
 		cross = vec3_cross(from, to);
-	return quat_normal((quat){ cross.v[0], cross.v[1], cross.v[2], r });
+	return quat_normal(quat_new(cross.v[0], cross.v[1], cross.v[2], r));
 }
 
 static inline quat quat_neg(quat a){
-	return (quat){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+	return quat_new(-a.v[0], -a.v[1], -a.v[2], -a.v[3]);
 }
 
 static inline quat quat_nlerp(quat a, quat b, float t){
@@ -667,7 +749,7 @@ static inline quat quat_normal(quat a){
 	float len = ax * ax + ay * ay + az * az + aw * aw;
 	if (len > 0.0f){
 		len = 1.0f / num_sqrt(len);
-		return (quat){ ax * len, ay * len, az * len, aw * len };
+		return quat_new(ax * len, ay * len, az * len, aw * len);
 	}
 	return a;
 }
@@ -694,12 +776,12 @@ static inline quat quat_slerp(quat a, quat b, float t){
 		scale0 = 1.0f - t;
 		scale1 = t;
 	}
-	return (quat){
+	return quat_new(
 		scale0 * ax + scale1 * bx,
 		scale0 * ay + scale1 * by,
 		scale0 * az + scale1 * bz,
 		scale0 * aw + scale1 * bw
-	};
+	);
 }
 
 //
@@ -707,15 +789,15 @@ static inline quat quat_slerp(quat a, quat b, float t){
 //
 
 static inline mat2 mat2_add(mat2 a, mat2 b){
-	return (mat2){ a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3] };
+	return mat2_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3]);
 }
 
 static inline mat2 mat2_adjoint(mat2 a){
-	return (mat2){ a.v[3], -a.v[1], -a.v[2], a.v[0] };
+	return mat2_new(a.v[3], -a.v[1], -a.v[2], a.v[0]);
 }
 
 static inline mat2 mat2_compmul(mat2 a, mat2 b){
-	return (mat2){ a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3] };
+	return mat2_new(a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2], a.v[3] * b.v[3]);
 }
 
 static inline float mat2_det(mat2 a){
@@ -723,52 +805,52 @@ static inline float mat2_det(mat2 a){
 }
 
 static inline mat2 mat2_identity(){
-	return (mat2){ 1.0f, 0.0f, 0.0f, 1.0f };
+	return mat2_new(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
 static inline mat2 mat2_invert(mat2 a){
 	float a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3];
 	float det = a0 * a3 - a2 * a1;
 	if (det == 0.0f)
-		return (mat2){ 0.0f, 0.0f, 0.0f, 0.0f };
+		return mat2_new(0.0f, 0.0f, 0.0f, 0.0f);
 	det = 1.0f / det;
-	return (mat2){ a3 * det, -a1 * det, -a2 * det, a0 * det };
+	return mat2_new(a3 * det, -a1 * det, -a2 * det, a0 * det);
 }
 
 static inline mat2 mat2_mul(mat2 a, mat2 b){
 	float
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
 		b0 = b.v[0], b1 = b.v[1], b2 = b.v[2], b3 = b.v[3];
-	return (mat2){ a0 * b0 + a2 * b1, a1 * b0 + a3 * b1, a0 * b2 + a2 * b3, a1 * b2 + a3 * b3 };
+	return mat2_new(a0 * b0 + a2 * b1, a1 * b0 + a3 * b1, a0 * b2 + a2 * b3, a1 * b2 + a3 * b3);
 }
 
 static inline mat2 mat2_rotate(mat2 a, float ang){
 	float a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3], s = num_sin(ang), c = num_cos(ang);
-	return (mat2){ a0 * c + a2 * s, a1 * c + a3 * s, a0 * -s + a2 * c, a1 * -s + a3 * c };
+	return mat2_new(a0 * c + a2 * s, a1 * c + a3 * s, a0 * -s + a2 * c, a1 * -s + a3 * c);
 }
 
 static inline mat2 mat2_rotation(float ang){
 	float s = num_sin(ang), c = num_cos(ang);
-	return (mat2){ c, s, -s, c };
+	return mat2_new(c, s, -s, c);
 }
 
 static inline mat2 mat2_scale(mat2 a, vec2 b){
 	float
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
 		b0 = b.v[0], b1 = b.v[1];
-	return (mat2){ a0 * b0, a1 * b0, a2 * b1, a3 * b1 };
+	return mat2_new(a0 * b0, a1 * b0, a2 * b1, a3 * b1);
 }
 
 static inline mat2 mat2_scaling(vec2 a){
-	return (mat2){ a.v[0], 0.0f, 0.0f, a.v[1] };
+	return mat2_new(a.v[0], 0.0f, 0.0f, a.v[1]);
 }
 
 static inline mat2 mat2_sub(mat2 a, mat2 b){
-	return (mat2){ a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3] };
+	return mat2_new(a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3]);
 }
 
 static inline mat2 mat2_transpose(mat2 a){
-	return (mat2){ a.v[0], a.v[2], a.v[1], a.v[3] };
+	return mat2_new(a.v[0], a.v[2], a.v[1], a.v[3]);
 }
 
 //
@@ -776,19 +858,19 @@ static inline mat2 mat2_transpose(mat2 a){
 //
 
 static inline mat3x2 mat3x2_add(mat3x2 a, mat3x2 b){
-	return (mat3x2){
+	return mat3x2_new(
 		a.v[0] + b.v[0], a.v[1] + b.v[1],
 		a.v[2] + b.v[2], a.v[3] + b.v[3],
 		a.v[4] + b.v[4], a.v[5] + b.v[5]
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_compmul(mat3x2 a, mat3x2 b){
-	return (mat3x2){
+	return mat3x2_new(
 		a.v[0] * b.v[0], a.v[1] * b.v[1],
 		a.v[2] * b.v[2], a.v[3] * b.v[3],
 		a.v[4] * b.v[4], a.v[5] * b.v[5]
-	};
+	);
 }
 
 static inline float mat3x2_det(mat3x2 a){
@@ -796,7 +878,7 @@ static inline float mat3x2_det(mat3x2 a){
 }
 
 static inline mat3x2 mat3x2_identity(){
-	return (mat3x2){ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f };
+	return mat3x2_new(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 }
 
 static inline mat3x2 mat3x2_invert(mat3x2 a){
@@ -806,14 +888,14 @@ static inline mat3x2 mat3x2_invert(mat3x2 a){
 		a20 = a.v[4], a21 = a.v[5];
 	float det = a00 * a11 - a01 * a10;
 	if (det == 0.0f)
-		return (mat3x2){ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+		return mat3x2_new(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	det = 1.0f / det;
-	return (mat3x2){
+	return mat3x2_new(
 		 a11 * det, -a01 * det,
 		-a10 * det,  a00 * det,
 		( a21 * a10 - a11 * a20) * det,
 		(-a21 * a00 + a01 * a20) * det
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_mul(mat3x2 a, mat3x2 b){
@@ -824,11 +906,11 @@ static inline mat3x2 mat3x2_mul(mat3x2 a, mat3x2 b){
 		b00 = b.v[0], b01 = b.v[1],
 		b10 = b.v[2], b11 = b.v[3],
 		b20 = b.v[4], b21 = b.v[5];
-	return (mat3x2){
+	return mat3x2_new(
 		b00 * a00 + b01 * a10      , b00 * a01 + b01 * a11,
 		b10 * a00 + b11 * a10      , b10 * a01 + b11 * a11,
 		b20 * a00 + b21 * a10 + a20, b20 * a01 + b21 * a11 + a21
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_rotate(mat3x2 a, float ang){
@@ -836,37 +918,37 @@ static inline mat3x2 mat3x2_rotate(mat3x2 a, float ang){
 		a00 = a.v[0], a01 = a.v[1],
 		a10 = a.v[2], a11 = a.v[3],
 		s = num_sin(ang), c = num_cos(ang);
-	return (mat3x2){
+	return mat3x2_new(
 		c * a00 + s * a10, c * a01 + s * a11,
 		c * a10 - s * a00, c * a11 - s * a01,
 		a.v[4], a.v[5]
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_rotation(float ang){
 	float s = num_sin(ang), c = num_cos(ang);
-	return (mat3x2){ c, s, -s, c, 0.0f, 0.0f };
+	return mat3x2_new(c, s, -s, c, 0.0f, 0.0f);
 }
 
 static inline mat3x2 mat3x2_scale(mat3x2 a, vec2 b){
 	float bx = b.v[0], by = b.v[1];
-	return (mat3x2){
+	return mat3x2_new(
 		bx * a.v[0], bx * a.v[1],
 		by * a.v[2], by * a.v[3],
-		a.v[4], a.v[5],
-	};
+		a.v[4], a.v[5]
+	);
 }
 
 static inline mat3x2 mat3x2_scaling(vec2 a){
-	return (mat3x2){ a.v[0], 0.0f, 0.0f, a.v[1], 0.0f, 0.0f };
+	return mat3x2_new(a.v[0], 0.0f, 0.0f, a.v[1], 0.0f, 0.0f);
 }
 
 static inline mat3x2 mat3x2_sub(mat3x2 a, mat3x2 b){
-	return (mat3x2){
+	return mat3x2_new(
 		a.v[0] - b.v[0], a.v[1] - b.v[1],
 		a.v[2] - b.v[2], a.v[3] - b.v[3],
 		a.v[4] - b.v[4], a.v[5] - b.v[5]
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_translate(mat3x2 a, vec2 b){
@@ -874,16 +956,16 @@ static inline mat3x2 mat3x2_translate(mat3x2 a, vec2 b){
 		a00 = a.v[0], a01 = a.v[1],
 		a10 = a.v[2], a11 = a.v[3],
 		bx = b.v[0], by = b.v[1];
-	return (mat3x2){
+	return mat3x2_new(
 		a00, a01,
 		a10, a11,
 		bx * a00 + by * a10 + a.v[4],
 		bx * a01 + by * a11 + a.v[5]
-	};
+	);
 }
 
 static inline mat3x2 mat3x2_translation(vec2 a){
-	return (mat3x2){ 1.0f, 0.0f, 0.0f, 1.0f, a.v[0], a.v[1] };
+	return mat3x2_new(1.0f, 0.0f, 0.0f, 1.0f, a.v[0], a.v[1]);
 }
 
 //
@@ -958,6 +1040,88 @@ typedef struct { xint v[ 4]; } xmat2;
 typedef struct { xint v[ 6]; } xmat3x2;
 typedef struct { xint v[ 9]; } xmat3;
 typedef struct { xint v[16]; } xmat4;
+
+static inline xvec2 xvec2_new(xint x, xint y){
+	xvec2 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	return res;
+}
+static inline xvec3 xvec3_new(xint x, xint y, xint z){
+	xvec3 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	res.v[2] = z;
+	return res;
+}
+static inline xvec4 xvec4_new(xint x, xint y, xint z, xint w){
+	xvec4 res;
+	res.v[0] = x;
+	res.v[1] = y;
+	res.v[2] = z;
+	res.v[3] = w;
+	return res;
+}
+static inline xquat xquat_new(xint s, xint i, xint j, xint k){
+	xquat res;
+	res.v[0] = s;
+	res.v[1] = i;
+	res.v[2] = j;
+	res.v[3] = k;
+	return res;
+}
+
+static inline xmat2 xmat2_new(xint v00, xint v01, xint v10, xint v11){
+	xmat2 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v10;
+	res.v[3] = v11;
+	return res;
+}
+static inline xmat3x2 xmat3x2_new(xint v00, xint v01, xint v10, xint v11, xint v20, xint v21){
+	xmat3x2 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v10;
+	res.v[3] = v11;
+	res.v[4] = v20;
+	res.v[5] = v21;
+	return res;
+}
+static inline xmat3 xmat3_new(xint v00, xint v01, xint v02, xint v10, xint v11, xint v12, xint v20, xint v21, xint v22){
+	xmat3 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v02;
+	res.v[3] = v10;
+	res.v[4] = v11;
+	res.v[5] = v12;
+	res.v[6] = v20;
+	res.v[7] = v21;
+	res.v[8] = v22;
+	return res;
+}
+static inline xmat4 xmat4_new(xint v00, xint v01, xint v02, xint v03, xint v10, xint v11, xint v12, xint v13, xint v20, xint v21, xint v22, xint v23, xint v30, xint v31, xint v32, xint v33){
+	xmat4 res;
+	res.v[0] = v00;
+	res.v[1] = v01;
+	res.v[2] = v02;
+	res.v[3] = v03;
+	res.v[4] = v10;
+	res.v[5] = v11;
+	res.v[6] = v12;
+	res.v[7] = v13;
+	res.v[8] = v20;
+	res.v[9] = v21;
+	res.v[10] = v22;
+	res.v[11] = v23;
+	res.v[12] = v30;
+	res.v[13] = v31;
+	res.v[14] = v32;
+	res.v[15] = v33;
+	return res;
+}
 
 #define XINT1    65536 /* the value 1 */
 #define XINT(v)  ((xint)((v) * XINT1))
@@ -1110,55 +1274,55 @@ static inline xint xint_tan(xang a){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec2 xvec2_tovec2(xvec2 a){
-	return (vec2){ xint_tofloat(a.v[0]), xint_tofloat(a.v[1]) };
+	return vec2_new(xint_tofloat(a.v[0]), xint_tofloat(a.v[1]));
 }
 
 static inline xvec2 xvec2_fromvec2(vec2 a){
-	return (xvec2){ xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]) };
+	return xvec2_new(xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]));
 }
 #endif
 
 static inline xvec2 xvec2_add(xvec2 a, xvec2 b){
-	return (xvec2){ xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]) };
+	return xvec2_new(xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]));
 }
 
 static inline xvec2 xvec2_applymat2(xvec2 a, xmat2 b){
 	xint ax = a.v[0], ay = a.v[1];
-	return (xvec2){
+	return xvec2_new(
 		xint_add(xint_mul(b.v[0], ax), xint_mul(b.v[2], ay)),
 		xint_add(xint_mul(b.v[1], ax), xint_mul(b.v[3], ay))
-	};
+	);
 }
 
 static inline xvec2 xvec2_applymat3x2(xvec2 a, xmat3x2 b){
 	xint ax = a.v[0], ay = a.v[1];
-	return (xvec2){
+	return xvec2_new(
 		xint_add(xint_add(xint_mul(b.v[0], ax), xint_mul(b.v[2], ay)), b.v[4]),
 		xint_add(xint_add(xint_mul(b.v[1], ax), xint_mul(b.v[3], ay)), b.v[5])
-	};
+	);
 }
 
 static inline xvec2 xvec2_applymat3(xvec2 a, xmat3 *b){
 	xint ax = a.v[0], ay = a.v[1];
-	return (xvec2){
+	return xvec2_new(
 		xint_add(xint_add(xint_mul(b->v[0], ax), xint_mul(b->v[3], ay)), b->v[6]),
 		xint_add(xint_add(xint_mul(b->v[1], ax), xint_mul(b->v[4], ay)), b->v[7])
-	};
+	);
 }
 
 static inline xvec2 xvec2_applymat4(xvec2 a, xmat4 *b){
 	xint ax = a.v[0], ay = a.v[1];
-	return (xvec2){
+	return xvec2_new(
 		xint_add(xint_add(xint_mul(b->v[0], ax), xint_mul(b->v[4], ay)), b->v[12]),
 		xint_add(xint_add(xint_mul(b->v[1], ax), xint_mul(b->v[5], ay)), b->v[13])
-	};
+	);
 }
 
 static inline xvec2 xvec2_clamp(xvec2 a, xvec2 min, xvec2 max){
-	return (xvec2){
+	return xvec2_new(
 		xint_clamp(a.v[0], min.v[0], max.v[0]),
 		xint_clamp(a.v[1], min.v[1], max.v[1])
-	};
+	);
 }
 
 static inline xint xvec2_cross(xvec2 a, xvec2 b){
@@ -1176,7 +1340,7 @@ static inline xint xvec2_dist2(xvec2 a, xvec2 b){
 }
 
 static inline xvec2 xvec2_div(xvec2 a, xvec2 b){
-	return (xvec2){ xint_div(a.v[0], b.v[0]), xint_div(a.v[1], b.v[1]) };
+	return xvec2_new(xint_div(a.v[0], b.v[0]), xint_div(a.v[1], b.v[1]));
 }
 
 static inline xint xvec2_dot(xvec2 a, xvec2 b){
@@ -1184,7 +1348,7 @@ static inline xint xvec2_dot(xvec2 a, xvec2 b){
 }
 
 static inline xvec2 xvec2_inverse(xvec2 a){
-	return (xvec2){ xint_div(XINT1, a.v[0]), xint_div(XINT1, a.v[1]) };
+	return xvec2_new(xint_div(XINT1, a.v[0]), xint_div(XINT1, a.v[1]));
 }
 
 static inline xint xvec2_len(xvec2 a){
@@ -1197,23 +1361,23 @@ static inline xint xvec2_len2(xvec2 a){
 }
 
 static inline xvec2 xvec2_lerp(xvec2 a, xvec2 b, xint t){
-	return (xvec2){ xint_lerp(a.v[0], b.v[0], t), xint_lerp(a.v[1], b.v[1], t) };
+	return xvec2_new(xint_lerp(a.v[0], b.v[0], t), xint_lerp(a.v[1], b.v[1], t));
 }
 
 static inline xvec2 xvec2_max(xvec2 a, xvec2 b){
-	return (xvec2){ xint_max(a.v[0], b.v[0]), xint_max(a.v[1], b.v[1]) };
+	return xvec2_new(xint_max(a.v[0], b.v[0]), xint_max(a.v[1], b.v[1]));
 }
 
 static inline xvec2 xvec2_min(xvec2 a, xvec2 b){
-	return (xvec2){ xint_min(a.v[0], b.v[0]), xint_min(a.v[1], b.v[1]) };
+	return xvec2_new(xint_min(a.v[0], b.v[0]), xint_min(a.v[1], b.v[1]));
 }
 
 static inline xvec2 xvec2_mul(xvec2 a, xvec2 b){
-	return (xvec2){ xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]) };
+	return xvec2_new(xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]));
 }
 
 static inline xvec2 xvec2_neg(xvec2 a){
-	return (xvec2){ -a.v[0], -a.v[1] };
+	return xvec2_new(-a.v[0], -a.v[1]);
 }
 
 static inline xvec2 xvec2_normal(xvec2 a){
@@ -1221,17 +1385,17 @@ static inline xvec2 xvec2_normal(xvec2 a){
 		len = xint_add(xint_mul(ax, ax), xint_mul(ay, ay));
 	if (len > 0){
 		len = xint_div(XINT1, xint_sqrt(len));
-		return (xvec2){ xint_mul(ax, len), xint_mul(ay, len) };
+		return xvec2_new(xint_mul(ax, len), xint_mul(ay, len));
 	}
 	return a;
 }
 
 static inline xvec2 xvec2_scale(xvec2 a, xint s){
-	return (xvec2){ xint_mul(a.v[0], s), xint_mul(a.v[1], s) };
+	return xvec2_new(xint_mul(a.v[0], s), xint_mul(a.v[1], s));
 }
 
 static inline xvec2 xvec2_sub(xvec2 a, xvec2 b){
-	return (xvec2){ xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]) };
+	return xvec2_new(xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]));
 }
 
 //
@@ -1240,16 +1404,16 @@ static inline xvec2 xvec2_sub(xvec2 a, xvec2 b){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec3 xvec3_tovec3(xvec3 a){
-	return (vec3){ xint_tofloat(a.v[0]), xint_tofloat(a.v[1]), xint_tofloat(a.v[2]) };
+	return vec3_new(xint_tofloat(a.v[0]), xint_tofloat(a.v[1]), xint_tofloat(a.v[2]));
 }
 
 static inline xvec3 xvec3_fromvec3(vec3 a){
-	return (xvec3){ xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]), xint_fromfloat(a.v[2]) };
+	return xvec3_new(xint_fromfloat(a.v[0]), xint_fromfloat(a.v[1]), xint_fromfloat(a.v[2]));
 }
 #endif
 
 static inline xvec3 xvec3_add(xvec3 a, xvec3 b){
-	return (xvec3){ xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]), xint_add(a.v[2], b.v[2]) };
+	return xvec3_new(xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]), xint_add(a.v[2], b.v[2]));
 }
 
 static inline xint xvec3_nangle(xvec3 a, xvec3 b);
@@ -1260,20 +1424,20 @@ static inline xint xvec3_angle(xvec3 a, xvec3 b){
 
 static inline xvec3 xvec3_applymat3x2(xvec3 a, xmat3x2 b){
 	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
-	return (xvec3){
+	return xvec3_new(
 		xint_add(xint_add(xint_mul(ax, b.v[0]), xint_mul(ay, b.v[2])), xint_mul(az, b.v[4])),
 		xint_add(xint_add(xint_mul(ax, b.v[1]), xint_mul(ay, b.v[3])), xint_mul(az, b.v[5])),
 		az
-	};
+	);
 }
 
 static inline xvec3 xvec3_applymat3(xvec3 a, xmat3 *b){
 	xint ax = a.v[0], ay = a.v[1], az = a.v[2];
-	return (xvec3){
+	return xvec3_new(
 		xint_add(xint_add(xint_mul(ax, b->v[0]), xint_mul(ay, b->v[3])), xint_mul(az, b->v[6])),
 		xint_add(xint_add(xint_mul(ax, b->v[1]), xint_mul(ay, b->v[4])), xint_mul(az, b->v[7])),
 		xint_add(xint_add(xint_mul(ax, b->v[2]), xint_mul(ay, b->v[5])), xint_mul(az, b->v[8]))
-	};
+	);
 }
 
 static inline xvec3 xvec3_applymat4(xvec3 a, xmat4 *b){
@@ -1286,7 +1450,7 @@ static inline xvec3 xvec3_applymat4(xvec3 a, xmat4 *b){
 		w = XINT1;
 	else
 		w = xint_div(XINT1, w);
-	return (xvec3){
+	return xvec3_new(
 		xint_mul(w,
 			xint_add(xint_add(
 				xint_mul(b->v[ 0], ax),
@@ -1308,7 +1472,7 @@ static inline xvec3 xvec3_applymat4(xvec3 a, xmat4 *b){
 				xint_mul(b->v[10], az),
 				b->v[14]
 			)))
-	};
+	);
 }
 
 static inline xvec3 xvec3_applyquat(xvec3 a, xquat b){
@@ -1320,33 +1484,33 @@ static inline xvec3 xvec3_applyquat(xvec3 a, xquat b){
 		iy = xint_sub(xint_add(xint_mul( bw, ay), xint_mul(bz, ax)), xint_mul(bx, az)),
 		iz = xint_sub(xint_add(xint_mul( bw, az), xint_mul(bx, ay)), xint_mul(by, ax)),
 		iw = xint_sub(xint_sub(xint_mul(-bx, ax), xint_mul(by, ay)), xint_mul(bz, az));
-	return (xvec3){
+	return xvec3_new(
 		xint_sub(xint_add(xint_add(
 			xint_mul(ix, bw), xint_mul(iw, -bx)), xint_mul(iy, -bz)), xint_mul(iz, -by)),
 		xint_sub(xint_add(xint_add(
 			xint_mul(iy, bw), xint_mul(iw, -by)), xint_mul(iz, -bx)), xint_mul(ix, -bz)),
 		xint_sub(xint_add(xint_add(
 			xint_mul(iz, bw), xint_mul(iw, -bz)), xint_mul(ix, -by)), xint_mul(iy, -bx))
-	};
+	);
 }
 
 static inline xvec3 xvec3_clamp(xvec3 a, xvec3 min, xvec3 max){
-	return (xvec3){
+	return xvec3_new(
 		xint_clamp(a.v[0], min.v[0], max.v[0]),
 		xint_clamp(a.v[1], min.v[1], max.v[1]),
 		xint_clamp(a.v[2], min.v[2], max.v[2])
-	};
+	);
 }
 
 static inline xvec3 xvec3_cross(xvec3 a, xvec3 b){
 	xint
 		ax = a.v[0], ay = a.v[1], az = a.v[2],
 		bx = b.v[0], by = b.v[1], bz = b.v[2];
-	return (xvec3){
+	return xvec3_new(
 		xint_sub(xint_mul(ay, bz), xint_mul(az, by)),
 		xint_sub(xint_mul(az, bx), xint_mul(ax, bz)),
 		xint_sub(xint_mul(ax, by), xint_mul(ay, bx))
-	};
+	);
 }
 
 static inline xint xvec3_len2(xvec3 a);
@@ -1360,7 +1524,7 @@ static inline xint xvec3_dist2(xvec3 a, xvec3 b){
 }
 
 static inline xvec3 xvec3_div(xvec3 a, xvec3 b){
-	return (xvec3){ xint_div(a.v[0], b.v[0]), xint_div(a.v[1], b.v[1]), xint_div(a.v[2], b.v[2]) };
+	return xvec3_new(xint_div(a.v[0], b.v[0]), xint_div(a.v[1], b.v[1]), xint_div(a.v[2], b.v[2]));
 }
 
 static inline xint xvec3_dot(xvec3 a, xvec3 b){
@@ -1369,7 +1533,7 @@ static inline xint xvec3_dot(xvec3 a, xvec3 b){
 }
 
 static inline xvec3 xvec3_inverse(xvec3 a){
-	return (xvec3){ xint_div(XINT1, a.v[0]), xint_div(XINT1, a.v[1]), xint_div(XINT1, a.v[2]) };
+	return xvec3_new(xint_div(XINT1, a.v[0]), xint_div(XINT1, a.v[1]), xint_div(XINT1, a.v[2]));
 }
 
 static inline xint xvec3_len(xvec3 a){
@@ -1382,23 +1546,23 @@ static inline xint xvec3_len2(xvec3 a){
 }
 
 static inline xvec3 xvec3_lerp(xvec3 a, xvec3 b, xint t){
-	return (xvec3){
+	return xvec3_new(
 		xint_lerp(a.v[0], b.v[0], t),
 		xint_lerp(a.v[1], b.v[1], t),
 		xint_lerp(a.v[2], b.v[2], t)
-	};
+	);
 }
 
 static inline xvec3 xvec3_max(xvec3 a, xvec3 b){
-	return (xvec3){ xint_max(a.v[0], b.v[0]), xint_max(a.v[1], b.v[1]), xint_max(a.v[2], b.v[2]) };
+	return xvec3_new(xint_max(a.v[0], b.v[0]), xint_max(a.v[1], b.v[1]), xint_max(a.v[2], b.v[2]));
 }
 
 static inline xvec3 xvec3_min(xvec3 a, xvec3 b){
-	return (xvec3){ xint_min(a.v[0], b.v[0]), xint_min(a.v[1], b.v[1]), xint_min(a.v[2], b.v[2]) };
+	return xvec3_new(xint_min(a.v[0], b.v[0]), xint_min(a.v[1], b.v[1]), xint_min(a.v[2], b.v[2]));
 }
 
 static inline xvec3 xvec3_mul(xvec3 a, xvec3 b){
-	return (xvec3){ xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]), xint_mul(a.v[2], b.v[2]) };
+	return xvec3_new(xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]), xint_mul(a.v[2], b.v[2]));
 }
 
 static inline xint xvec3_nangle(xvec3 a, xvec3 b){ // a and b are normalized
@@ -1406,7 +1570,7 @@ static inline xint xvec3_nangle(xvec3 a, xvec3 b){ // a and b are normalized
 }
 
 static inline xvec3 xvec3_neg(xvec3 a){
-	return (xvec3){ -a.v[0], -a.v[1], -a.v[2] };
+	return xvec3_new(-a.v[0], -a.v[1], -a.v[2]);
 }
 
 static inline xvec3 xvec3_normal(xvec3 a){
@@ -1416,7 +1580,7 @@ static inline xvec3 xvec3_normal(xvec3 a){
 		len = xint_sqrt(len);
 		if (len > 0){
 			len = xint_div(XINT1, len);
-			return (xvec3){ xint_mul(ax, len), xint_mul(ay, len), xint_mul(az, len) };
+			return xvec3_new(xint_mul(ax, len), xint_mul(ay, len), xint_mul(az, len));
 		}
 	}
 	return a;
@@ -1428,11 +1592,11 @@ static inline xvec3 xvec3_orthogonal(xvec3 a, xvec3 b){
 }
 
 static inline xvec3 xvec3_scale(xvec3 a, xint s){
-	return (xvec3){ xint_mul(a.v[0], s), xint_mul(a.v[1], s), xint_mul(a.v[2], s) };
+	return xvec3_new(xint_mul(a.v[0], s), xint_mul(a.v[1], s), xint_mul(a.v[2], s));
 }
 
 static inline xvec3 xvec3_sub(xvec3 a, xvec3 b){
-	return (xvec3){ xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]), xint_sub(a.v[2], b.v[2]) };
+	return xvec3_new(xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]), xint_sub(a.v[2], b.v[2]));
 }
 
 //
@@ -1441,36 +1605,36 @@ static inline xvec3 xvec3_sub(xvec3 a, xvec3 b){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec4 xvec4_tovec4(xvec4 a){
-	return (vec4){
+	return vec4_new(
 		xint_tofloat(a.v[0]),
 		xint_tofloat(a.v[1]),
 		xint_tofloat(a.v[2]),
 		xint_tofloat(a.v[3])
-	};
+	);
 }
 
 static inline xvec4 xvec4_fromvec4(vec4 a){
-	return (xvec4){
+	return xvec4_new(
 		xint_fromfloat(a.v[0]),
 		xint_fromfloat(a.v[1]),
 		xint_fromfloat(a.v[2]),
 		xint_fromfloat(a.v[3])
-	};
+	);
 }
 #endif
 
 static inline xvec4 xvec4_add(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_add(a.v[0], b.v[0]),
 		xint_add(a.v[1], b.v[1]),
 		xint_add(a.v[2], b.v[2]),
 		xint_add(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xvec4 xvec4_applymat4(xvec4 a, xmat4 *b){
 	xint ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3];
-	return (xvec4){
+	return xvec4_new(
 		xint_add(xint_add(xint_add(
 			xint_mul(b->v[ 0], ax),
 			xint_mul(b->v[ 4], ay)),
@@ -1491,7 +1655,7 @@ static inline xvec4 xvec4_applymat4(xvec4 a, xmat4 *b){
 			xint_mul(b->v[ 7], ay)),
 			xint_mul(b->v[11], az)),
 			xint_mul(b->v[15], aw))
-	};
+	);
 }
 
 static inline xvec4 xvec4_applyquat(xvec4 a, xquat b){
@@ -1503,7 +1667,7 @@ static inline xvec4 xvec4_applyquat(xvec4 a, xquat b){
 		iy = xint_sub(xint_add(xint_mul( bw, ay), xint_mul(bz, ax)), xint_mul(bx, az)),
 		iz = xint_sub(xint_add(xint_mul( bw, az), xint_mul(bx, ay)), xint_mul(by, ax)),
 		iw = xint_sub(xint_sub(xint_mul(-bx, ax), xint_mul(by, ay)), xint_mul(bz, az));
-	return (xvec4){
+	return xvec4_new(
 		xint_sub(xint_add(xint_add(
 			xint_mul(ix, bw), xint_mul(iw, -bx)), xint_mul(iy, -bz)), xint_mul(iz, -by)),
 		xint_sub(xint_add(xint_add(
@@ -1511,16 +1675,16 @@ static inline xvec4 xvec4_applyquat(xvec4 a, xquat b){
 		xint_sub(xint_add(xint_add(
 			xint_mul(iz, bw), xint_mul(iw, -bz)), xint_mul(ix, -by)), xint_mul(iy, -bx)),
 		aw
-	};
+	);
 }
 
 static inline xvec4 xvec4_clamp(xvec4 a, xvec4 min, xvec4 max){
-	return (xvec4){
+	return xvec4_new(
 		xint_clamp(a.v[0], min.v[0], max.v[0]),
 		xint_clamp(a.v[1], min.v[1], max.v[1]),
 		xint_clamp(a.v[2], min.v[2], max.v[2]),
 		xint_clamp(a.v[3], min.v[3], max.v[3])
-	};
+	);
 }
 
 static inline xint xvec4_len2(xvec4 a);
@@ -1534,12 +1698,12 @@ static inline xint xvec4_dist2(xvec4 a, xvec4 b){
 }
 
 static inline xvec4 xvec4_div(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_div(a.v[0], b.v[0]),
 		xint_div(a.v[1], b.v[1]),
 		xint_div(a.v[2], b.v[2]),
 		xint_div(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xint xvec4_dot(xvec4 a, xvec4 b){
@@ -1551,12 +1715,12 @@ static inline xint xvec4_dot(xvec4 a, xvec4 b){
 }
 
 static inline xvec4 xvec4_inverse(xvec4 a){
-	return (xvec4){
+	return xvec4_new(
 		xint_div(XINT1, a.v[0]),
 		xint_div(XINT1, a.v[1]),
 		xint_div(XINT1, a.v[2]),
 		xint_div(XINT1, a.v[3])
-	};
+	);
 }
 
 static inline xint xvec4_len(xvec4 a){
@@ -1570,43 +1734,43 @@ static inline xint xvec4_len2(xvec4 a){
 }
 
 static inline xvec4 xvec4_lerp(xvec4 a, xvec4 b, xint t){
-	return (xvec4){
+	return xvec4_new(
 		xint_lerp(a.v[0], b.v[0], t),
 		xint_lerp(a.v[1], b.v[1], t),
 		xint_lerp(a.v[2], b.v[2], t),
 		xint_lerp(a.v[3], b.v[3], t)
-	};
+	);
 }
 
 static inline xvec4 xvec4_max(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_max(a.v[0], b.v[0]),
 		xint_max(a.v[1], b.v[1]),
 		xint_max(a.v[2], b.v[2]),
 		xint_max(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xvec4 xvec4_min(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_min(a.v[0], b.v[0]),
 		xint_min(a.v[1], b.v[1]),
 		xint_min(a.v[2], b.v[2]),
 		xint_min(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xvec4 xvec4_mul(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_mul(a.v[0], b.v[0]),
 		xint_mul(a.v[1], b.v[1]),
 		xint_mul(a.v[2], b.v[2]),
 		xint_mul(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xvec4 xvec4_neg(xvec4 a){
-	return (xvec4){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+	return xvec4_new(-a.v[0], -a.v[1], -a.v[2], -a.v[3]);
 }
 
 static inline xvec4 xvec4_normal(xvec4 a){
@@ -1617,33 +1781,33 @@ static inline xvec4 xvec4_normal(xvec4 a){
 		len = xint_sqrt(len);
 		if (len > 0){
 			len = xint_div(XINT1, len);
-			return (xvec4){
+			return xvec4_new(
 				xint_mul(ax, len),
 				xint_mul(ay, len),
 				xint_mul(az, len),
 				xint_mul(aw, len)
-			};
+			);
 		}
 	}
 	return a;
 }
 
 static inline xvec4 xvec4_scale(xvec4 a, xint s){
-	return (xvec4){
+	return xvec4_new(
 		xint_mul(a.v[0], s),
 		xint_mul(a.v[1], s),
 		xint_mul(a.v[2], s),
 		xint_mul(a.v[3], s)
-	};
+	);
 }
 
 static inline xvec4 xvec4_sub(xvec4 a, xvec4 b){
-	return (xvec4){
+	return xvec4_new(
 		xint_sub(a.v[0], b.v[0]),
 		xint_sub(a.v[1], b.v[1]),
 		xint_sub(a.v[2], b.v[2]),
 		xint_sub(a.v[3], b.v[3])
-	};
+	);
 }
 
 //
@@ -1652,21 +1816,21 @@ static inline xvec4 xvec4_sub(xvec4 a, xvec4 b){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline quat xquat_toquat(xquat a){
-	return (quat){
+	return quat_new(
 		xint_tofloat(a.v[0]),
 		xint_tofloat(a.v[1]),
 		xint_tofloat(a.v[2]),
 		xint_tofloat(a.v[3])
-	};
+	);
 }
 
 static inline xquat xquat_fromquat(quat a){
-	return (xquat){
+	return xquat_new(
 		xint_fromfloat(a.v[0]),
 		xint_fromfloat(a.v[1]),
 		xint_fromfloat(a.v[2]),
 		xint_fromfloat(a.v[3])
-	};
+	);
 }
 #endif
 
@@ -1701,66 +1865,66 @@ static inline xint xquat_dot(xquat a, xquat b){
 
 static inline xquat xquat_euler_xyz(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_euler_xzy(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_euler_yxz(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_euler_yzx(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_add(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_euler_zxy(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_add(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_euler_zyx(xvec3 rot){
 	NVQM_XQUAT_EULER_ROT
-	return (xquat){
+	return xquat_new(
 		xint_sub(xint_mul(xint_mul(sx, cy), cz), xint_mul(xint_mul(cx, sy), sz)),
 		xint_add(xint_mul(xint_mul(cx, sy), cz), xint_mul(xint_mul(sx, cy), sz)),
 		xint_sub(xint_mul(xint_mul(cx, cy), sz), xint_mul(xint_mul(sx, sy), cz)),
 		xint_add(xint_mul(xint_mul(cx, cy), cz), xint_mul(xint_mul(sx, sy), sz))
-	};
+	);
 }
 
 static inline xquat xquat_identity(){
-	return (xquat){ 0, 0, 0, XINT1 };
+	return xquat_new(0, 0, 0, XINT1);
 }
 
 static inline xquat xquat_invert(xquat a){
@@ -1770,28 +1934,28 @@ static inline xquat xquat_invert(xquat a){
 	xint invDot = 0;
 	if (dot != 0)
 		invDot = xint_div(XINT1, dot);
-	return (xquat){
+	return xquat_new(
 		xint_mul(-ax, invDot),
 		xint_mul(-ay, invDot),
 		xint_mul(-az, invDot),
 		xint_mul( aw, invDot)
-	};
+	);
 }
 
 static inline xquat xquat_lerp(xquat a, xquat b, xint t){
-	return (xquat){
+	return xquat_new(
 		xint_lerp(a.v[0], b.v[0], t),
 		xint_lerp(a.v[1], b.v[1], t),
 		xint_lerp(a.v[2], b.v[2], t),
 		xint_lerp(a.v[3], b.v[3], t)
-	};
+	);
 }
 
 static inline xquat xquat_mul(xquat a, xquat b){
 	xint
 		ax = a.v[0], ay = a.v[1], az = a.v[2], aw = a.v[3],
 		bx = b.v[0], by = b.v[1], bz = b.v[2], bw = b.v[3];
-	return (xquat){
+	return xquat_new(
 		xint_sub(xint_add(xint_add(
 			xint_mul(ax, bw), xint_mul(aw, bx)), xint_mul(ay, bz)), xint_mul(az, by)),
 		xint_sub(xint_add(xint_add(
@@ -1800,14 +1964,18 @@ static inline xquat xquat_mul(xquat a, xquat b){
 			xint_mul(az, bw), xint_mul(aw, bz)), xint_mul(ax, by)), xint_mul(ay, bx)),
 		xint_sub(xint_sub(xint_sub(
 			xint_mul(aw, bw), xint_mul(ax, bx)), xint_mul(ay, by)), xint_mul(az, bz))
-	};
+	);
 }
 
 static inline xquat xquat_naxisang(xvec3 axis, xang ang){ // axis is normalized
 	ang >>= 1;
 	xint s = xint_sin(ang);
-	return (xquat){
-		xint_mul(axis.v[0], s), xint_mul(axis.v[1], s), xint_mul(axis.v[2], s), xint_cos(ang) };
+	return xquat_new(
+		xint_mul(axis.v[0], s),
+		xint_mul(axis.v[1], s),
+		xint_mul(axis.v[2], s),
+		xint_cos(ang)
+	);
 }
 
 static inline xquat xquat_normal(xquat a);
@@ -1816,17 +1984,17 @@ static inline xquat xquat_nbetween(xvec3 from, xvec3 to){ // from/to are normali
 	xvec3 cross;
 	if (r <= 0){
 		if (xint_abs(from.v[0]) > xint_abs(from.v[2]))
-			cross = (xvec3){ -from.v[1], from.v[0], 0 };
+			cross = xvec3_new(-from.v[1], from.v[0], 0);
 		else
-			cross = (xvec3){ 0, -from.v[2], from.v[1] };
+			cross = xvec3_new(0, -from.v[2], from.v[1]);
 	}
 	else
 		cross = xvec3_cross(from, to);
-	return xquat_normal((xquat){ cross.v[0], cross.v[1], cross.v[2], r });
+	return xquat_normal(xquat_new(cross.v[0], cross.v[1], cross.v[2], r));
 }
 
 static inline xquat xquat_neg(xquat a){
-	return (xquat){ -a.v[0], -a.v[1], -a.v[2], -a.v[3] };
+	return xquat_new(-a.v[0], -a.v[1], -a.v[2], -a.v[3]);
 }
 
 static inline xquat xquat_nlerp(xquat a, xquat b, xint t){
@@ -1841,12 +2009,12 @@ static inline xquat xquat_normal(xquat a){
 		len = xint_sqrt(len);
 		if (len > 0){
 			len = xint_div(XINT1, len);
-			return (xquat){
+			return xquat_new(
 				xint_mul(ax, len),
 				xint_mul(ay, len),
 				xint_mul(az, len),
 				xint_mul(aw, len)
-			};
+			);
 		}
 	}
 	return a;
@@ -1875,12 +2043,12 @@ static inline xquat xquat_slerp(xquat a, xquat b, xint t){
 		scale0 = xint_sub(XINT1, t);
 		scale1 = t;
 	}
-	return (xquat){
+	return xquat_new(
 		xint_add(xint_mul(scale0, ax), xint_mul(scale1, bx)),
 		xint_add(xint_mul(scale0, ay), xint_mul(scale1, by)),
 		xint_add(xint_mul(scale0, az), xint_mul(scale1, bz)),
 		xint_add(xint_mul(scale0, aw), xint_mul(scale1, bw))
-	};
+	);
 }
 
 //
@@ -1889,44 +2057,44 @@ static inline xquat xquat_slerp(xquat a, xquat b, xint t){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline mat2 xmat2_tomat2(xmat2 a){
-	return (mat2){
+	return mat2_new(
 		xint_tofloat(a.v[0]),
 		xint_tofloat(a.v[1]),
 		xint_tofloat(a.v[2]),
 		xint_tofloat(a.v[3])
-	};
+	);
 }
 
 static inline xmat2 xmat2_frommat2(mat2 a){
-	return (xmat2){
+	return xmat2_new(
 		xint_fromfloat(a.v[0]),
 		xint_fromfloat(a.v[1]),
 		xint_fromfloat(a.v[2]),
 		xint_fromfloat(a.v[3])
-	};
+	);
 }
 #endif
 
 static inline xmat2 xmat2_add(xmat2 a, xmat2 b){
-	return (xmat2){
+	return xmat2_new(
 		xint_add(a.v[0], b.v[0]),
 		xint_add(a.v[1], b.v[1]),
 		xint_add(a.v[2], b.v[2]),
 		xint_add(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xmat2 xmat2_adjoint(xmat2 a){
-	return (xmat2){ a.v[3], -a.v[1], -a.v[2], a.v[0] };
+	return xmat2_new(a.v[3], -a.v[1], -a.v[2], a.v[0]);
 }
 
 static inline xmat2 xmat2_compmul(xmat2 a, xmat2 b){
-	return (xmat2){
+	return xmat2_new(
 		xint_mul(a.v[0], b.v[0]),
 		xint_mul(a.v[1], b.v[1]),
 		xint_mul(a.v[2], b.v[2]),
 		xint_mul(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xint xmat2_det(xmat2 a){
@@ -1934,72 +2102,72 @@ static inline xint xmat2_det(xmat2 a){
 }
 
 static inline xmat2 xmat2_identity(){
-	return (xmat2){ XINT1, 0, 0, XINT1 };
+	return xmat2_new(XINT1, 0, 0, XINT1);
 }
 
 static inline xmat2 xmat2_invert(xmat2 a){
 	xint a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3];
 	xint det = xint_sub(xint_mul(a0, a3), xint_mul(a2, a1));
 	if (det == 0)
-		return (xmat2){ 0, 0, 0, 0 };
+		return xmat2_new(0, 0, 0, 0);
 	det = xint_div(XINT1, det);
-	return (xmat2){
+	return xmat2_new(
 		 xint_mul(a3, det),
 		-xint_mul(a1, det),
 		-xint_mul(a2, det),
 		 xint_mul(a0, det)
-	};
+	);
 }
 
 static inline xmat2 xmat2_mul(xmat2 a, xmat2 b){
 	xint
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
 		b0 = b.v[0], b1 = b.v[1], b2 = b.v[2], b3 = b.v[3];
-	return (xmat2){
+	return xmat2_new(
 		xint_add(xint_mul(a0, b0), xint_mul(a2, b1)),
 		xint_add(xint_mul(a1, b0), xint_mul(a3, b1)),
 		xint_add(xint_mul(a0, b2), xint_mul(a2, b3)),
 		xint_add(xint_mul(a1, b2), xint_mul(a3, b3))
-	};
+	);
 }
 
 static inline xmat2 xmat2_rotate(xmat2 a, xang ang){
 	xint a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3], s = xint_sin(ang), c = xint_cos(ang);
-	return (xmat2){
+	return xmat2_new(
 		xint_add(xint_mul(a0,  c), xint_mul(a2, s)),
 		xint_add(xint_mul(a1,  c), xint_mul(a3, s)),
 		xint_add(xint_mul(a0, -s), xint_mul(a2, c)),
 		xint_add(xint_mul(a1, -s), xint_mul(a3, c))
-	};
+	);
 }
 
 static inline xmat2 xmat2_rotation(xang ang){
 	xint s = xint_sin(ang), c = xint_cos(ang);
-	return (xmat2){ c, s, -s, c };
+	return xmat2_new(c, s, -s, c);
 }
 
 static inline xmat2 xmat2_scale(xmat2 a, xvec2 b){
 	xint
 		a0 = a.v[0], a1 = a.v[1], a2 = a.v[2], a3 = a.v[3],
 		b0 = b.v[0], b1 = b.v[1];
-	return (xmat2){ xint_mul(a0, b0), xint_mul(a1, b0), xint_mul(a2, b1), xint_mul(a3, b1) };
+	return xmat2_new(xint_mul(a0, b0), xint_mul(a1, b0), xint_mul(a2, b1), xint_mul(a3, b1));
 }
 
 static inline xmat2 xmat2_scaling(xvec2 a){
-	return (xmat2){ a.v[0], 0, 0, a.v[1] };
+	return xmat2_new(a.v[0], 0, 0, a.v[1]);
 }
 
 static inline xmat2 xmat2_sub(xmat2 a, xmat2 b){
-	return (xmat2){
+	return xmat2_new(
 		xint_sub(a.v[0], b.v[0]),
 		xint_sub(a.v[1], b.v[1]),
 		xint_sub(a.v[2], b.v[2]),
 		xint_sub(a.v[3], b.v[3])
-	};
+	);
 }
 
 static inline xmat2 xmat2_transpose(xmat2 a){
-	return (xmat2){ a.v[0], a.v[2], a.v[1], a.v[3] };
+	return xmat2_new(a.v[0], a.v[2], a.v[1], a.v[3]);
 }
 
 //
@@ -2008,42 +2176,42 @@ static inline xmat2 xmat2_transpose(xmat2 a){
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline mat3x2 xmat3x2_tomat3x2(xmat3x2 a){
-	return (mat3x2){
+	return mat3x2_new(
 		xint_tofloat(a.v[0]),
 		xint_tofloat(a.v[1]),
 		xint_tofloat(a.v[2]),
 		xint_tofloat(a.v[3]),
 		xint_tofloat(a.v[4]),
 		xint_tofloat(a.v[5])
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_frommat3x2(mat3x2 a){
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_fromfloat(a.v[0]),
 		xint_fromfloat(a.v[1]),
 		xint_fromfloat(a.v[2]),
 		xint_fromfloat(a.v[3]),
 		xint_fromfloat(a.v[4]),
 		xint_fromfloat(a.v[5])
-	};
+	);
 }
 #endif
 
 static inline xmat3x2 xmat3x2_add(xmat3x2 a, xmat3x2 b){
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_add(a.v[0], b.v[0]), xint_add(a.v[1], b.v[1]),
 		xint_add(a.v[2], b.v[2]), xint_add(a.v[3], b.v[3]),
 		xint_add(a.v[4], b.v[4]), xint_add(a.v[5], b.v[5])
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_compmul(xmat3x2 a, xmat3x2 b){
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]),
 		xint_mul(a.v[2], b.v[2]), xint_mul(a.v[3], b.v[3]),
 		xint_mul(a.v[4], b.v[4]), xint_mul(a.v[5], b.v[5])
-	};
+	);
 }
 
 static inline xint xmat3x2_det(xmat3x2 a){
@@ -2051,7 +2219,7 @@ static inline xint xmat3x2_det(xmat3x2 a){
 }
 
 static inline xmat3x2 xmat3x2_identity(){
-	return (xmat3x2){ XINT1, 0, 0, XINT1, 0, 0 };
+	return xmat3x2_new(XINT1, 0, 0, XINT1, 0, 0);
 }
 
 static inline xmat3x2 xmat3x2_invert(xmat3x2 a){
@@ -2061,14 +2229,14 @@ static inline xmat3x2 xmat3x2_invert(xmat3x2 a){
 		a20 = a.v[4], a21 = a.v[5];
 	xint det = a00 * a11 - a01 * a10;
 	if (det == 0)
-		return (xmat3x2){ 0, 0, 0, 0, 0, 0 };
+		return xmat3x2_new(0, 0, 0, 0, 0, 0);
 	det = xint_div(XINT1, det);
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_mul( a11, det), xint_mul(-a01, det),
 		xint_mul(-a10, det), xint_mul( a00, det),
 		xint_mul(xint_sub(xint_mul( a21, a10), xint_mul(a11, a20)), det),
 		xint_mul(xint_add(xint_mul(-a21, a00), xint_mul(a01, a20)), det)
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_mul(xmat3x2 a, xmat3x2 b){
@@ -2079,14 +2247,14 @@ static inline xmat3x2 xmat3x2_mul(xmat3x2 a, xmat3x2 b){
 		b00 = b.v[0], b01 = b.v[1],
 		b10 = b.v[2], b11 = b.v[3],
 		b20 = b.v[4], b21 = b.v[5];
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_add(xint_mul(b00, a00), xint_mul(b01, a10)),
 		xint_add(xint_mul(b00, a01), xint_mul(b01, a11)),
 		xint_add(xint_mul(b10, a00), xint_mul(b11, a10)),
 		xint_add(xint_mul(b10, a01), xint_mul(b11, a11)),
 		xint_add(xint_add(xint_mul(b20, a00), xint_mul(b21, a10)), a20),
 		xint_add(xint_add(xint_mul(b20, a01), xint_mul(b21, a11)), a21)
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_rotate(xmat3x2 a, xang ang){
@@ -2094,37 +2262,37 @@ static inline xmat3x2 xmat3x2_rotate(xmat3x2 a, xang ang){
 		a00 = a.v[0], a01 = a.v[1],
 		a10 = a.v[2], a11 = a.v[3],
 		s = xint_sin(ang), c = xint_cos(ang);
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_add(xint_mul(c, a00), xint_mul(s, a10)), xint_add(xint_mul(c, a01), xint_mul(s, a11)),
 		xint_sub(xint_mul(c, a10), xint_mul(s, a00)), xint_sub(xint_mul(c, a11), xint_mul(s, a01)),
 		a.v[4], a.v[5]
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_rotation(xang ang){
 	xint s = xint_sin(ang), c = xint_cos(ang);
-	return (xmat3x2){ c, s, -s, c, 0, 0 };
+	return xmat3x2_new(c, s, -s, c, 0, 0);
 }
 
 static inline xmat3x2 xmat3x2_scale(xmat3x2 a, xvec2 b){
 	xint bx = b.v[0], by = b.v[1];
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_mul(bx, a.v[0]), xint_mul(bx, a.v[1]),
 		xint_mul(by, a.v[2]), xint_mul(by, a.v[3]),
-		a.v[4], a.v[5],
-	};
+		a.v[4], a.v[5]
+	);
 }
 
 static inline xmat3x2 xmat3x2_scaling(xvec2 a){
-	return (xmat3x2){ a.v[0], 0, 0, a.v[1], 0, 0 };
+	return xmat3x2_new(a.v[0], 0, 0, a.v[1], 0, 0);
 }
 
 static inline xmat3x2 xmat3x2_sub(xmat3x2 a, xmat3x2 b){
-	return (xmat3x2){
+	return xmat3x2_new(
 		xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]),
 		xint_sub(a.v[2], b.v[2]), xint_sub(a.v[3], b.v[3]),
 		xint_sub(a.v[4], b.v[4]), xint_sub(a.v[5], b.v[5])
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_translate(xmat3x2 a, xvec2 b){
@@ -2132,16 +2300,16 @@ static inline xmat3x2 xmat3x2_translate(xmat3x2 a, xvec2 b){
 		a00 = a.v[0], a01 = a.v[1],
 		a10 = a.v[2], a11 = a.v[3],
 		bx = b.v[0], by = b.v[1];
-	return (xmat3x2){
+	return xmat3x2_new(
 		a00, a01,
 		a10, a11,
 		xint_add(xint_add(xint_mul(bx, a00), xint_mul(by, a10)), a.v[4]),
 		xint_add(xint_add(xint_mul(bx, a01), xint_mul(by, a11)), a.v[5])
-	};
+	);
 }
 
 static inline xmat3x2 xmat3x2_translation(xvec2 a){
-	return (xmat3x2){ XINT1, 0, 0, XINT1, a.v[0], a.v[1] };
+	return xmat3x2_new(XINT1, 0, 0, XINT1, a.v[0], a.v[1]);
 }
 
 //
