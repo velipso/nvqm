@@ -1,19 +1,21 @@
-// (c) Copyright 2017, Sean Connelly (@voidqk), http://syntheti.cc
-// MIT License
-// Project Home: https://github.com/voidqk/nvqm
+/* (c) Copyright 2017, Sean Connelly (@voidqk), http://syntheti.cc
+ * MIT License
+ * Project Home: https://github.com/voidqk/nvqm
+ */
 
 #ifndef NVQM__H
 #define NVQM__H
 
 #ifndef NVQM_SKIP_FLOATING_POINT
-// floating point library included by default
-// define NVQM_SKIP_FLOATING_POINT to skip including the implementation
+/* floating point library included by default
+ * define NVQM_SKIP_FLOATING_POINT to skip including the implementation
+ */
 
 #include <math.h>
 
-//
-// 32-bit floating point
-//
+/*
+ * 32-bit floating point
+ */
 
 #ifndef NVQM_SKIP_COMPONENT_NAMES
 typedef union { float v[ 2]; struct { float x; float y; };                   struct { float r; float g; };                   struct { float s; float t; };                   } vec2;
@@ -116,9 +118,9 @@ static inline mat4 mat4_new(float v00, float v01, float v02, float v03, float v1
 static const float  TAU  = 6.28318530717958647692528676655900576839433879875021164195f;
 static const double TAUd = 6.28318530717958647692528676655900576839433879875021164195;
 
-//
-// num (scalars)
-//
+/*
+ * num (scalars)
+ */
 
 static inline float num_abs(float a){
 	return a < 0 ? -a : a;
@@ -200,9 +202,9 @@ static inline float num_tan(float a){
 	return tanf(a);
 }
 
-//
-// vec2
-//
+/*
+ * vec2
+ */
 
 static inline vec2 vec2_add(vec2 a, vec2 b){
 	return vec2_new(a.v[0] + b.v[0], a.v[1] + b.v[1]);
@@ -305,9 +307,9 @@ static inline vec2 vec2_sub(vec2 a, vec2 b){
 	return vec2_new(a.v[0] - b.v[0], a.v[1] - b.v[1]);
 }
 
-//
-// vec3
-//
+/*
+ * vec3
+ */
 
 static inline vec3 vec3_add(vec3 a, vec3 b){
 	return vec3_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2]);
@@ -433,7 +435,7 @@ static inline vec3 vec3_mul(vec3 a, vec3 b){
 	return vec3_new(a.v[0] * b.v[0], a.v[1] * b.v[1], a.v[2] * b.v[2]);
 }
 
-static inline float vec3_nangle(vec3 a, vec3 b){ // a and b are normalized
+static inline float vec3_nangle(vec3 a, vec3 b){ /* a and b are normalized */
 	float c = vec3_dot(a, b);
 	if (c < -1.0f || c > 1.0f)
 		return 0;
@@ -466,9 +468,9 @@ static inline vec3 vec3_sub(vec3 a, vec3 b){
 	return vec3_new(a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2]);
 }
 
-//
-// vec4
-//
+/*
+ * vec4
+ */
 
 static inline vec4 vec4_add(vec4 a, vec4 b){
 	return vec4_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3]);
@@ -594,9 +596,9 @@ static inline vec4 vec4_sub(vec4 a, vec4 b){
 	return vec4_new(a.v[0] - b.v[0], a.v[1] - b.v[1], a.v[2] - b.v[2], a.v[3] - b.v[3]);
 }
 
-//
-// quat
-//
+/*
+ * quat
+ */
 
 static inline quat quat_naxisang(vec3 axis, float ang);
 static inline quat quat_axisang(vec3 axis, float ang){
@@ -722,14 +724,14 @@ static inline quat quat_mul(quat a, quat b){
 	);
 }
 
-static inline quat quat_naxisang(vec3 axis, float ang){ // axis is normalized
+static inline quat quat_naxisang(vec3 axis, float ang){ /* axis is normalized */
 	ang *= 0.5f;
 	float s = num_sin(ang);
 	return quat_new(axis.v[0] * s, axis.v[1] * s, axis.v[2] * s, num_cos(ang));
 }
 
 static inline quat quat_normal(quat a);
-static inline quat quat_nbetween(vec3 from, vec3 to){ // from/to are normalized
+static inline quat quat_nbetween(vec3 from, vec3 to){ /* from/to are normalized */
 	float r = vec3_dot(from, to) + 1.0f;
 	vec3 cross;
 	if (r < 0.000001f){
@@ -791,9 +793,9 @@ static inline quat quat_slerp(quat a, quat b, float t){
 	);
 }
 
-//
-// mat2
-//
+/*
+ * mat2
+ */
 
 static inline mat2 mat2_add(mat2 a, mat2 b){
 	return mat2_new(a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3]);
@@ -860,9 +862,9 @@ static inline mat2 mat2_transpose(mat2 a){
 	return mat2_new(a.v[0], a.v[2], a.v[1], a.v[3]);
 }
 
-//
-// mat3x2
-//
+/*
+ * mat3x2
+ */
 
 static inline mat3x2 mat3x2_add(mat3x2 a, mat3x2 b){
 	return mat3x2_new(
@@ -975,9 +977,9 @@ static inline mat3x2 mat3x2_translation(vec2 a){
 	return mat3x2_new(1.0f, 0.0f, 0.0f, 1.0f, a.v[0], a.v[1]);
 }
 
-//
-// mat3
-//
+/*
+ * mat3
+ */
 
 mat3 *mat3_add        (mat3 *out, mat3 *a, mat3 *b);
 mat3 *mat3_adjoint    (mat3 *out, mat3 *a);
@@ -997,9 +999,9 @@ mat3 *mat3_translate  (mat3 *out, mat3 *a, vec2 b);
 mat3 *mat3_translation(mat3 *out, vec2 a);
 mat3 *mat3_transpose  (mat3 *out, mat3 *a);
 
-//
-// mat4
-//
+/*
+ * mat4
+ */
 
 mat4 *mat4_add           (mat4 *out, mat4 *a, mat4 *b);
 mat4 *mat4_adjoint       (mat4 *out, mat4 *a);
@@ -1025,19 +1027,20 @@ mat4 *mat4_translate     (mat4 *out, mat4 *a, vec3 b);
 mat4 *mat4_translation   (mat4 *out, vec3 a);
 mat4 *mat4_transpose     (mat4 *out, mat4 *a);
 
-#endif // NVQM_SKIP_FLOATING_POINT
+#endif /* NVQM_SKIP_FLOATING_POINT */
 
 #ifndef NVQM_SKIP_FIXED_POINT
-// fixed point library included by default
-// define NVQM_SKIP_FIXED_POINT to skip including the implementation
+/* fixed point library included by default
+ * define NVQM_SKIP_FIXED_POINT to skip including the implementation
+ */
 
-//
-// 16.16 fixed point library
-//
+/*
+ * 16.16 fixed point library
+ */
 
 #include <stdint.h>
 
-// signed 16.16 fixed-point
+/* signed 16.16 fixed-point */
 typedef int32_t xint;
 #ifndef NVQM_SKIP_COMPONENT_NAMES
 typedef union { xint v[ 2]; struct { xint x; xint y; };                 struct { xint r; xint g; };                 struct { xint s; xint t; };                 } xvec2;
@@ -1142,8 +1145,9 @@ static inline xmat4 xmat4_new(xint v00, xint v01, xint v02, xint v03, xint v10, 
 #define XINTMAX  INT32_MAX
 #define XINTMIN  INT32_MIN
 
-// note: angles for fixed-point operations are stored as 12 bit numbers (0 - 4095)
-// which means 0x000 = 0 degrees, 0x400 = 90 degrees, 0x800 = 180 degrees, etc
+/* note: angles for fixed-point operations are stored as 12 bit numbers (0 - 4095)
+ * which means 0x000 = 0 degrees, 0x400 = 90 degrees, 0x800 = 180 degrees, etc
+ */
 typedef int32_t xang;
 #define XANG0    0x0000
 #define XANG45   0x0200
@@ -1180,7 +1184,7 @@ static inline xint xint_fromdouble(double a){
 }
 
 static inline xang xang_wrap(xang a){
-	// this works because XANG360 is a power of 2
+	/* this works because XANG360 is a power of 2 */
 	return (uint32_t)a % XANG360;
 }
 
@@ -1282,9 +1286,9 @@ static inline xint xint_tan(xang a){
 	return xint_tan__lut[xang_wrap(a) >> 1];
 }
 
-//
-// xvec2
-//
+/*
+ * xvec2
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec2 xvec2_tovec2(xvec2 a){
@@ -1412,9 +1416,9 @@ static inline xvec2 xvec2_sub(xvec2 a, xvec2 b){
 	return xvec2_new(xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]));
 }
 
-//
-// xvec3
-//
+/*
+ * xvec3
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec3 xvec3_tovec3(xvec3 a){
@@ -1579,7 +1583,7 @@ static inline xvec3 xvec3_mul(xvec3 a, xvec3 b){
 	return xvec3_new(xint_mul(a.v[0], b.v[0]), xint_mul(a.v[1], b.v[1]), xint_mul(a.v[2], b.v[2]));
 }
 
-static inline xint xvec3_nangle(xvec3 a, xvec3 b){ // a and b are normalized
+static inline xint xvec3_nangle(xvec3 a, xvec3 b){ /* a and b are normalized */
 	return xint_acos(xvec3_dot(a, b));
 }
 
@@ -1601,7 +1605,7 @@ static inline xvec3 xvec3_normal(xvec3 a){
 }
 
 static inline xvec3 xvec3_orthogonal(xvec3 a, xvec3 b){
-	// normal the vectors before crossing them to prevent overflows
+	/* normal the vectors before crossing them to prevent overflows */
 	return xvec3_normal(xvec3_cross(xvec3_normal(a), xvec3_normal(b)));
 }
 
@@ -1613,9 +1617,9 @@ static inline xvec3 xvec3_sub(xvec3 a, xvec3 b){
 	return xvec3_new(xint_sub(a.v[0], b.v[0]), xint_sub(a.v[1], b.v[1]), xint_sub(a.v[2], b.v[2]));
 }
 
-//
-// xvec4
-//
+/*
+ * xvec4
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline vec4 xvec4_tovec4(xvec4 a){
@@ -1824,9 +1828,9 @@ static inline xvec4 xvec4_sub(xvec4 a, xvec4 b){
 	);
 }
 
-//
-// xquat
-//
+/*
+ * xquat
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline quat xquat_toquat(xquat a){
@@ -1981,7 +1985,7 @@ static inline xquat xquat_mul(xquat a, xquat b){
 	);
 }
 
-static inline xquat xquat_naxisang(xvec3 axis, xang ang){ // axis is normalized
+static inline xquat xquat_naxisang(xvec3 axis, xang ang){ /* axis is normalized */
 	ang >>= 1;
 	xint s = xint_sin(ang);
 	return xquat_new(
@@ -1993,7 +1997,7 @@ static inline xquat xquat_naxisang(xvec3 axis, xang ang){ // axis is normalized
 }
 
 static inline xquat xquat_normal(xquat a);
-static inline xquat xquat_nbetween(xvec3 from, xvec3 to){ // from/to are normalized
+static inline xquat xquat_nbetween(xvec3 from, xvec3 to){ /* from/to are normalized */
 	xint r = xint_add(xvec3_dot(from, to), XINT1);
 	xvec3 cross;
 	if (r <= 0){
@@ -2065,9 +2069,9 @@ static inline xquat xquat_slerp(xquat a, xquat b, xint t){
 	);
 }
 
-//
-// xmat2
-//
+/*
+ * xmat2
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline mat2 xmat2_tomat2(xmat2 a){
@@ -2184,9 +2188,9 @@ static inline xmat2 xmat2_transpose(xmat2 a){
 	return xmat2_new(a.v[0], a.v[2], a.v[1], a.v[3]);
 }
 
-//
-// xmat3x2
-//
+/*
+ * xmat3x2
+ */
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 static inline mat3x2 xmat3x2_tomat3x2(xmat3x2 a){
@@ -2326,9 +2330,9 @@ static inline xmat3x2 xmat3x2_translation(xvec2 a){
 	return xmat3x2_new(XINT1, 0, 0, XINT1, a.v[0], a.v[1]);
 }
 
-//
-// xmat3
-//
+/*
+ * xmat3
+ */
 
 xmat3 *xmat3_add        (xmat3 *out, xmat3 *a, xmat3 *b);
 xmat3 *xmat3_adjoint    (xmat3 *out, xmat3 *a);
@@ -2348,9 +2352,9 @@ xmat3 *xmat3_translate  (xmat3 *out, xmat3 *a, xvec2 b);
 xmat3 *xmat3_translation(xmat3 *out, xvec2 a);
 xmat3 *xmat3_transpose  (xmat3 *out, xmat3 *a);
 
-//
-// xmat4
-//
+/*
+ * xmat4
+ */
 
 xmat4 *xmat4_add           (xmat4 *out, xmat4 *a, xmat4 *b);
 xmat4 *xmat4_adjoint       (xmat4 *out, xmat4 *a);
@@ -2376,6 +2380,6 @@ xmat4 *xmat4_translate     (xmat4 *out, xmat4 *a, xvec3 b);
 xmat4 *xmat4_translation   (xmat4 *out, xvec3 a);
 xmat4 *xmat4_transpose     (xmat4 *out, xmat4 *a);
 
-#endif // NVQM_SKIP_FIXED_POINT
+#endif /* NVQM_SKIP_FIXED_POINT */
 
-#endif // NVQM__H
+#endif /* NVQM__H */
