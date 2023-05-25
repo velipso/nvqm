@@ -15,10 +15,17 @@
 // 32-bit floating point
 //
 
+#ifndef NVQM_SKIP_COMPONENT_NAMES
+typedef union { float v[ 2]; struct { float x; float y; };                   struct { float r; float g; };                   struct { float s; float t; };                   } vec2;
+typedef union { float v[ 3]; struct { float x; float y; float z; };          struct { float r; float g; float b; };          struct { float s; float t; float p; };          } vec3;
+typedef union { float v[ 4]; struct { float x; float y; float z; float w; }; struct { float r; float g; float b; float a; }; struct { float s; float t; float p; float q; }; } vec4;
+typedef union { float v[ 4]; struct { float x; float y; float z; float w; }; struct { float s; float i; float j; float k; }; } quat;
+#else
 typedef struct { float v[ 2]; } vec2;
 typedef struct { float v[ 3]; } vec3;
 typedef struct { float v[ 4]; } vec4;
 typedef struct { float v[ 4]; } quat;
+#endif
 typedef struct { float v[ 4]; } mat2;
 typedef struct { float v[ 6]; } mat3x2;
 typedef struct { float v[ 9]; } mat3;
@@ -1032,10 +1039,17 @@ mat4 *mat4_transpose     (mat4 *out, mat4 *a);
 
 // signed 16.16 fixed-point
 typedef int32_t xint;
+#ifndef NVQM_SKIP_COMPONENT_NAMES
+typedef union { xint v[ 2]; struct { xint x; xint y; };                 struct { xint r; xint g; };                 struct { xint s; xint t; };                 } xvec2;
+typedef union { xint v[ 3]; struct { xint x; xint y; xint z; };         struct { xint r; xint g; xint b; };         struct { xint s; xint t; xint p; };         } xvec3;
+typedef union { xint v[ 4]; struct { xint x; xint y; xint z; xint w; }; struct { xint r; xint g; xint b; xint a; }; struct { xint s; xint t; xint p; xint q; }; } xvec4;
+typedef union { xint v[ 4]; struct { xint x; xint y; xint z; xint w; }; struct { xint s; xint i; xint j; xint k; }; } xquat;
+#else
 typedef struct { xint v[ 2]; } xvec2;
 typedef struct { xint v[ 3]; } xvec3;
 typedef struct { xint v[ 4]; } xvec4;
 typedef struct { xint v[ 4]; } xquat;
+#endif
 typedef struct { xint v[ 4]; } xmat2;
 typedef struct { xint v[ 6]; } xmat3x2;
 typedef struct { xint v[ 9]; } xmat3;
