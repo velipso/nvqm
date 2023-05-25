@@ -1,14 +1,15 @@
-// (c) Copyright 2017, Sean Connelly (@voidqk), http://syntheti.cc
-// MIT License
-// Project Home: https://github.com/voidqk/nvqm
+/* (c) Copyright 2017, Sean Connelly (@voidqk), http://syntheti.cc
+ * MIT License
+ * Project Home: https://github.com/voidqk/nvqm
+ */
 
 #include "nvqm.h"
 
 #ifndef NVQM_SKIP_FLOATING_POINT
 
-//
-// mat3
-//
+/*
+ * mat3
+ */
 
 mat3 *mat3_add(mat3 *out, mat3 *a, mat3 *b){
 	out->v[0] = a->v[0] + b->v[0];
@@ -275,9 +276,9 @@ mat3 *mat3_transpose(mat3 *out, mat3 *a){
 	return out;
 }
 
-//
-// mat4
-//
+/*
+ * mat4
+ */
 
 mat4 *mat4_add(mat4 *out, mat4 *a, mat4 *b){
 	out->v[ 0] = a->v[ 0] + b->v[ 0];
@@ -922,7 +923,7 @@ mat4 *mat4_transpose(mat4 *out, mat4 *a){
 	return out;
 }
 
-#endif // NVQM_SKIP_FLOATING_POINT
+#endif /* NVQM_SKIP_FLOATING_POINT */
 
 #ifndef NVQM_SKIP_FIXED_POINT
 
@@ -931,7 +932,7 @@ xang xint_atan2(xint y, xint x){
 	if (y == 0 && x == 0)
 		return 0;
 	if (x == XINT1){
-		// hard-code some atan2(y, 1) values at the limits
+		/* hard-code some atan2(y, 1) values at the limits */
 		if (y <= -42722234) return (xang)3073;
 		if (y >=  42722235) return (xang)1023;
 	}
@@ -967,7 +968,7 @@ xang xint_acos(xint a){
 		return XANG180;
 	if (a >= XINT1)
 		return XANG0;
-	if (a > -51 && a < 51) // high error rate right around 0, so just do it manually
+	if (a > -51 && a < 51) /* high error rate right around 0, so just do it manually */
 		return XANG90;
 	xint res = xint_atan2(xint_div(xint_sqrt(xint_sub(XINT1, xint_mul(a, a))), a), XINT1);
 	if (a < 0)
@@ -980,18 +981,18 @@ xang xint_asin(xint a){
 		return XANG270;
 	if (a >= XINT1)
 		return XANG90;
-	if (a > -51 && a < 51) // high error rate right around 0, so just do it manually
+	if (a > -51 && a < 51) /* high error rate right around 0, so just do it manually */
 		return XANG0;
 	return xint_atan2(xint_div(a, xint_sqrt(xint_sub(XINT1, xint_mul(a, a)))), XINT1);
 }
 
 static inline int64_t x_mul31(int64_t res, int64_t f){
-	// res is Q33.31 and f is Q0.32
+	/* res is Q33.31 and f is Q0.32 */
 	return (int64_t)(((uint64_t)res * (uint64_t)f) >> 32);
 }
 
 static inline int64_t x_exp2f(int64_t f){
-	// res is Q33.31 and f is Q0.32
+	/* res is Q33.31 and f is Q0.32 */
 	static const int64_t
 		c0 = INT64_C(0x80000000),
 		c1 = INT64_C(0x58B45A41),
@@ -1006,8 +1007,9 @@ static inline int64_t x_exp2f(int64_t f){
 }
 
 static inline xint x_exp2(int64_t a){
-	// a is Q32.32
-	// 2^(whole+fraction) = 2^whole * 2^fraction
+	/* a is Q32.32
+	 * 2^(whole+fraction) = 2^whole * 2^fraction
+	 */
 	int32_t whole = a >> 32;
 	int64_t fract = x_exp2f(a & 0xFFFFFFFF);
 	if (whole < 15)
@@ -1027,7 +1029,7 @@ xint xint_exp(xint a){
 		neg = 1;
 		a = -a;
 	}
-	static const int64_t log2e = INT64_C(0x171547653); // log2(e) at Q32.32
+	static const int64_t log2e = INT64_C(0x171547653); /* log2(e) at Q32.32 */
 	xint res = x_exp2((log2e * (int64_t)a) >> 16);
 	if (neg)
 		res = xint_div(XINT1, res);
@@ -1039,7 +1041,7 @@ static inline int x_log2w(int w){
 	return (((int)(sizeof(int) * 8)) - __builtin_clz(w));
 }
 #elif defined(_MSC_VER)
-// TODO: actually test this
+/* TODO: actually test this */
 #include <intrin.h>
 static inline int x_log2w(int w){
 	return (((int)(sizeof(int) * 8)) - __lzcnt(w));
@@ -1066,7 +1068,7 @@ static inline int x_log2w(int w){
 }
 #endif
 
-static inline xint x_log2f(xint f){ // f ranges from (1, 2]
+static inline xint x_log2f(xint f){ /* f ranges from (1, 2] */
 	static const xint c1 = 0x16C40, c2 = INT32_C(0xFFFF6AFD), c3 = 0x28C2;
 	f = xint_sub(f, XINT1);
 	xint res = c3;
@@ -1084,7 +1086,7 @@ static inline xint x_log2(xint a){
 xint xint_log(xint a){
 	if (a <= 0)
 		return XINTMIN;
-	else if (a == 1) // must hard code these because it's too small to calculate
+	else if (a == 1) /* must hard code these because it's too small to calculate */
 		return INT32_C(0xFFF4E8DF);
 	else if (a == 2)
 		return INT32_C(0xFFF59A51);
@@ -1093,7 +1095,7 @@ xint xint_log(xint a){
 		small = 1;
 		a = xint_div(XINT1, a);
 	}
-	static const xint log2einv = 0xB172; // 1/(log2 e)
+	static const xint log2einv = 0xB172; /* 1/(log2 e) */
 	xint res = xint_mul(x_log2(a), log2einv);
 	if (small)
 		res = -res;
@@ -1110,7 +1112,7 @@ xint xint_pow(xint a, xint b){
 	if (b < 0){
 		b = -b;
 		if (a < XINT1)
-			a = xint_div(XINT1, a); // double flip -> no flip
+			a = xint_div(XINT1, a); /* double flip -> no flip */
 		else
 			flip = 1;
 	}
@@ -1119,10 +1121,11 @@ xint xint_pow(xint a, xint b){
 		flip = 1;
 	}
 
-	// res = a^(integer + fraction)
-	//     = a^(integer) * a^(fraction)
-	//     = a^(integer) * (2^(log2 a))^(fraction)
-	//     = a^(integer) * 2^(fraction * log2 a)
+	/* res = a^(integer + fraction)
+	 *     = a^(integer) * a^(fraction)
+	 *     = a^(integer) * (2^(log2 a))^(fraction)
+	 *     = a^(integer) * 2^(fraction * log2 a)
+	 */
 	xint res = XINT1;
 	xint base = a;
 	int pow_int = xint_toint(b);
@@ -1179,9 +1182,9 @@ xint xint_sqrt(xint a){
 	return res;
 }
 
-//
-// xmat3
-//
+/*
+ * xmat3
+ */
 
 xmat3 *xmat3_add(xmat3 *out, xmat3 *a, xmat3 *b){
 	out->v[0] = xint_add(a->v[0], b->v[0]);
@@ -1449,9 +1452,9 @@ xmat3 *xmat3_transpose(xmat3 *out, xmat3 *a){
 	return out;
 }
 
-//
-// xmat4
-//
+/*
+ * xmat4
+ */
 
 xmat4 *xmat4_add(xmat4 *out, xmat4 *a, xmat4 *b){
 	out->v[ 0] = xint_add(a->v[ 0], b->v[ 0]);
@@ -2151,7 +2154,7 @@ xmat4 *xmat4_transpose(xmat4 *out, xmat4 *a){
 	return out;
 }
 
-// sorry for the mess, but this is the lookup table for sin and tan
+/* sorry for the mess, but this is the lookup table for sin and tan */
 const xint xint_sin__lut[XANG360] = {
 	0, 101, 201, 302, 402, 503, 603, 704, 804, 905, 1005, 1106, 1206, 1307, 1407, 1508, 1608, 1709,
 	1809, 1910, 2010, 2111, 2211, 2312, 2412, 2513, 2613, 2714, 2814, 2914, 3015, 3115, 3216, 3316,
@@ -2654,4 +2657,4 @@ const xint xint_tan__lut[XANG180] = {
 	-1005, -905, -804, -704, -603, -503, -402, -302, -201, -101
 };
 
-#endif // NVQM_SKIP_FIXED_POINT
+#endif /* NVQM_SKIP_FIXED_POINT */
